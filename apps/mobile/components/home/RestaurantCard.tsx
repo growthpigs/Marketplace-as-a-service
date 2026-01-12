@@ -71,13 +71,13 @@ export function RestaurantCard({ restaurant, onPress }: RestaurantCardProps) {
           </View>
         </View>
 
-        <Text style={styles.details}>
+        <Text style={styles.details} numberOfLines={1}>
           {restaurant.deliveryTime} • Min €{restaurant.minOrder} • {restaurant.distance}
         </Text>
 
         {restaurant.promo && (
           <View style={styles.promoContainer}>
-            <Text style={styles.promoText}>{restaurant.promo}</Text>
+            <Text style={styles.promoText} numberOfLines={1}>{restaurant.promo}</Text>
           </View>
         )}
       </View>
