@@ -115,6 +115,7 @@ e15a790 fix(mobile): Add numberOfLines constraints to prevent text overflow
 1. ~~**Red Team Validation**~~ ✅ Done (9/10 confidence)
 2. ~~**Fix GooglePlacesAutocomplete crash**~~ ✅ Done (web fallback)
 3. ~~**Deploy to Netlify**~~ ✅ Done (turkeats-demo.netlify.app)
+4. ~~**Implement Account Page**~~ ✅ Done (favorites + ellipsis menu)
 
 ### Phase 2: Backend Integration
 - [ ] Connect to Supabase for real restaurant data
