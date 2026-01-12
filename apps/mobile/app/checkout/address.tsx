@@ -3,9 +3,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useState } from 'react';
+// GooglePlacesAutocomplete crashes on web - only import for native
 import { GooglePlacesAutocomplete, GooglePlaceData, GooglePlaceDetail } from 'react-native-google-places-autocomplete';
 import * as Location from 'expo-location';
 import { useCheckout, DeliveryAddress } from '@/context/CheckoutContext';
+
+const isWeb = Platform.OS === 'web';
 
 /**
  * AddressScreen - Delivery address selection
@@ -44,6 +47,22 @@ export default function AddressScreen() {
     state.deliveryAddress?.instructions || ''
   );
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
+  const [webAddressInput, setWebAddressInput] = useState('');
+
+  // Web fallback: handle manual address entry
+  const handleWebAddressSubmit = () => {
+    if (!webAddressInput.trim()) return;
+
+    const address: DeliveryAddress = {
+      formatted: webAddressInput.trim(),
+      placeId: 'web_manual_entry',
+      streetAddress: webAddressInput.trim(),
+      city: 'France',
+      postalCode: '',
+      coordinates: { lat: 48.8566, lng: 2.3522 }, // Default to Paris for demo
+    };
+    setSelectedAddress(address);
+  };
 
   // Handle place selection from autocomplete
   const handlePlaceSelect = (data: GooglePlaceData, details: GooglePlaceDetail | null) => {
@@ -195,60 +214,79 @@ export default function AddressScreen() {
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
-        {/* Google Places Autocomplete */}
+        {/* Address Input - Platform conditional */}
         <View style={styles.searchContainer}>
-          <GooglePlacesAutocomplete
-            placeholder="Rechercher une adresse..."
-            onPress={handlePlaceSelect}
-            fetchDetails={true}
-            query={{
-              key: googleMapsCredential,
-              language: 'fr',
-              components: 'country:fr', // Restrict to France
-            }}
-            styles={{
-              container: {
-                flex: 0,
-              },
-              textInputContainer: {
-                backgroundColor: '#F3F4F6',
-                borderRadius: 8,
-                paddingHorizontal: 12,
-              },
-              textInput: {
-                height: 48,
-                color: '#000000',
-                fontSize: 16,
-                backgroundColor: 'transparent',
-              },
-              listView: {
-                backgroundColor: '#FFFFFF',
-                borderRadius: 8,
-                marginTop: 4,
-                elevation: 3,
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.1,
-                shadowRadius: 4,
-              },
-              row: {
-                backgroundColor: '#FFFFFF',
-                padding: 16,
-              },
-              description: {
-                fontSize: 14,
-                color: '#000000',
-              },
-              separator: {
-                height: 1,
-                backgroundColor: '#E5E7EB',
-              },
-            }}
-            enablePoweredByContainer={false}
-            debounce={300}
-            minLength={3}
-            nearbyPlacesAPI="GooglePlacesSearch"
-          />
+          {isWeb ? (
+            /* Web fallback: Simple TextInput (GooglePlacesAutocomplete crashes on web) */
+            <View style={styles.webInputContainer}>
+              <TextInput
+                style={styles.webAddressInput}
+                placeholder="Entrez votre adresse..."
+                placeholderTextColor="#9CA3AF"
+                value={webAddressInput}
+                onChangeText={setWebAddressInput}
+                onSubmitEditing={handleWebAddressSubmit}
+                returnKeyType="done"
+              />
+              <Pressable style={styles.webSubmitButton} onPress={handleWebAddressSubmit}>
+                <FontAwesome name="check" size={16} color="#FFFFFF" />
+              </Pressable>
+            </View>
+          ) : (
+            /* Native: Full Google Places Autocomplete */
+            <GooglePlacesAutocomplete
+              placeholder="Rechercher une adresse..."
+              onPress={handlePlaceSelect}
+              fetchDetails={true}
+              query={{
+                key: googleMapsCredential,
+                language: 'fr',
+                components: 'country:fr', // Restrict to France
+              }}
+              styles={{
+                container: {
+                  flex: 0,
+                },
+                textInputContainer: {
+                  backgroundColor: '#F3F4F6',
+                  borderRadius: 8,
+                  paddingHorizontal: 12,
+                },
+                textInput: {
+                  height: 48,
+                  color: '#000000',
+                  fontSize: 16,
+                  backgroundColor: 'transparent',
+                },
+                listView: {
+                  backgroundColor: '#FFFFFF',
+                  borderRadius: 8,
+                  marginTop: 4,
+                  elevation: 3,
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.1,
+                  shadowRadius: 4,
+                },
+                row: {
+                  backgroundColor: '#FFFFFF',
+                  padding: 16,
+                },
+                description: {
+                  fontSize: 14,
+                  color: '#000000',
+                },
+                separator: {
+                  height: 1,
+                  backgroundColor: '#E5E7EB',
+                },
+              }}
+              enablePoweredByContainer={false}
+              debounce={300}
+              minLength={3}
+              nearbyPlacesAPI="GooglePlacesSearch"
+            />
+          )}
         </View>
 
         {/* Use Current Location */}
@@ -426,5 +464,27 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#FFFFFF',
+  },
+  // Web fallback styles
+  webInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F3F4F6',
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  webAddressInput: {
+    flex: 1,
+    height: 48,
+    paddingHorizontal: 16,
+    fontSize: 16,
+    color: '#000000',
+  },
+  webSubmitButton: {
+    backgroundColor: '#000000',
+    width: 48,
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
