@@ -39,25 +39,29 @@ const TURKISH_CATEGORIES: Category[] = [
 
 interface CategoryItemProps {
   category: Category;
+  isSelected?: boolean;
   onPress?: () => void;
 }
 
-function CategoryItem({ category, onPress }: CategoryItemProps) {
+function CategoryItem({ category, isSelected, onPress }: CategoryItemProps) {
   return (
     <Pressable style={styles.item} onPress={onPress}>
-      <View style={styles.iconContainer}>
+      <View style={[styles.iconContainer, isSelected && styles.iconContainerSelected]}>
         <Text style={styles.emoji}>{category.emoji}</Text>
       </View>
-      <Text style={styles.name} numberOfLines={1}>{category.name}</Text>
+      <Text style={[styles.name, isSelected && styles.nameSelected]} numberOfLines={1}>
+        {category.name}
+      </Text>
     </Pressable>
   );
 }
 
 interface CategoryRowProps {
+  selectedCategory?: string | null;
   onCategoryPress?: (categoryId: string) => void;
 }
 
-export function CategoryRow({ onCategoryPress }: CategoryRowProps) {
+export function CategoryRow({ selectedCategory, onCategoryPress }: CategoryRowProps) {
   return (
     <ScrollView
       horizontal
@@ -68,6 +72,7 @@ export function CategoryRow({ onCategoryPress }: CategoryRowProps) {
         <CategoryItem
           key={category.id}
           category={category}
+          isSelected={selectedCategory === category.id}
           onPress={() => onCategoryPress?.(category.id)}
         />
       ))}
@@ -94,6 +99,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 8,
   },
+  iconContainerSelected: {
+    backgroundColor: '#000000',
+    borderWidth: 2,
+    borderColor: '#06C167',
+  },
   emoji: {
     fontSize: 28,
   },
@@ -102,6 +112,10 @@ const styles = StyleSheet.create({
     color: '#000000',
     textAlign: 'center',
     fontWeight: '500',
+  },
+  nameSelected: {
+    color: '#06C167',
+    fontWeight: '700',
   },
 });
 

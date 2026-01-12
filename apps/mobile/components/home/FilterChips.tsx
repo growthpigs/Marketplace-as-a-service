@@ -24,10 +24,9 @@ interface FilterChip {
 }
 
 const FILTER_CHIPS: FilterChip[] = [
-  { id: 'turkeats-plus', label: 'TurkEats+', icon: 'bolt' },
-  { id: 'pickup', label: 'Retrait', icon: 'shopping-bag' },
-  { id: 'offers', label: 'Offres', icon: 'tag' },
-  { id: 'delivery', label: 'Livraison', icon: 'motorcycle' },
+  { id: 'offres', label: 'Offres', icon: 'tag' },
+  { id: 'livraison', label: 'Livraison', icon: 'motorcycle' },
+  { id: 'retrait', label: 'Retrait', icon: 'shopping-bag' },
 ];
 
 interface FilterChipItemProps {
