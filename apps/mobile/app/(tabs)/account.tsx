@@ -15,7 +15,7 @@ const MOCK_FAVORITES: Favorite[] = [
   {
     id: 1,
     name: 'Kebab Palace',
-    image: 'https://images.unsplash.com/photo-1599599810694-b5ac4dd93549?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1585238341710-4b4e6b1df324?w=400&h=300&fit=crop',
     rating: 4.5,
     deliveryTime: '15-25 min',
     cuisine: 'Turkish',
@@ -23,7 +23,7 @@ const MOCK_FAVORITES: Favorite[] = [
   {
     id: 2,
     name: 'Le Roi du Döner',
-    image: 'https://images.unsplash.com/photo-1555939594-58d7cb561af1?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=400&h=300&fit=crop',
     rating: 4.6,
     deliveryTime: '18-28 min',
     cuisine: 'Turkish',
@@ -31,7 +31,7 @@ const MOCK_FAVORITES: Favorite[] = [
   {
     id: 3,
     name: 'Assiette Grec',
-    image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1518691267835-29e67e919277?w=400&h=300&fit=crop',
     rating: 4.3,
     deliveryTime: '20-30 min',
     cuisine: 'Greek',
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   profileName: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '700',
     color: '#000000',
   },
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
     color: '#000000',
     marginBottom: 12,
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   favoriteName: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
     color: '#000000',
     flex: 1,
@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0,
   },
   settingText: {
-    fontSize: 16,
+    fontSize: 15,
     color: '#000000',
     flex: 1,
     fontWeight: '500',
