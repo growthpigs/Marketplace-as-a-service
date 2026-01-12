@@ -1,0 +1,56 @@
+# Dependencies
+node_modules/
+vendor/
+*.egg-info/
+venv/
+env/
+.venv/
+
+# Build outputs
+dist/
+build/
+*.pyc
+__pycache__/
+*.so
+*.dylib
+*.dll
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Test coverage
+coverage/
+.coverage
+*.cover
+htmlcov/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Temporary files
+tmp/
+temp/
+*.tmp
