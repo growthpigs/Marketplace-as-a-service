@@ -47,7 +47,7 @@ export function RestaurantInfo({
     <View style={styles.container}>
       {/* Name + Rating Row */}
       <View style={styles.headerRow}>
-        <Text style={styles.name}>{name}</Text>
+        <Text style={styles.name} numberOfLines={1}>{name}</Text>
         <Pressable style={styles.ratingBadge}>
           <FontAwesome name="star" size={12} color="#000000" />
           <Text style={styles.ratingText}>{rating.toFixed(1)}</Text>
@@ -56,7 +56,7 @@ export function RestaurantInfo({
       </View>
 
       {/* Price Level + Cuisine + Distance */}
-      <Text style={styles.metaText}>
+      <Text style={styles.metaText} numberOfLines={1}>
         {priceLevel} • {cuisine} • {distance}
       </Text>
 
@@ -64,12 +64,12 @@ export function RestaurantInfo({
       <View style={styles.deliveryRow}>
         <View style={styles.deliveryItem}>
           <FontAwesome name="clock-o" size={14} color="#6B7280" style={styles.deliveryIcon} />
-          <Text style={styles.deliveryText}>{deliveryTime}</Text>
+          <Text style={styles.deliveryText} numberOfLines={1}>{deliveryTime}</Text>
         </View>
         <View style={styles.deliveryDot} />
-        <View style={styles.deliveryItem}>
+        <View style={[styles.deliveryItem, { flex: 1 }]}>
           <FontAwesome name="motorcycle" size={14} color="#6B7280" style={styles.deliveryIcon} />
-          <Text style={styles.deliveryText}>{deliveryFee} Frais de livraison</Text>
+          <Text style={[styles.deliveryText, { flex: 1 }]} numberOfLines={1}>{deliveryFee} Frais de livraison</Text>
         </View>
       </View>
 

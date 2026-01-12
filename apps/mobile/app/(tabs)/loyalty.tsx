@@ -226,7 +226,7 @@ export default function LoyaltyScreen() {
                 />
               </View>
               <View style={styles.transactionDetails}>
-                <Text style={styles.transactionDescription}>{transaction.description}</Text>
+                <Text style={styles.transactionDescription} numberOfLines={1}>{transaction.description}</Text>
                 <Text style={styles.transactionDate}>{transaction.date}</Text>
               </View>
               <Text style={[
