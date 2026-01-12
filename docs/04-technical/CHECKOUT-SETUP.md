@@ -6,6 +6,25 @@ This guide documents the external services and API keys required for the TurkEat
 
 ---
 
+## Verification Status (2026-01-12)
+
+| Component | Status | Notes |
+|-----------|--------|-------|
+| Supabase tables | ✅ VERIFIED | orders, order_items, payments, payment_methods, wallet_transactions |
+| Google Maps API | ✅ VERIFIED | Places API enabled, key working (`AIzaSyB4...`) |
+| Stripe keys | ⚠️ USER ACTION | Keys empty - user needs to add from dashboard |
+
+**Runtime Test Results:**
+```
+Test: Places Autocomplete API
+Query: "Paris France"
+V PASS: Places API working
+Results: 5 predictions
+First result: Paris, France
+```
+
+---
+
 ## Required API Keys
 
 ### 1. Stripe (Payment Processing)
