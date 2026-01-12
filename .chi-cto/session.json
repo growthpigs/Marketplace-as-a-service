@@ -1,0 +1,61 @@
+{
+  "sessionId": "chi-cto-2026-01-12",
+  "project": "TurkEats",
+  "startedAt": "2026-01-12T06:00:00Z",
+  "mode": "autonomous",
+  "status": "initializing",
+  "waves": [
+    {
+      "id": "wave-0",
+      "name": "Scaffolding",
+      "status": "pending",
+      "workers": [
+        {"id": "scaffold-flutter", "feature": "Flutter project setup", "status": "pending"},
+        {"id": "scaffold-backend", "feature": "NestJS backend setup", "status": "pending"},
+        {"id": "scaffold-supabase", "feature": "Supabase schema + config", "status": "pending"}
+      ]
+    },
+    {
+      "id": "wave-1",
+      "name": "Foundation",
+      "status": "pending",
+      "workers": [
+        {"id": "w1-auth", "feature": "F001 Auth", "status": "pending"},
+        {"id": "w1-restaurant", "feature": "F011 Restaurant Dashboard", "status": "pending"}
+      ]
+    },
+    {
+      "id": "wave-2",
+      "name": "Core Customer",
+      "status": "pending",
+      "workers": [
+        {"id": "w2-discovery", "feature": "F002 Discovery", "status": "pending"},
+        {"id": "w2-menu", "feature": "F003 Menu", "status": "pending"},
+        {"id": "w2-payments", "feature": "F005 Payments", "status": "pending"}
+      ]
+    },
+    {
+      "id": "wave-3",
+      "name": "Integration",
+      "status": "pending",
+      "workers": [
+        {"id": "w3-ordering", "feature": "F004 Ordering", "status": "pending"},
+        {"id": "w3-wallet", "feature": "F007 Wallet", "status": "pending"}
+      ]
+    },
+    {
+      "id": "wave-4",
+      "name": "Final",
+      "status": "pending",
+      "workers": [
+        {"id": "w4-tracking", "feature": "F006 Tracking", "status": "pending"},
+        {"id": "w4-group", "feature": "F008 Group Orders", "status": "pending"}
+      ]
+    }
+  ],
+  "blockers": [
+    "Need Supabase project created",
+    "Need Stripe Connect account",
+    "Need Google Maps API key"
+  ]
+}

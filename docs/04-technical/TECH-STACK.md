@@ -40,16 +40,24 @@
 
 ## Technology Choices
 
-### Mobile Apps (Flutter)
+### Mobile Apps (React Native + Expo)
 
 | Component | Technology | Rationale |
 |-----------|------------|-----------|
-| Framework | **Flutter 3.x** | Single codebase, native performance |
-| Language | **Dart** | Strong typing, hot reload |
-| State | **Riverpod** | Modern, testable, provider-based |
-| Maps | **google_maps_flutter** | Official Google SDK |
-| HTTP | **Dio** | Interceptors, retry logic |
-| Local Storage | **Hive** | Fast NoSQL for offline |
+| Framework | **Expo SDK 52** | Managed workflow, instant device testing |
+| Language | **TypeScript** | Type safety, consistent with backend |
+| State | **Zustand** | Lightweight, simple, TS-first |
+| Navigation | **Expo Router** | File-based routing (like Next.js) |
+| Maps | **react-native-maps** | Google Maps + Apple Maps support |
+| HTTP | **Axios** + **React Query** | Caching, retry, optimistic updates |
+| Local Storage | **expo-secure-store** | Secure token storage |
+| Forms | **React Hook Form** + **Zod** | Type-safe form validation |
+
+**Why Expo over Flutter:**
+- TypeScript everywhere (backend + dashboard + mobile)
+- Expo Go for instant device testing (no native builds)
+- Zero setup friction (Node.js only)
+- Excellent Claude Code support for TypeScript
 
 **Platform Strategy:** iOS establishes design patterns → Android builds for target market → Both ship together.
 
@@ -155,17 +163,17 @@ Events:
 
 | Decision | Choice | Rationale |
 |----------|--------|-----------|
-| Mobile framework | **Flutter** | Single codebase, better perf, strong Maps SDK, hot reload |
+| Mobile framework | **React Native + Expo** | TypeScript everywhere, Expo Go for instant testing |
 | Backend language | **Node.js/TypeScript** | Consistent with Next.js admin, Claude Code excels at TS |
 | Hosting | **Render** | Simple, startup-friendly, good Node support |
 | Daniel's PHP system | **Skip - Greenfield** | Legacy = no AI speed gain, clean slate better |
 
-### Why Flutter over React Native
-- **Performance**: Native ARM compilation vs JS bridge
-- **UI consistency**: Pixel-perfect across iOS/Android
-- **Google Maps**: First-party SDK support (critical for delivery)
-- **Developer velocity**: Hot reload + single codebase
-- **Claude Code**: Excellent Dart support
+### Why Expo over Flutter
+- **TypeScript everywhere**: Mobile + Backend + Dashboard = one language
+- **Expo Go**: Test on phone instantly via QR code, no native builds
+- **Zero setup**: Node.js only (no Flutter SDK installation)
+- **AI-assisted dev**: Claude Code exceptional at TypeScript
+- **Ecosystem**: npm packages, larger hiring pool
 
 ### Why Node.js over Python
 - **TypeScript everywhere**: Backend + Admin Dashboard + consistent types
