@@ -35,13 +35,14 @@ const MOCK_RESTAURANTS: RestaurantWithCategories[] = [
   {
     id: '1',
     name: 'Kebab Palace',
-    image: 'https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=400&h=300&fit=crop',
+    // Vertical döner spit - iconic rotating meat cone
+    image: 'https://images.unsplash.com/photo-1530469912745-a215c6b256ea?w=400&h=300&fit=crop',
     rating: 4.5,
     reviewCount: 128,
     deliveryTime: '15-25 min',
     minOrder: 10,
     distance: '1.2 km',
-    promo: 'Top offer • 2 offres disponibles',
+    promo: 'Top offer • 2 offres',
     categories: ['kebab', 'sandwich', 'assiette'],
     hasOffer: true,
     hasDelivery: true,
@@ -50,7 +51,8 @@ const MOCK_RESTAURANTS: RestaurantWithCategories[] = [
   {
     id: '2',
     name: 'Istanbul Grill',
-    image: 'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=400&h=300&fit=crop',
+    // Turkish mixed grill plate with variety of meats
+    image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&h=300&fit=crop',
     rating: 4.7,
     reviewCount: 256,
     deliveryTime: '20-30 min',
@@ -65,6 +67,7 @@ const MOCK_RESTAURANTS: RestaurantWithCategories[] = [
   {
     id: '3',
     name: 'Döner King',
+    // Döner wrap/sandwich being prepared
     image: 'https://images.unsplash.com/photo-1561651823-34feb02250e4?w=400&h=300&fit=crop',
     rating: 4.6,
     reviewCount: 189,
@@ -79,7 +82,8 @@ const MOCK_RESTAURANTS: RestaurantWithCategories[] = [
   {
     id: '4',
     name: 'Anatolian Kitchen',
-    image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=400&h=300&fit=crop',
+    // Turkish meze spread with hummus, dips
+    image: 'https://images.unsplash.com/photo-1541518763669-27fef04b14ea?w=400&h=300&fit=crop',
     rating: 4.8,
     reviewCount: 312,
     deliveryTime: '25-35 min',
@@ -94,7 +98,8 @@ const MOCK_RESTAURANTS: RestaurantWithCategories[] = [
   {
     id: '5',
     name: 'Sultan Kebab',
-    image: 'https://images.unsplash.com/photo-1603360946369-dc9bb6258143?w=400&h=300&fit=crop',
+    // Adana kebab on skewers - red spiced kebab
+    image: 'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=400&h=300&fit=crop',
     rating: 4.4,
     reviewCount: 97,
     deliveryTime: '15-20 min',
@@ -108,7 +113,8 @@ const MOCK_RESTAURANTS: RestaurantWithCategories[] = [
   {
     id: '6',
     name: 'Pide House',
-    image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=300&fit=crop',
+    // Turkish pide - boat-shaped flatbread with toppings
+    image: 'https://images.unsplash.com/photo-1590947132387-155cc02f3212?w=400&h=300&fit=crop',
     rating: 4.9,
     reviewCount: 445,
     deliveryTime: '20-30 min',
@@ -123,7 +129,8 @@ const MOCK_RESTAURANTS: RestaurantWithCategories[] = [
   {
     id: '7',
     name: 'Turkish Delights',
-    image: 'https://images.unsplash.com/photo-1579027989536-b7b1f875659b?w=400&h=300&fit=crop',
+    // Baklava with Turkish tea - authentic desserts
+    image: 'https://images.unsplash.com/photo-1519676867240-f03562e64548?w=400&h=300&fit=crop',
     rating: 4.3,
     reviewCount: 78,
     deliveryTime: '15-25 min',
@@ -137,6 +144,7 @@ const MOCK_RESTAURANTS: RestaurantWithCategories[] = [
   {
     id: '8',
     name: 'Soup & Çorba',
+    // Turkish red lentil soup (mercimek çorbası)
     image: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&h=300&fit=crop',
     rating: 4.5,
     reviewCount: 156,
