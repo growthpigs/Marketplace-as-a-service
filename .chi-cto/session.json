@@ -3,16 +3,16 @@
   "project": "TurkEats",
   "startedAt": "2026-01-12T06:00:00Z",
   "mode": "autonomous",
-  "status": "initializing",
+  "status": "wave-1-ready",
   "waves": [
     {
       "id": "wave-0",
       "name": "Scaffolding",
-      "status": "pending",
+      "status": "complete",
       "workers": [
-        {"id": "scaffold-flutter", "feature": "Flutter project setup", "status": "pending"},
-        {"id": "scaffold-backend", "feature": "NestJS backend setup", "status": "pending"},
-        {"id": "scaffold-supabase", "feature": "Supabase schema + config", "status": "pending"}
+        {"id": "scaffold-expo", "feature": "Expo React Native setup", "status": "complete"},
+        {"id": "scaffold-backend", "feature": "NestJS backend setup", "status": "complete"},
+        {"id": "scaffold-dashboard", "feature": "Next.js dashboard setup", "status": "complete"}
       ]
     },
     {
