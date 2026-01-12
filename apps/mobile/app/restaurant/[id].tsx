@@ -9,6 +9,7 @@ import { RestaurantInfo } from '@/components/restaurant/RestaurantInfo';
 import { MenuSection } from '@/components/restaurant/MenuSection';
 import { MenuItem, type MenuItemData } from '@/components/restaurant/MenuItem';
 import { FloatingCartButton } from '@/components/restaurant/FloatingCartButton';
+import { useCart } from '@/context/CartContext';
 
 /**
  * RestaurantDetail - Pixel-perfect copy of Uber Eats restaurant page
@@ -259,13 +260,22 @@ export default function RestaurantDetailScreen() {
   // Get restaurant data (fallback to first restaurant if not found)
   const restaurant = MOCK_RESTAURANTS[id as string] ?? MOCK_RESTAURANTS['1'];
 
-  // Mock cart state (would be managed by state management in production)
-  const cartItemCount = 0;
-  const cartTotal = 0;
+  // Cart state from context
+  const { addItem, itemCount, total } = useCart();
 
   const handleAddToCart = (item: MenuItemData) => {
-    console.log('Add to cart:', item.name);
-    // Would dispatch to cart state
+    addItem(
+      restaurant.id,
+      restaurant.name,
+      {
+        id: item.id,
+        name: item.name,
+        description: item.description,
+        price: item.price,
+        image: item.image,
+      },
+      10 // minOrder €10
+    );
   };
 
   return (
@@ -320,11 +330,11 @@ export default function RestaurantDetailScreen() {
       </ScrollView>
 
       {/* Floating Cart Button */}
-      {cartItemCount > 0 && (
+      {itemCount > 0 && (
         <FloatingCartButton
-          itemCount={cartItemCount}
-          total={cartTotal}
-          onPress={() => router.push('/baskets')}
+          itemCount={itemCount}
+          total={total}
+          onPress={() => router.push('/(tabs)/baskets')}
         />
       )}
     </View>
