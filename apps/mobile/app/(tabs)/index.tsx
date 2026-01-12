@@ -1,5 +1,6 @@
 import { View, ScrollView, Text, StyleSheet } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { useRouter } from 'expo-router';
 import {
   HomeHeader,
   SearchBar,
@@ -79,6 +80,8 @@ const MOCK_RESTAURANTS: Restaurant[] = [
 ];
 
 export default function HomeScreen() {
+  const router = useRouter();
+
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
@@ -122,7 +125,7 @@ export default function HomeScreen() {
           <RestaurantCard
             key={restaurant.id}
             restaurant={restaurant}
-            onPress={() => console.log('Restaurant pressed:', restaurant.name)}
+            onPress={() => router.push(`/restaurant/${restaurant.id}`)}
           />
         ))}
 
