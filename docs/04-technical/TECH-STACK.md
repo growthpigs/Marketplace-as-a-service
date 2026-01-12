@@ -45,9 +45,11 @@
 | Component | Technology | Rationale |
 |-----------|------------|-----------|
 | Framework | **React Native** or **Flutter** | TBD - evaluate |
-| Platform | Android first | Target market (students) |
+| Platform | iOS first (design), Android second (production) | Both ship together |
 | State | Redux/Zustand or Riverpod | Depends on framework |
 | Maps | Google Maps SDK | Standard, well-documented |
+
+**Platform Strategy:** iOS establishes design patterns → Android builds for target market → Both launch simultaneously.
 
 **Decision needed:** React Native vs Flutter
 
@@ -57,9 +59,9 @@
 |-----------|------------|-----------|
 | Runtime | **Node.js** or **Python** | TBD - evaluate Daniel's PHP |
 | Framework | Express/NestJS or FastAPI | |
-| Database | PostgreSQL (Neon) | Serverless, scalable |
+| Database | **Supabase** (PostgreSQL) | Default choice, auth + realtime + storage |
 | Cache | Redis (Upstash) | Sessions, real-time |
-| File Storage | Cloudflare R2 | Cost-effective |
+| File Storage | Supabase Storage or Cloudflare R2 | Cost-effective |
 
 **Note:** Need to evaluate Daniel's existing PHP/WordPress system to decide if we extend or rebuild.
 
@@ -76,7 +78,7 @@
 | Service | Provider | Purpose |
 |---------|----------|---------|
 | Hosting | **Render** or **Vercel** | API + Dashboard |
-| Database | **Neon** | PostgreSQL serverless |
+| Database | **Supabase** | PostgreSQL + Auth + Realtime + Storage |
 | CDN | Cloudflare | Static assets, edge |
 | Monitoring | Sentry | Error tracking |
 | Analytics | PostHog | Product analytics |
@@ -140,9 +142,9 @@ Events:
 
 | Area | Approach |
 |------|----------|
-| Auth | JWT + refresh tokens |
+| Auth | JWT + refresh tokens (Supabase Auth) |
 | API | Rate limiting, input validation |
-| Data | Encryption at rest (Neon default) |
+| Data | Encryption at rest (Supabase default) |
 | Payments | PCI-compliant via Stripe |
 | GDPR | Data deletion, export APIs |
 

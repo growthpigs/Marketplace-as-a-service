@@ -6,16 +6,24 @@
 
 ---
 
+## ⚠️ AI-Assisted Development
+
+**This project uses AI-assisted development (Claude Code + chi-gateway).**
+
+Timeline is **6 weeks for MVP** (not 3 months) due to accelerated development.
+
+---
+
 ## Phases Overview
 
 ```
 Phase 1 (MVP)     → Phase 2 (Growth)  → Phase 3 (Scale)
-[3 months]          [3 months]           [6+ months]
+[6 weeks]           [6 weeks]            [3+ months]
 ```
 
 ---
 
-## Phase 1: MVP (Months 1-3)
+## Phase 1: MVP (Weeks 1-6)
 
 ### Goals
 - Launch basic ordering platform
@@ -24,7 +32,7 @@ Phase 1 (MVP)     → Phase 2 (Growth)  → Phase 3 (Scale)
 - Prove unit economics
 
 ### Deliverables
-- Customer Android app
+- Customer iOS + Android apps (iOS first for design, both ship)
 - Restaurant dashboard (web)
 - Core features: Search, order, pay, track
 - Cashback wallet (no withdrawal yet)
@@ -33,15 +41,17 @@ Phase 1 (MVP)     → Phase 2 (Growth)  → Phase 3 (Scale)
 ### Key Milestones
 | Milestone | Target |
 |-----------|--------|
-| Tech stack decided | Week 2 |
-| Backend API complete | Month 1 |
-| App alpha | Month 2 |
-| Beta launch | Month 2.5 |
-| MVP launch | Month 3 |
+| Tech stack decided | Week 1 |
+| Database + Auth setup | Week 1 |
+| Backend API complete | Week 2-3 |
+| iOS app alpha | Week 3-4 |
+| Android app | Week 4-5 |
+| Beta launch | Week 5 |
+| MVP launch | Week 6 |
 
 ---
 
-## Phase 2: Growth (Months 4-6)
+## Phase 2: Growth (Weeks 7-12)
 
 ### Goals
 - Scale to 500 restaurants
@@ -58,20 +68,20 @@ Phase 1 (MVP)     → Phase 2 (Growth)  → Phase 3 (Scale)
 
 ---
 
-## Phase 3: Scale (Months 7+)
+## Phase 3: Scale (Month 4+)
 
 ### Goals
-- iOS app launch
 - Geographic expansion
 - Advanced features
 - Profitability
 
 ### Deliverables
-- iOS customer app
 - Multi-city support
 - Restaurant subscription tiers
 - Advanced analytics
 - Consider other cuisines
+
+**Note:** iOS already shipped in Phase 1 (design-first strategy).
 
 ---
 
@@ -79,13 +89,15 @@ Phase 1 (MVP)     → Phase 2 (Growth)  → Phase 3 (Scale)
 
 | Milestone | Target | Status |
 |-----------|--------|--------|
-| Project kickoff | 2026-01 | Done |
-| Tech stack decision | 2026-01 | Not Started |
-| Backend complete | 2026-02 | Not Started |
-| App alpha | 2026-03 | Not Started |
-| MVP launch | 2026-04 | Not Started |
-| 50 restaurants | 2026-04 | Not Started |
-| 500 MAU | 2026-05 | Not Started |
+| Project kickoff | 2026-01 (Week 1) | Done |
+| Tech stack decision | 2026-01 (Week 1) | Not Started |
+| Database + Auth | 2026-01 (Week 1) | Not Started |
+| Backend complete | 2026-01 (Week 2-3) | Not Started |
+| iOS app alpha | 2026-02 (Week 3-4) | Not Started |
+| Android app | 2026-02 (Week 4-5) | Not Started |
+| MVP launch | 2026-02 (Week 6) | Not Started |
+| 50 restaurants | 2026-02 (Week 6) | Not Started |
+| 500 MAU | 2026-03 (Week 8) | Not Started |
 
 ---
 

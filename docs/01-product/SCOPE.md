@@ -8,12 +8,21 @@
 
 ## Scope Summary
 
-| Category | In Scope | Out of Scope |
-|----------|----------|--------------|
-| Platform | Android app (primary), Web (later) | iOS (phase 2) |
-| Geography | France | Other countries (phase 3) |
-| Cuisine | Turkish/Kebab | Other cuisines |
-| Delivery | Restaurant self-delivery + courier partners | Own fleet |
+| Category  | In Scope                                    | Out of Scope              |
+| --------- | ------------------------------------------- | ------------------------- |
+| Platform  | iOS + Android (simultaneous development)    |                           |
+| Geography | France                                      | Other countries (phase 3) |
+| Cuisine   | Turkish/Kebab                               | Other cuisines            |
+| Delivery  | Restaurant self-delivery + courier partners | Own fleet                 |
+
+### Platform Strategy (Critical)
+
+**Development Order:**
+1. **iOS First** - Establish design language, UX patterns, stakeholder demos
+2. **Android Second** - Production rollout (target market is Android-dominant)
+3. **Both Ship Together** - Simultaneous launch
+
+**Rationale:** iOS sets the design standard (cleaner, more constrained). Show stakeholders iOS prototype first. Build Android for actual users (students = Android dominant).
 
 ---
 
@@ -59,11 +68,10 @@
 ## Explicitly Out of Scope (MVP)
 
 1. **Own delivery fleet** - Use restaurant self-delivery or partners
-2. **iOS app** - Android first (target market)
-3. **Multiple cuisines** - Turkish only for focus
-4. **Loyalty programs beyond cashback** - Keep simple
-5. **Restaurant POS integration** - Manual order management first
-6. **Multi-language** - French only initially
+2. **Multiple cuisines** - Turkish only for focus
+3. **Loyalty programs beyond cashback** - Keep simple
+4. **Restaurant POS integration** - Manual order management first
+5. **Multi-language** - French only initially
 
 ---
 
@@ -90,7 +98,7 @@
 
 ```
 Phase 1 (MVP)     → Core ordering + cashback + affiliate
-Phase 2 (Growth)  → iOS, advanced promos, analytics
+Phase 2 (Growth)  → advanced promos, analytics
 Phase 3 (Scale)   → Geographic expansion, multi-cuisine
 ```
 

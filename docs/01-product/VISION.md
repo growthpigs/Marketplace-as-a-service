@@ -18,7 +18,7 @@ TurkEats is a specialized food delivery marketplace targeting the Turkish/kebab 
 - **35,000** Turkish restaurants in France - no specialized platform exists
 - Strong community network = natural viral distribution channel
 - Price-sensitive student market = high engagement with cashback/rewards
-- Android-dominant user base aligns with target demographic
+- Android-dominant user base aligns with target demographic (build iOS first for design, deploy both)
 
 ### Our Edge
 | Factor | Advantage |
@@ -64,6 +64,16 @@ TurkEats is a specialized food delivery marketplace targeting the Turkish/kebab 
 | Roderic Andrews | Tech, Product, Marketing, Design | 50% equity (Badaboost LLC) |
 | Daniel | Sales, BizDev, Operations, Finance | 50% equity (MOU) |
 | Stéphane | Market Access - Turkish community | Revenue share (5-10%) |
+
+---
+
+## Development Model
+
+**AI-Assisted Development:** This project uses AI-assisted development (Claude Code + chi-gateway).
+
+**Timeline:** MVP in 6 weeks (not 3 months) due to accelerated AI development.
+
+**DU Tracking:** All work logged as Development Units (DUs) to Master Dashboard. Partners receive DU reports showing effort allocation.
 
 ---
 

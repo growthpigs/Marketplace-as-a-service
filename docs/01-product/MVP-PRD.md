@@ -14,7 +14,7 @@ Build a food delivery marketplace for Turkish restaurants in France with:
 - **Viral mechanics:** 10% cashback + affiliate referral system
 - **Differentiation:** Cash withdrawal from wallet
 
-Target: 50 restaurants, 500 MAU in first 3 months.
+Target: 50 restaurants, 500 MAU in first 6 weeks (AI-assisted development).
 
 ---
 
@@ -209,10 +209,13 @@ Referrals
 
 ## Technical Requirements
 
-### Platform
-- **Primary:** Android (React Native or Flutter)
-- **Secondary:** Web admin dashboard
-- **Future:** iOS
+### Platform Strategy
+- **Design First:** iOS (establishes design language, stakeholder demos)
+- **Production First:** Android (target market - students = Android dominant)
+- **Launch:** iOS + Android simultaneously
+- **Secondary:** Web admin dashboard + Restaurant dashboard
+
+**Note:** iOS development happens first to lock in UX/design patterns, but both platforms ship together. Show stakeholders iOS prototypes.
 
 ### Backend
 - RESTful API
