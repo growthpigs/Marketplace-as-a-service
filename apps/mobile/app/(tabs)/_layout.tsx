@@ -6,11 +6,11 @@ import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 
 /**
- * TabLayout - Pixel-perfect copy of Uber Eats bottom navigation
+ * TabLayout - TurkEats bottom navigation
  *
- * UBER EATS TABS:
+ * TURKEATS TABS:
  * 1. Home (house icon) - Main restaurant feed
- * 2. Grocery (shopping cart) - Grocery stores
+ * 2. Loyalty (star icon) - Wallet + Referral program
  * 3. Browse (search/compass) - Category browsing
  * 4. Baskets (shopping bag) - Cart/orders
  * 5. Account (user icon) - Profile settings
@@ -18,7 +18,7 @@ import { useColorScheme } from '@/components/useColorScheme';
  * DESIGN TOKENS:
  * - Active: #000000 (black)
  * - Inactive: #6B7280 (gray)
- * - Icon size: 24px (Uber Eats uses SF Symbols ~24-28)
+ * - Icon size: 24px
  * - Label size: 10px
  */
 function TabBarIcon(props: {
@@ -58,10 +58,17 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="loyalty"
+        options={{
+          title: 'Fidélité',
+          tabBarIcon: ({ color }) => <TabBarIcon name="star" color={color} />,
+        }}
+      />
+      {/* Hide grocery tab */}
+      <Tabs.Screen
         name="grocery"
         options={{
-          title: 'Épicerie',
-          tabBarIcon: ({ color }) => <TabBarIcon name="shopping-cart" color={color} />,
+          href: null, // Hide from tab bar
         }}
       />
       <Tabs.Screen
