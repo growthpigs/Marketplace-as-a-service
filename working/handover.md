@@ -1,8 +1,9 @@
 # TurkEats - Session Handover
 
-**Last Updated:** 2026-01-12
-**Session:** Mobile App UI Implementation (Pixel-Perfect Uber Eats Copy)
+**Last Updated:** 2026-01-12 (Final)
+**Session:** Red Team Validation + Web Deployment
 **Branch:** `feature/pixel-perfect-uber-eats-copy`
+**Live Demo:** https://turkeats-demo.netlify.app
 
 ---
 
@@ -52,11 +53,49 @@
 3. Order review with wallet toggle
 4. Confirmation with order number
 
+### Text Overflow Fixes (Previous Session)
+
+**Fixed Components:**
+- `RestaurantInfo.tsx` - Added `numberOfLines={1}` to name, meta text, delivery text
+- `RestaurantInfo.tsx` - Added `flex: 1` to delivery fee text for proper shrinking in row layout
+- `loyalty.tsx` - Added `numberOfLines={1}` to transaction descriptions
+
+**Problem:** Text was running off the right edge on narrow mobile screens (iOS Simulator)
+**Solution:** Added React Native text constraints (`numberOfLines` + `flex: 1`) to ensure proper truncation
+
+### Red Team Validation (This Session)
+
+**Critical Bug Found & Fixed:**
+- **Issue:** GooglePlacesAutocomplete crashes on web platform with `ReferenceError: Cannot access '_request' before initialization`
+- **Root Cause:** Library uses XMLHttpRequest internals that fail TDZ (Temporal Dead Zone) on web
+- **Solution:** Platform-conditional rendering in `app/checkout/address.tsx`
+  - Native (iOS/Android): Full Google Places autocomplete
+  - Web: Simple TextInput fallback for address entry
+
+**Validation Results:**
+- ✅ TypeScript: PASS (no errors)
+- ✅ Expo web export: PASS (23 routes including `/checkout/address`)
+- ✅ Browser test: PASS (address screen loads, no errors)
+- ✅ Full user flow tested: Home → Restaurant → Add to Cart → Address screen
+- ✅ Confidence Score: 9/10 (all blockers resolved)
+
+**Commit:** `[new commit for web fallback fix]`
+
+### Web Deployment to Netlify (This Session)
+
+**Deployment Details:**
+- Exported Expo app to static web build (`npx expo export --platform web`)
+- Created Netlify site: `turkeats-demo`
+- Production URL: **https://turkeats-demo.netlify.app**
+- Status: ✅ Live and responding (HTTP 200)
+
 ---
 
-## Commits (Now on Main)
+## Commits (Latest Branch)
 
 ```
+[NEW] fix(mobile): Add web fallback for GooglePlacesAutocomplete to prevent crash
+e15a790 fix(mobile): Add numberOfLines constraints to prevent text overflow
 78dc14e feat(mobile): Add images to restaurant detail page
 5157e52 docs: Update feature specs with implementation status
 7808adb feat(mobile): Add loyalty tab with wallet and referral program
@@ -72,15 +111,17 @@
 
 ## What's Next
 
-### Immediate (User Requested)
-1. ~~**Restaurant Detail Page Images**~~ ✅ Done (commit 78dc14e)
-2. ~~**Merge to main**~~ ✅ Done
+### Completed This Session ✅
+1. ~~**Red Team Validation**~~ ✅ Done (9/10 confidence)
+2. ~~**Fix GooglePlacesAutocomplete crash**~~ ✅ Done (web fallback)
+3. ~~**Deploy to Netlify**~~ ✅ Done (turkeats-demo.netlify.app)
 
-### Backend Integration
-- Connect to Supabase for real restaurant data
-- Implement real GPS location detection
-- Wire up Google Places for address autocomplete
-- Stripe payment integration (keys currently mocked)
+### Phase 2: Backend Integration
+- [ ] Connect to Supabase for real restaurant data
+- [ ] Implement real GPS location detection
+- [ ] Stripe payment integration (keys currently mocked)
+- [ ] Supabase authentication (auth.tsx screens)
+- [ ] Real order persistence
 
 ### Features Not Yet Implemented
 - [ ] Real QR code generation for referrals
@@ -115,6 +156,6 @@
 
 ## Open Questions
 
-1. Restaurant detail page design - match Uber Eats exactly?
-2. Menu item images source - stock photos or placeholder?
+1. ~~Restaurant detail page design - match Uber Eats exactly?~~ ✅ Done - pixel-perfect copy
+2. ~~Menu item images source - stock photos or placeholder?~~ ✅ Done - Unsplash Turkish food photos
 3. When to wire up real Supabase data vs continue with mocks?
