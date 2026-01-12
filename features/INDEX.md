@@ -7,23 +7,25 @@
 
 ## Feature Catalog
 
-| ID | Feature | Priority | Status | Spec |
-|----|---------|----------|--------|------|
-| F001 | Customer Registration & Auth | P0 | Not Started | [F001-auth.md](F001-auth.md) |
-| F002 | Restaurant Discovery | P0 | Not Started | [F002-discovery.md](F002-discovery.md) |
-| F003 | Menu Browsing | P0 | Not Started | [F003-menu.md](F003-menu.md) |
-| F004 | Order Placement | P0 | Not Started | [F004-ordering.md](F004-ordering.md) |
-| F005 | Payment Processing | P0 | Not Started | [F005-payments.md](F005-payments.md) |
-| F006 | Order Tracking | P0 | Not Started | [F006-tracking.md](F006-tracking.md) |
-| F007 | Cashback Wallet | P0 | Not Started | [F007-wallet.md](F007-wallet.md) |
-| F008 | Group Ordering | P0 | Not Started | [F008-group-orders.md](F008-group-orders.md) |
-| F009 | Affiliate Referrals | P1 | Not Started | [F009-referrals.md](F009-referrals.md) |
-| F010 | Cash Withdrawal | P1 | Not Started | [F010-withdrawal.md](F010-withdrawal.md) |
-| F011 | Restaurant Dashboard | P0 | Not Started | [F011-restaurant-dashboard.md](F011-restaurant-dashboard.md) |
-| F012 | Admin Dashboard | P1 | Not Started | [F012-admin.md](F012-admin.md) |
-| F013 | Ratings & Reviews | P1 | Not Started | [F013-reviews.md](F013-reviews.md) |
-| F014 | Push Notifications | P1 | Not Started | [F014-notifications.md](F014-notifications.md) |
-| F015 | Restaurant Promotions | P2 | Not Started | [F015-promotions.md](F015-promotions.md) |
+| ID | Feature | Priority | Status | Spec | DU |
+|----|---------|----------|--------|------|-----|
+| F001 | Customer Registration & Auth | P0 | **Spec Complete** | [F001-auth.md](F001-auth.md) | 3 |
+| F002 | Restaurant Discovery | P0 | **Spec Complete** | [F002-discovery.md](F002-discovery.md) | 4 |
+| F003 | Menu Browsing | P0 | **Spec Complete** | [F003-menu.md](F003-menu.md) | 3 |
+| F004 | Order Placement | P0 | **Spec Complete** | [F004-ordering.md](F004-ordering.md) | 4 |
+| F005 | Payment Processing | P0 | **Spec Complete** | [F005-payments.md](F005-payments.md) | 5 |
+| F006 | Order Tracking | P0 | **Spec Complete** | [F006-tracking.md](F006-tracking.md) | 3 |
+| F007 | Cashback Wallet | P0 | **Spec Complete** | [F007-wallet.md](F007-wallet.md) | 4 |
+| F008 | Group Ordering | P0 | **Spec Complete** | [F008-group-orders.md](F008-group-orders.md) | 5 |
+| F009 | Affiliate Referrals | P1 | Not Started | [F009-referrals.md](F009-referrals.md) | TBD |
+| F010 | Cash Withdrawal | P1 | Not Started | [F010-withdrawal.md](F010-withdrawal.md) | TBD |
+| F011 | Restaurant Dashboard | P0 | **Spec Complete** | [F011-restaurant-dashboard.md](F011-restaurant-dashboard.md) | 5 |
+| F012 | Admin Dashboard | P1 | Not Started | [F012-admin.md](F012-admin.md) | TBD |
+| F013 | Ratings & Reviews | P1 | Not Started | [F013-reviews.md](F013-reviews.md) | TBD |
+| F014 | Push Notifications | P1 | Not Started | [F014-notifications.md](F014-notifications.md) | TBD |
+| F015 | Restaurant Promotions | P2 | Not Started | [F015-promotions.md](F015-promotions.md) | TBD |
+
+**MVP Total: 36 DU** (9 features)
 
 ---
 

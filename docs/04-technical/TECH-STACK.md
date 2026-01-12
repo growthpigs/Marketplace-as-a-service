@@ -40,30 +40,31 @@
 
 ## Technology Choices
 
-### Mobile Apps
+### Mobile Apps (Flutter)
 
 | Component | Technology | Rationale |
 |-----------|------------|-----------|
-| Framework | **React Native** or **Flutter** | TBD - evaluate |
-| Platform | iOS first (design), Android second (production) | Both ship together |
-| State | Redux/Zustand or Riverpod | Depends on framework |
-| Maps | Google Maps SDK | Standard, well-documented |
+| Framework | **Flutter 3.x** | Single codebase, native performance |
+| Language | **Dart** | Strong typing, hot reload |
+| State | **Riverpod** | Modern, testable, provider-based |
+| Maps | **google_maps_flutter** | Official Google SDK |
+| HTTP | **Dio** | Interceptors, retry logic |
+| Local Storage | **Hive** | Fast NoSQL for offline |
 
-**Platform Strategy:** iOS establishes design patterns → Android builds for target market → Both launch simultaneously.
+**Platform Strategy:** iOS establishes design patterns → Android builds for target market → Both ship together.
 
-**Decision needed:** React Native vs Flutter
-
-### Backend
+### Backend (Node.js/TypeScript)
 
 | Component | Technology | Rationale |
 |-----------|------------|-----------|
-| Runtime | **Node.js** or **Python** | TBD - evaluate Daniel's PHP |
-| Framework | Express/NestJS or FastAPI | |
-| Database | **Supabase** (PostgreSQL) | Default choice, auth + realtime + storage |
-| Cache | Redis (Upstash) | Sessions, real-time |
-| File Storage | Supabase Storage or Cloudflare R2 | Cost-effective |
-
-**Note:** Need to evaluate Daniel's existing PHP/WordPress system to decide if we extend or rebuild.
+| Runtime | **Node.js 20 LTS** | Stable, long-term support |
+| Language | **TypeScript 5.x** | Type safety, better DX |
+| Framework | **NestJS** | Structured, testable, enterprise patterns |
+| Database | **Supabase** (PostgreSQL) | Auth + realtime + storage + edge functions |
+| Cache | **Upstash Redis** | Serverless, sessions, rate limiting |
+| File Storage | **Supabase Storage** | Integrated with auth, CDN included |
+| Validation | **Zod** | Runtime type validation |
+| ORM | **Prisma** | Type-safe queries, migrations |
 
 ### Frontend (Admin Dashboard)
 
@@ -150,14 +151,27 @@ Events:
 
 ---
 
-## Open Decisions
+## Technical Decisions (FINAL)
 
-| Decision | Options | Status |
-|----------|---------|--------|
-| Mobile framework | React Native vs Flutter | **Pending** |
-| Backend language | Node.js vs Python vs extend PHP | **Pending** |
-| Hosting | Render vs Vercel vs Fly.io | **Pending** |
-| Evaluate Daniel's system | Keep/extend vs rebuild | **Pending** |
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| Mobile framework | **Flutter** | Single codebase, better perf, strong Maps SDK, hot reload |
+| Backend language | **Node.js/TypeScript** | Consistent with Next.js admin, Claude Code excels at TS |
+| Hosting | **Render** | Simple, startup-friendly, good Node support |
+| Daniel's PHP system | **Skip - Greenfield** | Legacy = no AI speed gain, clean slate better |
+
+### Why Flutter over React Native
+- **Performance**: Native ARM compilation vs JS bridge
+- **UI consistency**: Pixel-perfect across iOS/Android
+- **Google Maps**: First-party SDK support (critical for delivery)
+- **Developer velocity**: Hot reload + single codebase
+- **Claude Code**: Excellent Dart support
+
+### Why Node.js over Python
+- **TypeScript everywhere**: Backend + Admin Dashboard + consistent types
+- **Real-time**: Native WebSocket support for order tracking
+- **Ecosystem**: Express/NestJS mature for marketplaces
+- **Supabase**: JS client is first-class
 
 ---
 
