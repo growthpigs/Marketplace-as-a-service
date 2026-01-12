@@ -212,7 +212,7 @@ export default function BasketsScreen() {
             !meetsMinOrder && styles.checkoutButtonDisabled,
           ]}
           disabled={!meetsMinOrder}
-          onPress={() => console.log('Checkout pressed')}
+          onPress={() => router.push('/checkout/address')}
         >
           <Text style={styles.checkoutButtonText}>
             Passer la commande • €{total.toFixed(2)}

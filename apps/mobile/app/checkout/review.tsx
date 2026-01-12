@@ -1,0 +1,407 @@
+import { View, Text, StyleSheet, Pressable, ScrollView, ActivityIndicator } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useState } from 'react';
+import { useCheckout } from '@/context/CheckoutContext';
+import { useCart } from '@/context/CartContext';
+
+/**
+ * ReviewScreen - Order review before confirmation
+ *
+ * UBER EATS REVIEW SCREEN LAYOUT:
+ * ┌─────────────────────────────────────┐
+ * │ ← Vérifier la commande              │
+ * ├─────────────────────────────────────┤
+ * │ 📍 Livraison                        │
+ * │    12 rue de la Paix, Paris        │
+ * │    Dès que possible (25-35 min)    │
+ * ├─────────────────────────────────────┤
+ * │ 💳 Paiement                         │
+ * │    •••• 4242 - Visa                │
+ * ├─────────────────────────────────────┤
+ * │ 🍴 Votre commande                   │
+ * │    Kebab Palace                     │
+ * │    2x Döner Sandwich       €15.00  │
+ * │    1x Assiette Grecque     €12.90  │
+ * ├─────────────────────────────────────┤
+ * │ Résumé des frais                    │
+ * │    Sous-total              €27.90  │
+ * │    Livraison               €0.49   │
+ * │    Frais de service        €0.56   │
+ * │    Cashback (10%)          -€2.79  │
+ * │    ─────────────────────────────── │
+ * │    Total                   €28.95  │
+ * ├─────────────────────────────────────┤
+ * │ [    Passer la commande    ]       │
+ * └─────────────────────────────────────┘
+ */
+
+export default function ReviewScreen() {
+  const insets = useSafeAreaInsets();
+  const router = useRouter();
+  const { state: checkoutState, startProcessing, orderSuccess, orderError } = useCheckout();
+  const { state: cartState, subtotal, total, clearCart } = useCart();
+
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  // Calculate fees
+  const deliveryFee = cartState.deliveryFee;
+  const serviceFee = subtotal * 0.02;
+  const cashback = subtotal * 0.10; // 10% cashback
+
+  // Format payment method display
+  const formatPaymentMethod = () => {
+    const method = checkoutState.paymentMethod;
+    if (!method) return 'Non sélectionné';
+
+    if (method.type === 'card') {
+      const brand = method.brand
+        ? method.brand.charAt(0).toUpperCase() + method.brand.slice(1)
+        : 'Carte';
+      return `•••• ${method.last4 || '****'} - ${brand}`;
+    }
+    if (method.type === 'apple_pay') return 'Apple Pay';
+    if (method.type === 'google_pay') return 'Google Pay';
+    return 'Carte';
+  };
+
+  // Format delivery time display
+  const formatDeliveryTime = () => {
+    if (checkoutState.deliveryTime === 'asap') {
+      return 'Dès que possible (25-35 min)';
+    }
+    if (checkoutState.deliveryTime instanceof Date) {
+      return checkoutState.deliveryTime.toLocaleString('fr-FR');
+    }
+    return 'Non sélectionné';
+  };
+
+  // Handle place order
+  const handlePlaceOrder = async () => {
+    setIsProcessing(true);
+    startProcessing();
+
+    try {
+      // Simulate order processing (would be real API call)
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      // Generate mock order ID
+      const orderId = `TKE-${Date.now().toString(36).toUpperCase()}`;
+      const paymentIntentId = `pi_${Math.random().toString(36).substring(2, 15)}`;
+
+      // Success!
+      orderSuccess(orderId, paymentIntentId);
+      clearCart();
+      router.replace('/checkout/confirmation');
+    } catch (error) {
+      orderError('Une erreur est survenue. Veuillez réessayer.');
+      setIsProcessing(false);
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        {/* Delivery Section */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <FontAwesome name="map-marker" size={18} color="#000000" />
+            <Text style={styles.sectionTitle}>Livraison</Text>
+            <Pressable onPress={() => router.push('/checkout/address')}>
+              <Text style={styles.editButton}>Modifier</Text>
+            </Pressable>
+          </View>
+          <Text style={styles.sectionContent}>
+            {checkoutState.deliveryAddress?.formatted || 'Aucune adresse'}
+          </Text>
+          {checkoutState.deliveryAddress?.instructions && (
+            <Text style={styles.sectionSubtext}>
+              Instructions: {checkoutState.deliveryAddress.instructions}
+            </Text>
+          )}
+          <Text style={styles.sectionSubtext}>{formatDeliveryTime()}</Text>
+        </View>
+
+        {/* Payment Section */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <FontAwesome name="credit-card" size={18} color="#000000" />
+            <Text style={styles.sectionTitle}>Paiement</Text>
+            <Pressable onPress={() => router.push('/checkout/payment')}>
+              <Text style={styles.editButton}>Modifier</Text>
+            </Pressable>
+          </View>
+          <Text style={styles.sectionContent}>{formatPaymentMethod()}</Text>
+        </View>
+
+        {/* Order Items Section */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <FontAwesome name="cutlery" size={18} color="#000000" />
+            <Text style={styles.sectionTitle}>Votre commande</Text>
+          </View>
+          <Text style={styles.restaurantName}>{cartState.restaurantName}</Text>
+
+          {cartState.items.map((item) => (
+            <View key={item.menuItem.id} style={styles.orderItem}>
+              <Text style={styles.orderItemQuantity}>{item.quantity}x</Text>
+              <Text style={styles.orderItemName}>{item.menuItem.name}</Text>
+              <Text style={styles.orderItemPrice}>
+                €{(item.menuItem.price * item.quantity).toFixed(2)}
+              </Text>
+            </View>
+          ))}
+        </View>
+
+        {/* Price Summary Section */}
+        <View style={styles.section}>
+          <Text style={styles.summaryTitle}>Résumé des frais</Text>
+
+          <View style={styles.summaryRow}>
+            <Text style={styles.summaryLabel}>Sous-total</Text>
+            <Text style={styles.summaryValue}>€{subtotal.toFixed(2)}</Text>
+          </View>
+
+          <View style={styles.summaryRow}>
+            <Text style={styles.summaryLabel}>Frais de livraison</Text>
+            <Text style={styles.summaryValue}>€{deliveryFee.toFixed(2)}</Text>
+          </View>
+
+          <View style={styles.summaryRow}>
+            <Text style={styles.summaryLabel}>Frais de service</Text>
+            <Text style={styles.summaryValue}>€{serviceFee.toFixed(2)}</Text>
+          </View>
+
+          <View style={styles.summaryRow}>
+            <View style={styles.cashbackLabel}>
+              <FontAwesome name="gift" size={14} color="#22C55E" />
+              <Text style={styles.cashbackText}>Cashback (10%)</Text>
+            </View>
+            <Text style={styles.cashbackValue}>+€{cashback.toFixed(2)}</Text>
+          </View>
+
+          <View style={styles.totalDivider} />
+
+          <View style={styles.summaryRow}>
+            <Text style={styles.totalLabel}>Total</Text>
+            <Text style={styles.totalValue}>€{total.toFixed(2)}</Text>
+          </View>
+        </View>
+
+        {/* Cashback Info */}
+        <View style={styles.cashbackInfo}>
+          <FontAwesome name="info-circle" size={16} color="#22C55E" />
+          <Text style={styles.cashbackInfoText}>
+            €{cashback.toFixed(2)} seront ajoutés à votre portefeuille après livraison
+          </Text>
+        </View>
+
+        {/* Terms */}
+        <Text style={styles.termsText}>
+          En passant cette commande, vous acceptez nos{' '}
+          <Text style={styles.termsLink}>conditions générales</Text>
+        </Text>
+
+        {/* Bottom spacing */}
+        <View style={{ height: 32 }} />
+      </ScrollView>
+
+      {/* Place Order Button */}
+      <View style={[styles.buttonContainer, { paddingBottom: insets.bottom + 16 }]}>
+        <Pressable
+          style={[
+            styles.placeOrderButton,
+            isProcessing && styles.placeOrderButtonDisabled,
+          ]}
+          disabled={isProcessing}
+          onPress={handlePlaceOrder}
+        >
+          {isProcessing ? (
+            <View style={styles.processingContent}>
+              <ActivityIndicator color="#FFFFFF" size="small" />
+              <Text style={styles.placeOrderButtonText}>Traitement en cours...</Text>
+            </View>
+          ) : (
+            <Text style={styles.placeOrderButtonText}>
+              Passer la commande • €{total.toFixed(2)}
+            </Text>
+          )}
+        </Pressable>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F9FAFB',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  section: {
+    backgroundColor: '#FFFFFF',
+    padding: 16,
+    marginBottom: 8,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#000000',
+    marginLeft: 8,
+    flex: 1,
+  },
+  editButton: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#22C55E',
+  },
+  sectionContent: {
+    fontSize: 15,
+    color: '#374151',
+    lineHeight: 22,
+  },
+  sectionSubtext: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginTop: 4,
+  },
+  restaurantName: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#000000',
+    marginBottom: 12,
+  },
+  orderItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3F4F6',
+  },
+  orderItemQuantity: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#000000',
+    width: 30,
+  },
+  orderItemName: {
+    flex: 1,
+    fontSize: 14,
+    color: '#374151',
+  },
+  orderItemPrice: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#000000',
+  },
+  summaryTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#000000',
+    marginBottom: 12,
+  },
+  summaryRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  summaryLabel: {
+    fontSize: 14,
+    color: '#6B7280',
+  },
+  summaryValue: {
+    fontSize: 14,
+    color: '#374151',
+  },
+  cashbackLabel: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  cashbackText: {
+    fontSize: 14,
+    color: '#22C55E',
+    marginLeft: 6,
+  },
+  cashbackValue: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#22C55E',
+  },
+  totalDivider: {
+    height: 1,
+    backgroundColor: '#E5E7EB',
+    marginVertical: 12,
+  },
+  totalLabel: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#000000',
+  },
+  totalValue: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#000000',
+  },
+  cashbackInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F0FDF4',
+    marginHorizontal: 16,
+    marginTop: 8,
+    padding: 12,
+    borderRadius: 8,
+  },
+  cashbackInfoText: {
+    flex: 1,
+    fontSize: 13,
+    color: '#166534',
+    marginLeft: 8,
+  },
+  termsText: {
+    fontSize: 12,
+    color: '#6B7280',
+    textAlign: 'center',
+    marginTop: 16,
+    marginHorizontal: 16,
+    lineHeight: 18,
+  },
+  termsLink: {
+    color: '#000000',
+    textDecorationLine: 'underline',
+  },
+  buttonContainer: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    backgroundColor: '#FFFFFF',
+    borderTopWidth: 1,
+    borderTopColor: '#E5E7EB',
+  },
+  placeOrderButton: {
+    backgroundColor: '#000000',
+    paddingVertical: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  placeOrderButtonDisabled: {
+    backgroundColor: '#374151',
+  },
+  processingContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  placeOrderButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginLeft: 8,
+  },
+});
