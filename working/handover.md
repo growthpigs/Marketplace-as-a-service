@@ -54,9 +54,11 @@
 
 ---
 
-## Commits on Feature Branch
+## Commits (Now on Main)
 
 ```
+78dc14e feat(mobile): Add images to restaurant detail page
+5157e52 docs: Update feature specs with implementation status
 7808adb feat(mobile): Add loyalty tab with wallet and referral program
 197b10b feat(mobile): Expand restaurant data to 50 entries around 92250
 1292f72 fix(mobile): Prevent text overflow in RestaurantCard
@@ -71,8 +73,8 @@
 ## What's Next
 
 ### Immediate (User Requested)
-1. **Restaurant Detail Page Images** - Add hero image and menu item images
-2. **Merge to main** - After documentation locked in
+1. ~~**Restaurant Detail Page Images**~~ ✅ Done (commit 78dc14e)
+2. ~~**Merge to main**~~ ✅ Done
 
 ### Backend Integration
 - Connect to Supabase for real restaurant data
