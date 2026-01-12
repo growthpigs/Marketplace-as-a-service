@@ -1,9 +1,10 @@
-import { View, Text, StyleSheet, Pressable, TextInput, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Pressable, TextInput, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import { GooglePlacesAutocomplete, GooglePlaceData, GooglePlaceDetail } from 'react-native-google-places-autocomplete';
+import * as Location from 'expo-location';
 import { useCheckout, DeliveryAddress } from '@/context/CheckoutContext';
 
 /**
@@ -42,7 +43,7 @@ export default function AddressScreen() {
   const [instructions, setInstructions] = useState(
     state.deliveryAddress?.instructions || ''
   );
-  const [showManualEntry, setShowManualEntry] = useState(false);
+  const [isLoadingLocation, setIsLoadingLocation] = useState(false);
 
   // Handle place selection from autocomplete
   const handlePlaceSelect = (data: GooglePlaceData, details: GooglePlaceDetail | null) => {
@@ -98,19 +99,90 @@ export default function AddressScreen() {
     router.push('/checkout/delivery-time');
   };
 
-  // Use current location (placeholder - would use expo-location)
-  const handleUseCurrentLocation = () => {
-    // TODO: Implement with expo-location
-    // For MVP, just show a placeholder address
-    const mockAddress: DeliveryAddress = {
-      formatted: 'Position actuelle',
-      placeId: 'current_location',
-      streetAddress: 'Position GPS',
-      city: 'Paris',
-      postalCode: '75001',
-      coordinates: { lat: 48.8566, lng: 2.3522 },
-    };
-    setSelectedAddress(mockAddress);
+  // Use current location with real GPS
+  const handleUseCurrentLocation = async () => {
+    setIsLoadingLocation(true);
+
+    try {
+      // Request permission
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert(
+          'Permission refusée',
+          'Activez la localisation dans les paramètres pour utiliser cette fonctionnalité.'
+        );
+        setIsLoadingLocation(false);
+        return;
+      }
+
+      // Get current position
+      const location = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+      });
+
+      const { latitude, longitude } = location.coords;
+
+      // Reverse geocode using Google Maps API
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${googleMapsCredential}&language=fr`
+      );
+      const data = await response.json();
+
+      if (data.status === 'OK' && data.results.length > 0) {
+        const result = data.results[0];
+
+        // Extract address components
+        let streetNumber = '';
+        let streetName = '';
+        let city = '';
+        let postalCode = '';
+
+        result.address_components?.forEach((component: any) => {
+          if (component.types.includes('street_number')) {
+            streetNumber = component.long_name;
+          }
+          if (component.types.includes('route')) {
+            streetName = component.long_name;
+          }
+          if (component.types.includes('locality')) {
+            city = component.long_name;
+          }
+          if (component.types.includes('postal_code')) {
+            postalCode = component.long_name;
+          }
+        });
+
+        const address: DeliveryAddress = {
+          formatted: result.formatted_address,
+          placeId: result.place_id,
+          streetAddress: streetNumber ? `${streetNumber} ${streetName}` : streetName,
+          city,
+          postalCode,
+          coordinates: { lat: latitude, lng: longitude },
+        };
+
+        setSelectedAddress(address);
+      } else {
+        // Fallback if geocoding fails
+        const address: DeliveryAddress = {
+          formatted: `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`,
+          placeId: 'current_location',
+          streetAddress: 'Position GPS',
+          city: '',
+          postalCode: '',
+          coordinates: { lat: latitude, lng: longitude },
+        };
+        setSelectedAddress(address);
+      }
+    } catch (error) {
+      console.error('Location error:', error);
+      Alert.alert(
+        'Erreur de localisation',
+        'Impossible de récupérer votre position. Veuillez réessayer.'
+      );
+    } finally {
+      setIsLoadingLocation(false);
+    }
   };
 
   return (
@@ -180,11 +252,21 @@ export default function AddressScreen() {
         </View>
 
         {/* Use Current Location */}
-        <Pressable style={styles.locationButton} onPress={handleUseCurrentLocation}>
+        <Pressable
+          style={[styles.locationButton, isLoadingLocation && styles.locationButtonLoading]}
+          onPress={handleUseCurrentLocation}
+          disabled={isLoadingLocation}
+        >
           <View style={styles.locationIconContainer}>
-            <FontAwesome name="crosshairs" size={20} color="#000000" />
+            {isLoadingLocation ? (
+              <ActivityIndicator size="small" color="#000000" />
+            ) : (
+              <FontAwesome name="crosshairs" size={20} color="#000000" />
+            )}
           </View>
-          <Text style={styles.locationButtonText}>Utiliser ma position actuelle</Text>
+          <Text style={styles.locationButtonText}>
+            {isLoadingLocation ? 'Localisation en cours...' : 'Utiliser ma position actuelle'}
+          </Text>
         </Pressable>
 
         {/* Selected Address Display */}
@@ -260,6 +342,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 16,
     marginBottom: 16,
+  },
+  locationButtonLoading: {
+    opacity: 0.7,
   },
   locationIconContainer: {
     width: 40,
