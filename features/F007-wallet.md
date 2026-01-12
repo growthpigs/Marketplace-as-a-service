@@ -2,8 +2,51 @@
 
 **ID:** F007
 **Priority:** P0 (MVP)
-**Status:** Spec Complete
+**Status:** UI Implemented (Mobile)
 **Estimate:** 4 DU
+
+---
+
+## Implementation Status
+
+### Mobile App (apps/mobile)
+
+**Implemented:**
+- [x] Loyalty tab in bottom navigation (`app/(tabs)/loyalty.tsx`)
+- [x] Wallet balance card with prominent display
+- [x] "Retirer" (withdraw) button with confirmation dialog
+- [x] "Historique" button for transaction history
+- [x] Cashback summary showing total earned (10% rate)
+- [x] Referral program section with QR code placeholder
+- [x] Personal referral code display (TURK-XXXXXX format)
+- [x] Commission type toggle (40% one-time vs 10% lifetime)
+- [x] Share button using React Native Share API
+- [x] Referral stats (friends referred, total earnings)
+- [x] Transaction history list (cashback, referrals, withdrawals)
+- [x] Transaction type icons and color coding
+
+**Tab Configuration:**
+- Tab name: "Fidélité" (star icon)
+- Replaced "Épicerie" in tab bar
+- Location: `app/(tabs)/_layout.tsx`
+
+**Components:**
+- `app/(tabs)/loyalty.tsx` - Complete loyalty screen (530 lines)
+
+**Mock Data:**
+- Wallet balance: €24.50
+- Total cashback: €156.80
+- Referral code: TURK-ABC123
+- 3 referred users, €45.00 in referral earnings
+- 5 mock transactions (cashback, referral, withdrawal)
+
+**Not Yet Implemented:**
+- [ ] Supabase integration for real wallet data
+- [ ] Real QR code generation
+- [ ] Bank account management for withdrawals
+- [ ] Stripe Connect payout integration
+- [ ] Transaction pagination
+- [ ] Deep link handling for referral codes
 
 ---
 

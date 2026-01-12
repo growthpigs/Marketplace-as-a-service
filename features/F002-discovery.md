@@ -2,8 +2,41 @@
 
 **ID:** F002
 **Priority:** P0 (MVP)
-**Status:** Spec Complete
+**Status:** UI Implemented (Mobile)
 **Estimate:** 4 DU
+
+---
+
+## Implementation Status
+
+### Mobile App (apps/mobile)
+
+**Implemented:**
+- [x] Home screen with restaurant grid (`app/(tabs)/index.tsx`)
+- [x] 50 mock Turkish restaurants with unique images
+- [x] Category filtering (Assiette, Sandwich, Soup, Pide, Kebab, Desserts, Tea, Lahmacun)
+- [x] Filter chips (Offres, Livraison, Retrait)
+- [x] Search modal with category suggestions
+- [x] Empty state when no results match filters
+- [x] "Effacer les filtres" reset button
+- [x] RestaurantCard component with hero image, rating badge, promo tags
+- [x] CategoryRow horizontal scroll with selected state
+- [x] FilterChips horizontal scroll with selected state
+- [x] Location display in header (mock "La Garenne, 92250")
+
+**Components:**
+- `components/home/RestaurantCard.tsx` - Restaurant card with image, rating, delivery info
+- `components/home/CategoryRow.tsx` - Category icon row (Turkish food categories)
+- `components/home/FilterChips.tsx` - Filter pill chips
+- `components/home/LocationHeader.tsx` - Address display + search trigger
+
+**Not Yet Implemented:**
+- [ ] Real GPS location detection
+- [ ] Google Places address autocomplete
+- [ ] Supabase integration for real restaurant data
+- [ ] Distance calculation from user location
+- [ ] Open/closed status based on hours
+- [ ] Map view toggle
 
 ---
 
