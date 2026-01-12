@@ -68,11 +68,11 @@
 | Runtime | **Node.js 20 LTS** | Stable, long-term support |
 | Language | **TypeScript 5.x** | Type safety, better DX |
 | Framework | **NestJS** | Structured, testable, enterprise patterns |
-| Database | **Supabase** (PostgreSQL) | Auth + realtime + storage + edge functions |
+| Database | **Supabase** (PostgreSQL) | Auth + realtime + storage included |
+| DB Client | **@supabase/supabase-js** | Direct queries, RPC functions, realtime |
 | Cache | **Upstash Redis** | Serverless, sessions, rate limiting |
 | File Storage | **Supabase Storage** | Integrated with auth, CDN included |
 | Validation | **Zod** | Runtime type validation |
-| ORM | **Prisma** | Type-safe queries, migrations |
 
 ### Frontend (Admin Dashboard)
 
@@ -167,6 +167,31 @@ Events:
 | Backend language | **Node.js/TypeScript** | Consistent with Next.js admin, Claude Code excels at TS |
 | Hosting | **Render** | Simple, startup-friendly, good Node support |
 | Daniel's PHP system | **Skip - Greenfield** | Legacy = no AI speed gain, clean slate better |
+
+### Architecture: NestJS + Supabase (Clarified)
+
+**NestJS handles:**
+- All API endpoints (`/api/*`)
+- Stripe webhook processing
+- Complex business logic (orders, payments, wallet)
+- Background jobs (if needed)
+- Rate limiting, middleware
+
+**Supabase provides:**
+- PostgreSQL database (accessed via Supabase JS client, NOT Prisma)
+- Auth (phone, social login)
+- Realtime subscriptions (order tracking)
+- Storage (images, receipts)
+- Row-level security (RLS)
+
+**NOT using:**
+- Supabase Edge Functions (NestJS handles all API logic)
+- Prisma ORM (using Supabase JS client directly for simpler setup)
+
+**Why this split:**
+- NestJS = Full control over business logic, easier debugging, structured architecture
+- Supabase = Managed Postgres + auth + realtime without DevOps overhead
+- No Edge Functions = Avoid function cold starts, keep logic centralized
 
 ### Why Expo over Flutter
 - **TypeScript everywhere**: Mobile + Backend + Dashboard = one language

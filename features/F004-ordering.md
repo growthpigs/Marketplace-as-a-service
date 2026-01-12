@@ -100,7 +100,7 @@ Acceptance Criteria:
 ### API Endpoints
 
 ```typescript
-// Cart is client-side only (Flutter state)
+// Cart is client-side only (Zustand state)
 // Only submitted order hits API
 
 // POST /orders
@@ -234,47 +234,106 @@ BEFORE INSERT ON orders
 FOR EACH ROW EXECUTE FUNCTION generate_order_number();
 ```
 
-### Flutter Implementation
+### React Native Implementation
 
-```dart
-// lib/features/cart/providers/cart_provider.dart
-@riverpod
-class Cart extends _$Cart {
-  @override
-  CartState build() => CartState.empty();
+```typescript
+// lib/stores/cart-store.ts
+import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { MenuItem } from '@/types';
 
-  void addItem(MenuItem item, Map<String, dynamic> options, int quantity) {
-    // Check if different restaurant - prompt to clear
-    if (state.restaurantId != null && state.restaurantId != item.restaurantId) {
-      // Show clear cart dialog
-      return;
-    }
-
-    final cartItem = CartItem(
-      menuItem: item,
-      options: options,
-      quantity: quantity,
-      totalPrice: _calculateItemPrice(item, options, quantity),
-    );
-
-    state = state.copyWith(
-      restaurantId: item.restaurantId,
-      items: [...state.items, cartItem],
-    );
-  }
-
-  void removeItem(String itemId) { ... }
-  void updateQuantity(String itemId, int quantity) { ... }
-  void applyPromoCode(String code) { ... }
-  void clear() { ... }
+interface CartItem {
+  id: string;
+  menuItem: MenuItem;
+  options: Record<string, string[]>;
+  quantity: number;
+  totalPrice: number;
 }
 
-// lib/features/checkout/screens/checkout_screen.dart
-class CheckoutScreen extends ConsumerWidget {
-  // Address selection
-  // Order summary
-  // Payment method
-  // Place order button
+interface CartState {
+  restaurantId: string | null;
+  restaurantName: string | null;
+  items: CartItem[];
+  promoCode: string | null;
+  addItem: (item: MenuItem, options: Record<string, string[]>, quantity: number) => boolean;
+  removeItem: (itemId: string) => void;
+  updateQuantity: (itemId: string, quantity: number) => void;
+  applyPromoCode: (code: string) => void;
+  clear: () => void;
+  getSubtotal: () => number;
+}
+
+export const useCartStore = create<CartState>()(
+  persist(
+    (set, get) => ({
+      restaurantId: null,
+      restaurantName: null,
+      items: [],
+      promoCode: null,
+
+      addItem: (item, options, quantity) => {
+        const state = get();
+        // Check if different restaurant
+        if (state.restaurantId && state.restaurantId !== item.restaurant_id) {
+          return false; // Signal to show clear cart dialog
+        }
+
+        const totalPrice = calculateItemPrice(item, options, quantity);
+        const cartItem: CartItem = {
+          id: `${item.id}-${Date.now()}`,
+          menuItem: item,
+          options,
+          quantity,
+          totalPrice,
+        };
+
+        set({
+          restaurantId: item.restaurant_id,
+          items: [...state.items, cartItem],
+        });
+        return true;
+      },
+
+      removeItem: (itemId) => {
+        set((state) => ({
+          items: state.items.filter((i) => i.id !== itemId),
+        }));
+      },
+
+      updateQuantity: (itemId, quantity) => {
+        set((state) => ({
+          items: state.items.map((item) =>
+            item.id === itemId
+              ? { ...item, quantity, totalPrice: calculateItemPrice(item.menuItem, item.options, quantity) }
+              : item
+          ),
+        }));
+      },
+
+      applyPromoCode: (code) => set({ promoCode: code }),
+      clear: () => set({ restaurantId: null, restaurantName: null, items: [], promoCode: null }),
+
+      getSubtotal: () => get().items.reduce((sum, item) => sum + item.totalPrice, 0),
+    }),
+    {
+      name: 'turkeats-cart',
+      storage: createJSONStorage(() => AsyncStorage),
+    }
+  )
+);
+
+function calculateItemPrice(item: MenuItem, options: Record<string, string[]>, quantity: number): number {
+  let price = item.price;
+  // Add option modifiers
+  Object.entries(options).forEach(([optionId, choiceIds]) => {
+    const option = item.options?.find((o) => o.id === optionId);
+    choiceIds.forEach((choiceId) => {
+      const choice = option?.choices.find((c) => c.id === choiceId);
+      if (choice) price += choice.price_modifier;
+    });
+  });
+  return price * quantity;
 }
 ```
 

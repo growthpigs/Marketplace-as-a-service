@@ -307,67 +307,125 @@ AFTER INSERT OR UPDATE OR DELETE ON group_order_items
 FOR EACH ROW EXECUTE FUNCTION calculate_participant_totals();
 ```
 
-### Flutter Implementation
+### React Native Implementation
 
-```dart
-// lib/features/group_orders/providers/group_order_provider.dart
-@riverpod
-Stream<GroupOrder> groupOrder(GroupOrderRef ref, String code) async* {
+```typescript
+// hooks/useGroupOrder.ts
+import { useEffect, useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/lib/supabase';
+import { api } from '@/lib/api';
+
+interface GroupOrder {
+  id: string;
+  code: string;
+  hostId: string;
+  restaurant: Restaurant;
+  participants: Participant[];
+  status: string;
+  deadline: string;
+}
+
+export function useGroupOrder(code: string) {
+  const queryClient = useQueryClient();
+
   // Initial fetch
-  final response = await ref.read(apiProvider).get('/group-orders/$code');
-  yield GroupOrder.fromJson(response);
+  const { data: groupOrder, isLoading, error } = useQuery({
+    queryKey: ['group-order', code],
+    queryFn: async () => {
+      const { data } = await api.get(`/group-orders/${code}`);
+      return data;
+    },
+  });
 
-  // WebSocket for real-time updates
-  final channel = WebSocketChannel.connect(
-    Uri.parse('wss://api.turkeats.com/group-orders/$code/live'),
-  );
+  // Supabase Realtime for live updates
+  useEffect(() => {
+    if (!groupOrder?.id) return;
 
-  await for (final message in channel.stream) {
-    final data = jsonDecode(message);
-    // Handle different update types
-    yield* _processUpdate(data, ref);
-  }
+    const channel = supabase
+      .channel(`group-order:${groupOrder.id}`)
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'group_orders',
+        filter: `id=eq.${groupOrder.id}`,
+      }, () => {
+        queryClient.invalidateQueries({ queryKey: ['group-order', code] });
+      })
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'group_order_participants',
+        filter: `group_order_id=eq.${groupOrder.id}`,
+      }, () => {
+        queryClient.invalidateQueries({ queryKey: ['group-order', code] });
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [groupOrder?.id, code, queryClient]);
+
+  return { groupOrder, isLoading, error };
 }
 
-// lib/features/group_orders/screens/create_group_order_screen.dart
-class CreateGroupOrderScreen extends ConsumerWidget {
-  // Set deadline
-  // Set delivery address
-  // Get shareable link
+// lib/stores/group-order-store.ts
+import { create } from 'zustand';
+import * as Sharing from 'expo-sharing';
+import * as Clipboard from 'expo-clipboard';
+
+interface GroupOrderState {
+  createGroupOrder: (restaurantId: string, deadline: Date, address: Address) => Promise<string>;
+  joinGroupOrder: (code: string) => Promise<void>;
+  shareGroupOrder: (code: string) => Promise<void>;
 }
 
-// lib/features/group_orders/screens/group_order_lobby_screen.dart
-class GroupOrderLobbyScreen extends ConsumerWidget {
-  // Show participants
-  // Show items per person
-  // Payment status
-  // Submit button (host only)
-}
+export const useGroupOrderStore = create<GroupOrderState>((set) => ({
+  createGroupOrder: async (restaurantId, deadline, address) => {
+    const { data } = await api.post('/group-orders', {
+      restaurant_id: restaurantId,
+      deadline: deadline.toISOString(),
+      delivery_address: address,
+    });
+    return data.code;
+  },
 
-// lib/features/group_orders/widgets/share_group_order.dart
-class ShareGroupOrder extends StatelessWidget {
-  // QR code display
-  // Copy link button
-  // Share to WhatsApp, SMS
-}
+  joinGroupOrder: async (code) => {
+    await api.post(`/group-orders/${code}/join`);
+  },
+
+  shareGroupOrder: async (code) => {
+    const url = `https://turkeats.app/g/${code}`;
+    if (await Sharing.isAvailableAsync()) {
+      await Sharing.shareAsync(url);
+    } else {
+      await Clipboard.setStringAsync(url);
+    }
+  },
+}));
 ```
 
-### Deep Linking
+### Deep Linking (Expo Router)
 
-```dart
-// Handle deep links: turkeats.app/g/ABC123
-// Also: turkeats://group/ABC123
+```typescript
+// app.config.ts
+export default {
+  expo: {
+    scheme: 'turkeats',
+    web: {
+      bundler: 'metro',
+    },
+  },
+};
 
-void handleDeepLink(Uri uri) {
-  if (uri.pathSegments.first == 'g' || uri.pathSegments.first == 'group') {
-    final code = uri.pathSegments[1];
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => JoinGroupOrderScreen(code: code),
-      ),
-    );
-  }
+// app/(app)/g/[code].tsx - Deep link handler
+import { useLocalSearchParams, Redirect } from 'expo-router';
+
+export default function GroupOrderDeepLink() {
+  const { code } = useLocalSearchParams<{ code: string }>();
+  // Redirect to the group order join screen
+  return <Redirect href={`/group-order/${code}`} />;
 }
 ```
 

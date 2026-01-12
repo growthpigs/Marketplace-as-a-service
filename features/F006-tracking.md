@@ -200,64 +200,84 @@ export class OrdersGateway {
 }
 ```
 
-### Flutter Implementation
+### React Native Implementation
 
-```dart
-// lib/features/tracking/providers/order_tracking_provider.dart
-@riverpod
-class OrderTracking extends _$OrderTracking {
-  WebSocketChannel? _channel;
+```typescript
+// hooks/useOrderTracking.ts
+import { useEffect, useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/lib/supabase';
+import { api } from '@/lib/api';
 
-  @override
-  Stream<OrderStatus> build(String orderId) async* {
-    // Initial fetch
-    final order = await ref.read(apiProvider).get('/orders/$orderId/track');
-    yield OrderStatus.fromJson(order);
-
-    // WebSocket connection
-    _channel = WebSocketChannel.connect(
-      Uri.parse('wss://api.turkeats.com/orders/$orderId/live'),
-    );
-
-    await for (final message in _channel!.stream) {
-      final data = jsonDecode(message);
-      if (data['type'] == 'status_update') {
-        yield OrderStatus(
-          status: data['status'],
-          timestamp: DateTime.parse(data['timestamp']),
-        );
-      }
-    }
-  }
-
-  @override
-  void dispose() {
-    _channel?.sink.close();
-    super.dispose();
-  }
+interface OrderStatus {
+  status: string;
+  timestamp: string;
+  estimatedDelivery: string;
 }
 
-// lib/features/tracking/screens/tracking_screen.dart
-class TrackingScreen extends ConsumerWidget {
-  final String orderId;
+export function useOrderTracking(orderId: string) {
+  const queryClient = useQueryClient();
+  const [realtimeStatus, setRealtimeStatus] = useState<OrderStatus | null>(null);
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final tracking = ref.watch(orderTrackingProvider(orderId));
+  // Initial fetch
+  const { data: initialStatus, isLoading, error } = useQuery({
+    queryKey: ['order', orderId, 'track'],
+    queryFn: async () => {
+      const { data } = await api.get(`/orders/${orderId}/track`);
+      return data;
+    },
+  });
 
-    return tracking.when(
-      data: (status) => Column(
-        children: [
-          OrderTimeline(currentStatus: status),
-          DeliveryEstimate(eta: status.estimatedDelivery),
-          OrderSummary(items: status.items),
-          ContactRestaurantButton(phone: status.restaurant.phone),
-        ],
-      ),
-      loading: () => LoadingIndicator(),
-      error: (e, _) => ErrorWidget(e),
-    );
-  }
+  // Supabase Realtime subscription
+  useEffect(() => {
+    const channel = supabase
+      .channel(`order:${orderId}`)
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'orders',
+        filter: `id=eq.${orderId}`,
+      }, (payload) => {
+        setRealtimeStatus({
+          status: payload.new.status,
+          timestamp: payload.new.updated_at,
+          estimatedDelivery: payload.new.estimated_delivery_at,
+        });
+        // Invalidate related queries
+        queryClient.invalidateQueries({ queryKey: ['order', orderId] });
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [orderId, queryClient]);
+
+  return {
+    status: realtimeStatus ?? initialStatus,
+    isLoading,
+    error,
+  };
+}
+
+// components/tracking/TrackingScreen.tsx
+import { View, Text } from 'react-native';
+import { useOrderTracking } from '@/hooks/useOrderTracking';
+import { OrderTimeline } from './OrderTimeline';
+import { DeliveryEstimate } from './DeliveryEstimate';
+
+export function TrackingScreen({ orderId }: { orderId: string }) {
+  const { status, isLoading, error } = useOrderTracking(orderId);
+
+  if (isLoading) return <ActivityIndicator />;
+  if (error) return <ErrorView error={error} />;
+
+  return (
+    <View className="flex-1">
+      <OrderTimeline currentStatus={status.status} />
+      <DeliveryEstimate eta={status.estimatedDelivery} />
+    </View>
+  );
 }
 ```
 
@@ -274,32 +294,49 @@ class TrackingScreen extends ConsumerWidget {
 
 ## Push Notifications
 
-```dart
-// lib/services/push_notifications.dart
-final notifications = {
-  'confirmed': NotificationConfig(
-    title: 'Order Confirmed! 🎉',
+```typescript
+// lib/notifications/order-notifications.ts
+import * as Notifications from 'expo-notifications';
+
+export const ORDER_NOTIFICATIONS = {
+  confirmed: {
+    title: 'Order Confirmed!',
     body: 'Your order from {restaurant} has been confirmed',
     sound: 'order_confirmed.wav',
-  ),
-  'preparing': NotificationConfig(
-    title: 'Cooking Your Food 👨‍🍳',
+  },
+  preparing: {
+    title: 'Cooking Your Food',
     body: 'The chef is preparing your order',
-  ),
-  'ready': NotificationConfig(
-    title: 'Food is Ready! 📦',
+  },
+  ready: {
+    title: 'Food is Ready!',
     body: 'Your order is packed and ready',
-  ),
-  'delivering': NotificationConfig(
-    title: 'On the Way! 🚗',
+  },
+  delivering: {
+    title: 'On the Way!',
     body: 'Your food is being delivered',
     sound: 'driver_assigned.wav',
-  ),
-  'delivered': NotificationConfig(
-    title: 'Enjoy Your Meal! 🍽️',
+  },
+  delivered: {
+    title: 'Enjoy Your Meal!',
     body: 'Your order has been delivered',
-  ),
-};
+  },
+} as const;
+
+export async function scheduleOrderNotification(
+  status: keyof typeof ORDER_NOTIFICATIONS,
+  restaurantName: string
+) {
+  const config = ORDER_NOTIFICATIONS[status];
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: config.title,
+      body: config.body.replace('{restaurant}', restaurantName),
+      sound: config.sound ?? true,
+    },
+    trigger: null, // Immediate
+  });
+}
 ```
 
 ---

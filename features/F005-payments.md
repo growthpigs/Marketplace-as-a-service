@@ -189,55 +189,71 @@ CREATE TABLE payments (
 );
 ```
 
-### Flutter Implementation
+### React Native Implementation
 
-```dart
-// lib/features/payments/providers/stripe_provider.dart
-@riverpod
-class StripePayment extends _$StripePayment {
+```typescript
+// lib/stores/payment-store.ts
+import { create } from 'zustand';
+import { initStripe, presentPaymentSheet, confirmPayment } from '@stripe/stripe-react-native';
+import { api } from '../api';
 
-  Future<void> initStripe() async {
-    Stripe.publishableKey = Environment.stripePublishableKey;
-    await Stripe.instance.applySettings();
-  }
-
-  Future<void> saveCard() async {
-    // Get SetupIntent from backend
-    final setupIntent = await ref.read(apiProvider).post('/payments/setup-intent');
-
-    // Show Stripe payment sheet
-    await Stripe.instance.initPaymentSheet(
-      paymentSheetParameters: SetupPaymentSheetParameters(
-        setupIntentClientSecret: setupIntent['client_secret'],
-        customerId: setupIntent['customer_id'],
-        merchantDisplayName: 'TurkEats',
-      ),
-    );
-
-    await Stripe.instance.presentPaymentSheet();
-  }
-
-  Future<PaymentResult> payForOrder(String orderId, {
-    String? paymentMethodId,
-    bool useWallet = true,
-  }) async {
-    final response = await ref.read(apiProvider).post(
-      '/orders/$orderId/pay',
-      data: {
-        'payment_method_id': paymentMethodId,
-        'use_wallet': useWallet,
-      },
-    );
-
-    if (response['status'] == 'requires_action') {
-      // Handle 3D Secure
-      await Stripe.instance.handleNextAction(response['client_secret']);
-      return await _confirmPayment(orderId, response['payment_intent_id']);
-    }
-
-    return PaymentResult.fromJson(response);
-  }
+interface PaymentState {
+  savedCards: PaymentMethod[];
+  loading: boolean;
+  initializeStripe: () => Promise<void>;
+  saveCard: () => Promise<void>;
+  payForOrder: (orderId: string, paymentMethodId?: string, useWallet?: boolean) => Promise<PaymentResult>;
 }
+
+export const usePaymentStore = create<PaymentState>((set, get) => ({
+  savedCards: [],
+  loading: false,
+
+  initializeStripe: async () => {
+    await initStripe({
+      publishableKey: process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
+      merchantIdentifier: 'merchant.com.turkeats',
+    });
+  },
+
+  saveCard: async () => {
+    set({ loading: true });
+    try {
+      // Get SetupIntent from backend
+      const { data: setupIntent } = await api.post('/payments/setup-intent');
+
+      // Show Stripe payment sheet
+      const { error } = await presentPaymentSheet({
+        clientSecret: setupIntent.client_secret,
+      });
+
+      if (error) throw new Error(error.message);
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  payForOrder: async (orderId, paymentMethodId, useWallet = true) => {
+    set({ loading: true });
+    try {
+      const { data } = await api.post(`/orders/${orderId}/pay`, {
+        payment_method_id: paymentMethodId,
+        use_wallet: useWallet,
+      });
+
+      if (data.status === 'requires_action') {
+        // Handle 3D Secure
+        const { error } = await confirmPayment(data.client_secret);
+        if (error) throw new Error(error.message);
+        return await get().confirmPayment(orderId, data.payment_intent_id);
+      }
+
+      return data;
+    } finally {
+      set({ loading: false });
+    }
+  },
+}));
 ```
 
 ### Webhook Handler

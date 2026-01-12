@@ -285,56 +285,87 @@ END;
 $$ LANGUAGE plpgsql;
 ```
 
-### Flutter Implementation
+### React Native Implementation
 
-```dart
-// lib/features/wallet/providers/wallet_provider.dart
-@riverpod
-Future<Wallet> wallet(WalletRef ref) async {
-  final response = await ref.read(apiProvider).get('/wallet');
-  return Wallet.fromJson(response);
+```typescript
+// lib/stores/wallet-store.ts
+import { create } from 'zustand';
+import { api } from '../api';
+
+interface Wallet {
+  balance: number;
+  pendingCashback: number;
+  availableBalance: number;
 }
 
-@riverpod
-Future<List<WalletTransaction>> walletTransactions(
-  WalletTransactionsRef ref, {
-  String? type,
-  int page = 1,
-}) async {
-  final response = await ref.read(apiProvider).get(
-    '/wallet/transactions',
-    queryParams: {'type': type ?? 'all', 'page': page},
-  );
-  return (response['transactions'] as List)
-      .map((t) => WalletTransaction.fromJson(t))
-      .toList();
+interface WalletTransaction {
+  id: string;
+  type: 'cashback' | 'usage' | 'withdrawal' | 'refund';
+  amount: number;
+  balanceAfter: number;
+  description: string;
+  createdAt: string;
 }
 
-// lib/features/wallet/screens/wallet_screen.dart
-class WalletScreen extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final wallet = ref.watch(walletProvider);
+interface WalletState {
+  wallet: Wallet | null;
+  transactions: WalletTransaction[];
+  loading: boolean;
+  fetchWallet: () => Promise<void>;
+  fetchTransactions: (type?: string, page?: number) => Promise<void>;
+  requestWithdrawal: (amount: number, bankAccountId: string) => Promise<void>;
+}
 
-    return Scaffold(
-      body: wallet.when(
-        data: (w) => Column(
-          children: [
-            BalanceCard(
-              balance: w.balance,
-              pending: w.pendingCashback,
-            ),
-            WithdrawButton(
-              enabled: w.availableBalance >= 10,
-              onTap: () => Navigator.push(...),
-            ),
-            TransactionsList(),
-          ],
-        ),
-        ...
-      ),
-    );
-  }
+export const useWalletStore = create<WalletState>((set) => ({
+  wallet: null,
+  transactions: [],
+  loading: false,
+
+  fetchWallet: async () => {
+    set({ loading: true });
+    const { data } = await api.get('/wallet');
+    set({ wallet: data, loading: false });
+  },
+
+  fetchTransactions: async (type = 'all', page = 1) => {
+    const { data } = await api.get('/wallet/transactions', {
+      params: { type, page },
+    });
+    set({ transactions: data.transactions });
+  },
+
+  requestWithdrawal: async (amount, bankAccountId) => {
+    await api.post('/wallet/withdraw', { amount, bank_account_id: bankAccountId });
+    // Refetch wallet after withdrawal request
+    const { data } = await api.get('/wallet');
+    set({ wallet: data });
+  },
+}));
+
+// hooks/useWallet.ts (React Query version)
+import { useQuery } from '@tanstack/react-query';
+import { api } from '@/lib/api';
+
+export function useWallet() {
+  return useQuery({
+    queryKey: ['wallet'],
+    queryFn: async () => {
+      const { data } = await api.get('/wallet');
+      return data;
+    },
+  });
+}
+
+export function useWalletTransactions(type: string = 'all', page: number = 1) {
+  return useQuery({
+    queryKey: ['wallet', 'transactions', type, page],
+    queryFn: async () => {
+      const { data } = await api.get('/wallet/transactions', {
+        params: { type, page },
+      });
+      return data.transactions;
+    },
+  });
 }
 ```
 

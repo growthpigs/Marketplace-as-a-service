@@ -75,9 +75,11 @@ Acceptance Criteria:
 ## Technical Specification
 
 ### Stack
-- **Maps:** google_maps_flutter
+- **Maps:** react-native-maps
 - **Geocoding:** Google Geocoding API
+- **Location:** expo-location
 - **Search:** Supabase full-text search (pg_trgm)
+- **State:** Zustand + React Query
 
 ### API Endpoints
 
@@ -176,33 +178,69 @@ CREATE TABLE restaurant_hours (
 );
 ```
 
-### Flutter Implementation
+### React Native Implementation
 
-```dart
-// lib/features/discovery/providers/restaurants_provider.dart
-@riverpod
-Future<List<Restaurant>> nearbyRestaurants(
-  NearbyRestaurantsRef ref, {
-  required double lat,
-  required double lng,
-  double radius = 5000,
-  String? category,
-  String? sortBy,
-}) async {
-  final query = supabase
-    .from('restaurants')
-    .select()
-    .eq('status', 'active')
-    .lte('delivery_radius_km', radius / 1000);
+```typescript
+// lib/stores/restaurant-store.ts
+import { create } from 'zustand';
+import { supabase } from '../supabase';
 
-  // PostGIS distance calculation via RPC
-  final response = await supabase.rpc('get_nearby_restaurants', params: {
-    'user_lat': lat,
-    'user_lng': lng,
-    'max_distance': radius,
+interface Restaurant {
+  id: string;
+  name: string;
+  rating: number;
+  delivery_time_min: number;
+  distance_km: number;
+  is_open: boolean;
+}
+
+interface RestaurantState {
+  restaurants: Restaurant[];
+  loading: boolean;
+  fetchNearby: (lat: number, lng: number, radius?: number) => Promise<void>;
+}
+
+export const useRestaurantStore = create<RestaurantState>((set) => ({
+  restaurants: [],
+  loading: false,
+
+  fetchNearby: async (lat: number, lng: number, radius = 5000) => {
+    set({ loading: true });
+
+    // PostGIS distance calculation via RPC
+    const { data, error } = await supabase.rpc('get_nearby_restaurants', {
+      user_lat: lat,
+      user_lng: lng,
+      max_distance: radius,
+    });
+
+    if (error) {
+      set({ loading: false });
+      throw error;
+    }
+
+    set({ restaurants: data ?? [], loading: false });
+  },
+}));
+
+// hooks/useNearbyRestaurants.ts
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '../lib/supabase';
+
+export function useNearbyRestaurants(lat: number, lng: number, radius = 5000) {
+  return useQuery({
+    queryKey: ['restaurants', 'nearby', lat, lng, radius],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('get_nearby_restaurants', {
+        user_lat: lat,
+        user_lng: lng,
+        max_distance: radius,
+      });
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!lat && !!lng,
   });
-
-  return response.map((r) => Restaurant.fromJson(r)).toList();
 }
 ```
 

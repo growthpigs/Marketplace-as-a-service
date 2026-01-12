@@ -74,9 +74,10 @@ Acceptance Criteria:
 
 ### Stack
 - **Auth Provider:** Supabase Auth
-- **SMS:** Twilio Verify API
+- **SMS:** Twilio Verify API (via Supabase)
 - **Social:** Google Sign-In, Apple Sign-In
-- **Token Storage:** Flutter Secure Storage
+- **Token Storage:** Expo SecureStore
+- **State:** Zustand
 
 ### API Endpoints
 
@@ -129,30 +130,54 @@ END;
 $$ LANGUAGE plpgsql;
 ```
 
-### Flutter Implementation
+### React Native Implementation
 
-```dart
-// lib/features/auth/providers/auth_provider.dart
-@riverpod
-class Auth extends _$Auth {
-  @override
-  Future<User?> build() async {
-    return supabase.auth.currentUser;
-  }
+```typescript
+// lib/auth/auth-store.ts
+import { create } from 'zustand';
+import { supabase } from '../supabase';
+import { User } from '@supabase/supabase-js';
 
-  Future<void> sendPhoneCode(String phone) async {
-    await supabase.auth.signInWithOtp(phone: phone);
-  }
-
-  Future<void> verifyPhoneCode(String phone, String code) async {
-    await supabase.auth.verifyOTP(
-      phone: phone,
-      token: code,
-      type: OtpType.sms,
-    );
-    state = AsyncData(supabase.auth.currentUser);
-  }
+interface AuthState {
+  user: User | null;
+  loading: boolean;
+  sendPhoneCode: (phone: string) => Promise<void>;
+  verifyPhoneCode: (phone: string, code: string) => Promise<void>;
+  signOut: () => Promise<void>;
 }
+
+export const useAuthStore = create<AuthState>((set) => ({
+  user: null,
+  loading: true,
+
+  sendPhoneCode: async (phone: string) => {
+    const { error } = await supabase.auth.signInWithOtp({ phone });
+    if (error) throw error;
+  },
+
+  verifyPhoneCode: async (phone: string, code: string) => {
+    const { data, error } = await supabase.auth.verifyOtp({
+      phone,
+      token: code,
+      type: 'sms',
+    });
+    if (error) throw error;
+    set({ user: data.user });
+  },
+
+  signOut: async () => {
+    await supabase.auth.signOut();
+    set({ user: null });
+  },
+}));
+
+// Initialize auth listener
+supabase.auth.onAuthStateChange((event, session) => {
+  useAuthStore.setState({
+    user: session?.user ?? null,
+    loading: false
+  });
+});
 ```
 
 ---

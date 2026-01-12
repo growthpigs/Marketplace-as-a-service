@@ -173,56 +173,87 @@ CREATE TABLE menu_item_option_choices (
 );
 ```
 
-### Flutter Implementation
+### React Native Implementation
 
-```dart
-// lib/features/menu/widgets/menu_item_card.dart
-class MenuItemCard extends ConsumerWidget {
-  final MenuItem item;
+```typescript
+// components/menu/MenuItemCard.tsx
+import { View, Text, Image, Pressable } from 'react-native';
+import { MenuItem } from '@/types';
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return GestureDetector(
-      onTap: () => _showItemSheet(context, item),
-      child: Card(
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(item.name, style: TextStyles.itemTitle),
-                  Text(item.description, maxLines: 2),
-                  Text('€${item.price.toStringAsFixed(2)}'),
-                  if (!item.isAvailable)
-                    Badge(label: 'Indisponible', color: Colors.grey),
-                ],
-              ),
-            ),
-            if (item.imageUrl != null)
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: CachedNetworkImage(
-                  imageUrl: item.imageUrl!,
-                  width: 80,
-                  height: 80,
-                  fit: BoxFit.cover,
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
+interface MenuItemCardProps {
+  item: MenuItem;
+  onPress: () => void;
 }
 
-// lib/features/menu/widgets/item_customization_sheet.dart
-class ItemCustomizationSheet extends ConsumerStatefulWidget {
-  final MenuItem item;
+export function MenuItemCard({ item, onPress }: MenuItemCardProps) {
+  return (
+    <Pressable onPress={onPress} className="flex-row p-4 border-b border-gray-100">
+      <View className="flex-1 pr-4">
+        <Text className="font-semibold text-base">{item.name}</Text>
+        <Text className="text-gray-500 text-sm" numberOfLines={2}>
+          {item.description}
+        </Text>
+        <Text className="font-medium mt-2">€{item.price.toFixed(2)}</Text>
+        {!item.is_available && (
+          <View className="bg-gray-200 rounded px-2 py-1 mt-1 self-start">
+            <Text className="text-gray-600 text-xs">Indisponible</Text>
+          </View>
+        )}
+      </View>
+      {item.image_url && (
+        <Image
+          source={{ uri: item.image_url }}
+          className="w-20 h-20 rounded-lg"
+          resizeMode="cover"
+        />
+      )}
+    </Pressable>
+  );
+}
 
-  // Handles option selection, quantity, special instructions
-  // Calculates total price in real-time
-  // Validates required options before add to cart
+// components/menu/ItemCustomizationSheet.tsx
+import { useState, useMemo } from 'react';
+import { View, Text, ScrollView, Pressable } from 'react-native';
+import { useCartStore } from '@/lib/stores/cart-store';
+
+interface ItemCustomizationSheetProps {
+  item: MenuItem;
+  onClose: () => void;
+}
+
+export function ItemCustomizationSheet({ item, onClose }: ItemCustomizationSheetProps) {
+  const [selectedOptions, setSelectedOptions] = useState<Record<string, string[]>>({});
+  const [quantity, setQuantity] = useState(1);
+  const addItem = useCartStore((state) => state.addItem);
+
+  const totalPrice = useMemo(() => {
+    let price = item.price * quantity;
+    // Add option price modifiers
+    Object.entries(selectedOptions).forEach(([optionId, choiceIds]) => {
+      const option = item.options?.find((o) => o.id === optionId);
+      choiceIds.forEach((choiceId) => {
+        const choice = option?.choices.find((c) => c.id === choiceId);
+        if (choice) price += choice.price_modifier * quantity;
+      });
+    });
+    return price;
+  }, [item, selectedOptions, quantity]);
+
+  const handleAddToCart = () => {
+    addItem(item, selectedOptions, quantity);
+    onClose();
+  };
+
+  return (
+    <View className="flex-1">
+      <ScrollView>{/* Option selectors */}</ScrollView>
+      <Pressable onPress={handleAddToCart} className="bg-green-600 p-4 m-4 rounded-lg">
+        <Text className="text-white text-center font-semibold">
+          Add to Cart - €{totalPrice.toFixed(2)}
+        </Text>
+      </Pressable>
+    </View>
+  );
 }
 ```
 

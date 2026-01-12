@@ -54,3 +54,24 @@ Thumbs.db
 tmp/
 temp/
 *.tmp
+
+# Expo / React Native
+.expo/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+
+# NestJS
+dist/
+
+# Next.js
+.next/
+out/
+
+# Supabase
+supabase/.branches/
+supabase/.temp/

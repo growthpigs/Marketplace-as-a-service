@@ -111,8 +111,8 @@ Acceptance Criteria:
 ### Architecture
 
 Restaurant dashboard is available as:
-1. **Web app** (primary) - Next.js, responsive
-2. **Mobile app** (secondary) - Flutter, same codebase as customer app with different entry point
+1. **Web app** (primary) - Next.js, responsive, optimized for tablets/desktops
+2. **Mobile companion** (secondary) - Restaurant owners can use the responsive web app on mobile devices; native app can be added in future if needed
 
 ### API Endpoints
 
@@ -368,13 +368,15 @@ interface OrderNotification {
 
 ---
 
-## Mobile App (Flutter)
+## Mobile Experience (Responsive Web)
 
-Simplified version for on-the-go:
-1. **Orders** - Accept/reject, update status
+The Next.js dashboard is responsive and works well on mobile/tablet for on-the-go management:
+1. **Orders** - Accept/reject, update status (PWA notifications)
 2. **Quick Menu Toggle** - Enable/disable items
 3. **Pause Orders** - Temporary closure
-4. **Notifications** - Push + audio alerts
+4. **Notifications** - Web push notifications with audio alerts
+
+*Note: A dedicated React Native app for restaurant owners can be added as a future enhancement if needed.*
 
 ---
 
