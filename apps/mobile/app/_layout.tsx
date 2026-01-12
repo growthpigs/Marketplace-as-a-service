@@ -40,11 +40,10 @@ export default function RootLayout() {
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
-      // Show branded launch screen for 5 seconds (extended for testing)
-      // TODO: Reduce to 1.5 seconds after testing
+      // Show branded launch screen for 1.5 seconds (like Uber Eats)
       const timer = setTimeout(() => {
         setShowLaunch(false);
-      }, 5000);
+      }, 1500);
       return () => clearTimeout(timer);
     }
   }, [loaded]);
