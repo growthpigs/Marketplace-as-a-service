@@ -3,10 +3,14 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import 'react-native-reanimated';
 
+// NativeWind CSS import
+import '../global.css';
+
 import { useColorScheme } from '@/components/useColorScheme';
+import { LaunchScreen } from '@/components/screens/LaunchScreen';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -26,6 +30,7 @@ export default function RootLayout() {
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     ...FontAwesome.font,
   });
+  const [showLaunch, setShowLaunch] = useState(true);
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
@@ -35,11 +40,18 @@ export default function RootLayout() {
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
+      // Show branded launch screen for 5 seconds (extended for testing)
+      // TODO: Reduce to 1.5 seconds after testing
+      const timer = setTimeout(() => {
+        setShowLaunch(false);
+      }, 5000);
+      return () => clearTimeout(timer);
     }
   }, [loaded]);
 
-  if (!loaded) {
-    return null;
+  // Show branded launch screen while loading or during launch animation
+  if (!loaded || showLaunch) {
+    return <LaunchScreen />;
   }
 
   return <RootLayoutNav />;

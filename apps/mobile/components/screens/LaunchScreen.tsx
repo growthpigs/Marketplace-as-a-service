@@ -2,28 +2,29 @@ import { View, Text, StyleSheet } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
 /**
- * HomeScreen - Pixel-perfect TurkEats launch/splash screen
+ * LaunchScreen - Pixel-perfect copy of Uber Eats launch screen
  *
  * UBER EATS REFERENCE:
  * - Full screen green (#06C167) background
- * - Centered logo text in white
+ * - Centered "Uber Eats" text in white
  * - Bold display font (32px)
  *
- * This will be refactored into a proper launch screen flow later.
- * For now, it demonstrates the pixel-perfect design working.
+ * TURKEATS ADAPTATION:
+ * - Same green, same layout
+ * - "TurkEats" text instead
  */
-export default function HomeScreen() {
+export function LaunchScreen() {
   return (
     <View style={styles.container} className="flex-1 bg-turkeats-green items-center justify-center">
       <StatusBar style="light" />
-      <Text style={styles.logo} className="text-white text-display font-bold">
+      <Text style={styles.logo} className="text-white text-display font-bold tracking-tight">
         TurkEats
       </Text>
     </View>
   );
 }
 
-// Fallback styles - these ensure it works even if NativeWind isn't active
+// Fallback styles (NativeWind className takes priority when working)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -38,3 +39,5 @@ const styles = StyleSheet.create({
     letterSpacing: -0.5,
   },
 });
+
+export default LaunchScreen;
