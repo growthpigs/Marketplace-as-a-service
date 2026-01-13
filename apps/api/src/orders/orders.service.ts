@@ -95,8 +95,48 @@ export class OrdersService {
       throw new Error('Restaurant does not have Stripe account configured');
     }
 
-    // Calculate order totals
+    // Validate items and calculate order totals
+    // SECURITY: Verify each item against menu prices (prevent price manipulation)
+    const menuItemIds = request.items.map((item) => item.menu_item_id);
+    const { data: menuItems, error: menuError } = await supabase
+      .from('menu_items')
+      .select('id, price')
+      .in('id', menuItemIds);
+
+    if (menuError || !menuItems) {
+      throw new Error(`Failed to fetch menu items: ${menuError?.message || 'Unknown error'}`);
+    }
+
+    const menuPricesMap = new Map(menuItems.map((m) => [m.id, m.price as number]));
+
+    // Validate each item and calculate subtotal
     const subtotal = request.items.reduce((sum, item) => {
+      // Validate quantity
+      if (!Number.isInteger(item.quantity) || item.quantity <= 0) {
+        throw new Error(`Invalid quantity for ${item.name}: must be positive integer`);
+      }
+
+      // Validate price is non-negative
+      if (item.unit_price < 0) {
+        throw new Error(`Invalid unit_price for ${item.name}: cannot be negative`);
+      }
+
+      // Validate price matches menu (tolerance 0.01 for rounding)
+      const menuPrice = menuPricesMap.get(item.menu_item_id);
+      if (!menuPrice) {
+        throw new Error(`Menu item not found: ${item.menu_item_id}`);
+      }
+      if (Math.abs(item.unit_price - menuPrice) > 0.01) {
+        throw new Error(
+          `Price mismatch for ${item.name}: client sent €${item.unit_price}, menu is €${menuPrice}`,
+        );
+      }
+
+      // Validate options price
+      if ((item.options_price || 0) < 0) {
+        throw new Error(`Invalid options_price for ${item.name}: cannot be negative`);
+      }
+
       return (
         sum + (item.unit_price + (item.options_price || 0)) * item.quantity
       );
