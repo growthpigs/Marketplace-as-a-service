@@ -7,6 +7,7 @@
 
 ## 🎉 MILESTONE: UI 100% Complete (2026-01-13)
 
+**Status:** ✅ COMPLETE
 **Commit:** `3841202` - All 5 tabs fully interactive for demo
 
 | Tab | Status | What Works |
@@ -20,6 +21,11 @@
 **Key Pattern (DO NOT REGRESS):**
 - `browse.tsx` navigates with `router.push({ pathname: '/', params: { category/collection } })`
 - `index.tsx` reads params with `useLocalSearchParams()` and applies via `useEffect`
+
+**Outcome Notes:**
+- Created `working/RUNBOOK.md` with verification commands
+- Documented "File Existence Fallacy" pattern in error-patterns.md
+- Lesson stored in mem0: Always use runtime verification, not file existence checks
 
 ---
 
