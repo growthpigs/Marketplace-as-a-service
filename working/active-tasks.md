@@ -5,6 +5,24 @@
 
 ---
 
+## 🎉 MILESTONE: UI 100% Complete (2026-01-13)
+
+**Commit:** `3841202` - All 5 tabs fully interactive for demo
+
+| Tab | Status | What Works |
+|-----|--------|------------|
+| Accueil | ✅ | Category/filter chips, restaurant cards, URL param filtering |
+| Parcourir | ✅ | Collections → filtered home, Categories → filtered home |
+| Fidélité | ✅ | Retirer/Historique buttons, referral share |
+| Panier | ✅ | Full checkout flow in demo mode |
+| Compte | ✅ | Favorites menu, Settings/Notifications/Logout buttons |
+
+**Key Pattern (DO NOT REGRESS):**
+- `browse.tsx` navigates with `router.push({ pathname: '/', params: { category/collection } })`
+- `index.tsx` reads params with `useLocalSearchParams()` and applies via `useEffect`
+
+---
+
 ## Current Phase
 
 **F005 - Payment Processing** - In Progress (Living Document: [`features/F005-payments.md`](../features/F005-payments.md))

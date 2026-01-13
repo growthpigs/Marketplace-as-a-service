@@ -1,162 +1,136 @@
 # TurkEats - Session Handover
 
-**Last Updated:** 2026-01-12 (Final)
-**Session:** Red Team Validation + Web Deployment
-**Branch:** `feature/pixel-perfect-uber-eats-copy`
-**Live Demo:** https://turkeats-demo.netlify.app
+**Last Updated:** 2026-01-13
+**Session:** UI Polish - All Tabs 100% Interactive
+**Branch:** `main` (merged to staging)
+**Commit:** `3841202`
+
+---
+
+## 🎉 MILESTONE: UI 100% Complete
+
+**All 5 tabs are now fully interactive for demo purposes.**
+
+| Tab | Status | What Works |
+|-----|--------|------------|
+| Accueil | ✅ | Category/filter chips, restaurant cards, URL param filtering |
+| Parcourir | ✅ | Collections → filtered home, Categories → filtered home |
+| Fidélité | ✅ | Retirer/Historique buttons, referral share |
+| Panier | ✅ | Full checkout flow in demo mode |
+| Compte | ✅ | Favorites menu, Settings/Notifications/Logout buttons |
 
 ---
 
 ## What Was Done This Session
 
-### Mobile App Home Screen (`apps/mobile`)
+### Browse Tab Navigation (`browse.tsx`)
 
-**Home Screen Complete:**
-- 50 Turkish restaurants with unique Unsplash images
-- Category filtering (8 Turkish food categories)
-- Filter chips (Offres, Livraison, Retrait)
-- Search modal with category suggestions
-- Empty state + "Effacer les filtres" reset
-- Location header (mock "La Garenne, 92250")
+**Problem:** Collections and categories had no onPress handlers - buttons didn't do anything.
 
-**Components Created:**
-- `components/home/RestaurantCard.tsx` - Hero image, rating badge, promo tags
-- `components/home/CategoryRow.tsx` - Horizontal category icons
-- `components/home/FilterChips.tsx` - Filter pill chips
-- `components/home/LocationHeader.tsx` - Address display
+**Solution:**
+- Added `COLLECTION_FILTERS` map to define what each collection filters
+- Added `CATEGORY_MAP` to map display names to category IDs
+- Added `handleCollectionPress()` - navigates to home with `?collection=` param
+- Added `handleCategoryPress()` - navigates to home with `?category=` param
 
-**Restaurant Data:**
-- 50 restaurants organized by category (prevents same restaurant in multiple categories)
-- Named after 92250 area cities (La Garenne, Courbevoie, Nanterre, etc.)
-- Each with unique image, varied ratings/times/promos
+### Home Tab URL Param Filtering (`index.tsx`)
 
-### Loyalty Tab (Wallet + Referrals)
+**Problem:** Home didn't respond to URL params from Browse navigation.
 
-**New Tab Created:**
-- Replaced "Épicerie" with "Fidélité" (star icon)
-- `app/(tabs)/loyalty.tsx` - 530 lines
+**Solution:**
+- Added `useLocalSearchParams<{ category?: string; collection?: string }>()` hook
+- Added `useEffect` that triggers when params change
+- Applies appropriate filters based on param values:
+  - `?category=kebab` → sets selected category
+  - `?collection=deals` → sets "offres" filter
+  - `?collection=delivery` → sets "livraison" filter
 
-**Features:**
-- Wallet balance card (€24.50 mock)
-- Cashback summary (10% on every order)
-- Referral program with QR code placeholder
-- Commission toggle (40% one-time vs 10% lifetime)
-- Share button (React Native Share API)
-- Referral stats (3 friends, €45.00 earned)
-- Transaction history (5 mock transactions)
+### Account Tab Settings (`account.tsx`)
 
-### Checkout Flow (Previously Completed)
+**Problem:** Settings buttons (Paramètres, Notifications, Se déconnecter) had no onPress handlers.
 
-**4-step checkout:**
-1. Address selection (Google Places autocomplete)
-2. Delivery time picker
-3. Order review with wallet toggle
-4. Confirmation with order number
+**Solution:**
+- "Paramètres du compte" → Shows info alert
+- "Notifications" → Shows enable/disable dialog with two buttons
+- "Se déconnecter" → Shows confirmation dialog with Annuler/Déconnecter
 
-### Text Overflow Fixes (Previous Session)
+### Loyalty Tab (`loyalty.tsx`)
 
-**Fixed Components:**
-- `RestaurantInfo.tsx` - Added `numberOfLines={1}` to name, meta text, delivery text
-- `RestaurantInfo.tsx` - Added `flex: 1` to delivery fee text for proper shrinking in row layout
-- `loyalty.tsx` - Added `numberOfLines={1}` to transaction descriptions
+**Problem:** "Historique" button had no onPress handler.
 
-**Problem:** Text was running off the right edge on narrow mobile screens (iOS Simulator)
-**Solution:** Added React Native text constraints (`numberOfLines` + `flex: 1`) to ensure proper truncation
-
-### Red Team Validation (This Session)
-
-**Critical Bug Found & Fixed:**
-- **Issue:** GooglePlacesAutocomplete crashes on web platform with `ReferenceError: Cannot access '_request' before initialization`
-- **Root Cause:** Library uses XMLHttpRequest internals that fail TDZ (Temporal Dead Zone) on web
-- **Solution:** Platform-conditional rendering in `app/checkout/address.tsx`
-  - Native (iOS/Android): Full Google Places autocomplete
-  - Web: Simple TextInput fallback for address entry
-
-**Validation Results:**
-- ✅ TypeScript: PASS (no errors)
-- ✅ Expo web export: PASS (23 routes including `/checkout/address`)
-- ✅ Browser test: PASS (address screen loads, no errors)
-- ✅ Full user flow tested: Home → Restaurant → Add to Cart → Address screen
-- ✅ Confidence Score: 9/10 (all blockers resolved)
-
-**Commit:** `[new commit for web fallback fix]`
-
-### Web Deployment to Netlify (This Session)
-
-**Deployment Details:**
-- Exported Expo app to static web build (`npx expo export --platform web`)
-- Created Netlify site: `turkeats-demo`
-- Production URL: **https://turkeats-demo.netlify.app**
-- Status: ✅ Live and responding (HTTP 200)
+**Solution:** Added alert showing "Consultez vos transactions ci-dessous."
 
 ---
 
-## Commits (Latest Branch)
+## Key Pattern (DO NOT REGRESS)
+
+**Browse → Home Navigation with URL Params:**
+
+```typescript
+// browse.tsx - Navigation with params
+const handleCollectionPress = (collectionId: string) => {
+  router.push({
+    pathname: '/',
+    params: { collection: collectionId },
+  });
+};
+
+// index.tsx - Reading params
+const params = useLocalSearchParams<{ category?: string; collection?: string }>();
+
+useEffect(() => {
+  if (params.category) {
+    setSelectedCategory(params.category);
+  }
+  if (params.collection) {
+    // Apply filters based on collection type
+  }
+}, [params.category, params.collection]);
+```
+
+---
+
+## Documentation Updated
+
+| Document | What Changed |
+|----------|--------------|
+| `features/F001-auth.md` | Added "UI Implemented" status + Account tab details |
+| `features/F002-discovery.md` | Already had browse navigation (no change) |
+| `features/F007-wallet.md` | Updated Historique button status |
+| `features/INDEX.md` | Added "UI Polish Complete" section with tab status |
+| `working/active-tasks.md` | Added UI milestone at top |
+
+---
+
+## Git Status
 
 ```
-[NEW] fix(mobile): Add web fallback for GooglePlacesAutocomplete to prevent crash
-e15a790 fix(mobile): Add numberOfLines constraints to prevent text overflow
-78dc14e feat(mobile): Add images to restaurant detail page
-5157e52 docs: Update feature specs with implementation status
-7808adb feat(mobile): Add loyalty tab with wallet and referral program
-197b10b feat(mobile): Expand restaurant data to 50 entries around 92250
-1292f72 fix(mobile): Prevent text overflow in RestaurantCard
-515feac feat(mobile): Add unique restaurant images for each category
-8fe081a feat(mobile): Implement home screen filtering and search
-6dc7ad5 feat(mobile): Implement pixel-perfect TurkEats launch screen
-55d1d20 docs: Add pixel-perfect Uber Eats copy plan with Turkish adaptation
+Commit: 3841202
+Branch: main (pushed to origin)
+Merged: staging (pushed to origin)
 ```
 
 ---
 
 ## What's Next
 
-### Completed This Session ✅
-1. ~~**Red Team Validation**~~ ✅ Done (9/10 confidence)
-2. ~~**Fix GooglePlacesAutocomplete crash**~~ ✅ Done (web fallback)
-3. ~~**Deploy to Netlify**~~ ✅ Done (turkeats-demo.netlify.app)
-4. ~~**Implement Account Page**~~ ✅ Done (favorites + ellipsis menu)
-
-### Phase 2: Backend Integration
+### Backend Integration (Phase 2)
 - [ ] Connect to Supabase for real restaurant data
 - [ ] Implement real GPS location detection
 - [ ] Stripe payment integration (keys currently mocked)
-- [ ] Supabase authentication (auth.tsx screens)
+- [ ] Supabase authentication
 - [ ] Real order persistence
 
-### Features Not Yet Implemented
-- [ ] Real QR code generation for referrals
-- [ ] Bank account management for withdrawals
-- [ ] Order tracking with real-time updates
-- [ ] Push notifications
-
----
-
-## Key Files Modified
-
-| File | Purpose |
-|------|---------|
-| `app/(tabs)/index.tsx` | Home screen with 50 restaurants + filtering |
-| `app/(tabs)/loyalty.tsx` | Loyalty tab (wallet + referrals) |
-| `app/(tabs)/_layout.tsx` | Tab bar configuration |
-| `components/home/*.tsx` | Home screen components |
-| `features/F002-discovery.md` | Updated with implementation status |
-| `features/F007-wallet.md` | Updated with implementation status |
-| `features/INDEX.md` | Updated feature statuses |
+### Not Yet Implemented (Needs Backend)
+- [ ] Real logout (clears auth state)
+- [ ] Real notification settings (push registration)
+- [ ] Real transaction history (wallet API)
+- [ ] Real profile editing
 
 ---
 
 ## Environment
 
-- **Expo Dev Server:** localhost:8083
-- **Google Maps API:** Configured in `.env.local`
-- **Stripe:** Keys empty (mocked for now)
-- **Supabase:** Tables exist, not yet connected to UI
-
----
-
-## Open Questions
-
-1. ~~Restaurant detail page design - match Uber Eats exactly?~~ ✅ Done - pixel-perfect copy
-2. ~~Menu item images source - stock photos or placeholder?~~ ✅ Done - Unsplash Turkish food photos
-3. When to wire up real Supabase data vs continue with mocks?
+- **Expo Dev Server:** localhost:8082
+- **Branch:** main
+- **Demo Mode:** `EXPO_PUBLIC_ENV=development` enables mock checkout
