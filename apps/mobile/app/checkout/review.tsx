@@ -41,7 +41,7 @@ export default function ReviewScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { state: checkoutState, startProcessing, orderSuccess, orderError } = useCheckout();
-  const { state: cartState, subtotal, total, clearCart } = useCart();
+  const { state: cartState, subtotal, total, clearCart, meetsMinOrder } = useCart();
 
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -108,6 +108,11 @@ export default function ReviewScreen() {
       const hasItems = cartState.items.some(item => item.quantity > 0);
       if (!hasItems) {
         throw new Error('Quantités invalides - ajoutez au moins un article');
+      }
+
+      // Validate minimum order requirement
+      if (!meetsMinOrder) {
+        throw new Error(`Commande minimale: €${cartState.minOrder.toFixed(2)} requis`);
       }
 
       // Build order request matching backend CreateOrderRequest schema
