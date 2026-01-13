@@ -192,6 +192,57 @@ return { state, subtotal, total, meetsMinOrder, addItem, removeItem };
 
 ---
 
+## Architecture Standards (MANDATORY)
+
+### Multi-Tenant & Agnostic Design
+- **No hardcoded dynamic values** - restaurant IDs, user IDs, URLs must be configurable
+- **Environment variables for all configs** - never hardcode secrets, API keys, or URLs
+- **Use `process.env.*` everywhere** - no `localhost:3000` or similar literals
+
+### Versioned Nomenclature
+- **Feature branches:** `alpha-featureX`, `bravo-featureY`, `charlie-featureZ`
+- **Task versions:** `V1.3_report`, `V2.0_checkout`
+- **Prefix iterations:** alpha → bravo → charlie → delta for major revisions
+
+### Mock Data Policy
+- **Avoid mocks unless absolutely necessary** for MVP demo
+- **Document all mocks** with `// TODO: Replace mock with real data`
+- **Current MVP mocks (to remove post-MVP):**
+  - `mock-jwt-token-placeholder` in auth
+  - Mock restaurant data in `restaurant/[id].tsx`
+  - Mock payment methods in `checkout/payment.tsx`
+  - Mock cashback in `checkout/confirmation.tsx`
+
+### Backend Change Protocol
+1. **Explicit communication** before deploy
+2. **Push to staging first** - staging is stable anchor
+3. **Test on staging** before main
+4. **Document in runlog** with date and changes
+
+### API Requirements
+- **Return correct data types** - no implicit coercion
+- **Handle errors explicitly** - no silent failures
+- **Verify routes don't serve static assets** by mistake
+
+### Monitoring & Logging
+- **Health check scripts** for API monitoring
+- **Dated runlog entries** in Notion nuggets
+- **No "works on my machine"** - verify in staging
+
+---
+
+## Current Tech Debt (from standards audit)
+
+| Issue | Location | Priority |
+|-------|----------|----------|
+| `localhost:3000` hardcoded | `payment.tsx:71`, `review.tsx:208` | High |
+| `mock-jwt-token-placeholder` | Multiple files | High |
+| Mock restaurant data | `restaurant/[id].tsx:53` | Medium |
+| Mock user data | `loyalty.tsx:52` | Medium |
+| Mock cashback value | `confirmation.tsx:142` | Low |
+
+---
+
 ## Living Documents (CRITICAL)
 
 - **Feature specs live in `/features/F0XX-*.md`** - Source of truth
