@@ -291,11 +291,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#22C55E',
     alignItems: 'center',
     justifyContent: 'center',
+    elevation: 8,
+    // iOS shadow properties (deprecated but iOS-specific)
     shadowColor: '#22C55E',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.3,
     shadowRadius: 16,
-    elevation: 8,
   },
   successTitle: {
     fontSize: 28,

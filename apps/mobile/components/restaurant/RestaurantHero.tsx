@@ -123,11 +123,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
+    elevation: 3,
+    // iOS shadow properties (deprecated but iOS-specific)
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 3,
   },
   rightButtons: {
     flexDirection: 'row',

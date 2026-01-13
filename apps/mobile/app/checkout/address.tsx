@@ -278,6 +278,7 @@ export default function AddressScreen() {
                   borderRadius: 8,
                   marginTop: 4,
                   elevation: 3,
+                  // iOS shadow properties (deprecated but iOS-specific)
                   shadowColor: '#000',
                   shadowOffset: { width: 0, height: 2 },
                   shadowOpacity: 0.1,
