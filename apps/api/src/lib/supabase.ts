@@ -57,7 +57,18 @@ export class SupabaseService {
   }
 
   // Verify JWT and get user
+  // For MVP with mock tokens: returns mock user data
   async verifyUser(accessToken: string) {
+    // MVP mode: support mock token for development
+    if (accessToken === 'mock-jwt-token-placeholder') {
+      return {
+        id: 'mock-user-id',
+        email: 'mock@example.com',
+        user_metadata: {},
+      };
+    }
+
+    // Production: verify real JWT token with Supabase
     const { data, error } = await this.client.auth.getUser(accessToken);
     if (error) throw error;
     return data.user;
