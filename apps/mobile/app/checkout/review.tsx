@@ -3,8 +3,17 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useState } from 'react';
+import Toast from 'react-native-toast-message';
 import { useCheckout } from '@/context/CheckoutContext';
 import { useCart } from '@/context/CartContext';
+
+/**
+ * Validation vs System Errors:
+ * - VALIDATION: User needs to fix something (min order, missing address) → Toast warning
+ * - SYSTEM: App/server issue (network error, 500) → Error screen with retry
+ */
+type ValidationError = { type: 'validation'; message: string };
+type SystemError = { type: 'system'; message: string };
 
 /**
  * ReviewScreen - Order review before confirmation
@@ -77,42 +86,80 @@ export default function ReviewScreen() {
     return 'Non sélectionné';
   };
 
+  // Show validation toast (user needs to fix something)
+  const showValidationToast = (message: string, subtitle?: string) => {
+    Toast.show({
+      type: 'warning',
+      text1: message,
+      text2: subtitle,
+      visibilityTime: 4000,
+    });
+  };
+
   // Handle place order
   const handlePlaceOrder = async () => {
+    // ─────────────────────────────────────────────────────────
+    // VALIDATION CHECKS (show toast, don't proceed)
+    // These are user-fixable issues, not app errors
+    // ─────────────────────────────────────────────────────────
+
+    // Check minimum order requirement FIRST (most common issue)
+    if (!meetsMinOrder) {
+      showValidationToast(
+        `Commande minimum: €${cartState.minOrder.toFixed(2)}`,
+        `Ajoutez €${(cartState.minOrder - subtotal).toFixed(2)} pour commander`
+      );
+      return; // Don't proceed, don't show error screen
+    }
+
+    // Check delivery address
+    if (!checkoutState.deliveryAddress) {
+      showValidationToast('Adresse manquante', 'Ajoutez une adresse de livraison');
+      return;
+    }
+
+    // Check cart has items
+    if (cartState.items.length === 0) {
+      showValidationToast('Panier vide', 'Ajoutez des articles pour commander');
+      return;
+    }
+
+    // Check items have quantity
+    const hasItems = cartState.items.some(item => item.quantity > 0);
+    if (!hasItems) {
+      showValidationToast('Panier vide', 'Ajoutez des articles pour commander');
+      return;
+    }
+
+    // Check restaurant selected
+    if (!cartState.restaurantId) {
+      showValidationToast('Restaurant non sélectionné', 'Retournez au menu');
+      return;
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // VALIDATION PASSED - Now process order
+    // From here, errors are SYSTEM errors (show error screen)
+    // ─────────────────────────────────────────────────────────
+
     setIsProcessing(true);
     startProcessing();
 
+    const isDemoMode = process.env.EXPO_PUBLIC_ENV === 'demo' ||
+                       process.env.EXPO_PUBLIC_ENV === 'development' ||
+                       !process.env.EXPO_PUBLIC_API_URL;
+
     try {
-      // Validate checkout state
-      if (!checkoutState.deliveryAddress) {
-        throw new Error('Adresse de livraison manquante');
-      }
-
-      // Validate delivery address has all required fields
-      const addressFields = ['streetAddress', 'city', 'postalCode'];
-      for (const field of addressFields) {
-        if (!checkoutState.deliveryAddress[field as keyof typeof checkoutState.deliveryAddress]) {
-          throw new Error(`Adresse incomplète: ${field} manquant`);
+      // Additional address validation for production mode
+      if (!isDemoMode) {
+        const addressFields = ['streetAddress', 'city', 'postalCode'];
+        for (const field of addressFields) {
+          if (!checkoutState.deliveryAddress[field as keyof typeof checkoutState.deliveryAddress]) {
+            showValidationToast('Adresse incomplète', `${field} manquant`);
+            setIsProcessing(false);
+            return;
+          }
         }
-      }
-
-      if (!cartState.restaurantId) {
-        throw new Error('Restaurant non sélectionné');
-      }
-
-      if (cartState.items.length === 0) {
-        throw new Error('Panier vide');
-      }
-
-      // Validate at least one item has quantity > 0
-      const hasItems = cartState.items.some(item => item.quantity > 0);
-      if (!hasItems) {
-        throw new Error('Quantités invalides - ajoutez au moins un article');
-      }
-
-      // Validate minimum order requirement
-      if (!meetsMinOrder) {
-        throw new Error(`Commande minimale: €${cartState.minOrder.toFixed(2)} requis`);
       }
 
       // Build order request matching backend CreateOrderRequest schema
@@ -131,9 +178,9 @@ export default function ReviewScreen() {
         delivery_address: {
           formatted: checkoutState.deliveryAddress.formatted,
           placeId: checkoutState.deliveryAddress.placeId,
-          streetAddress: checkoutState.deliveryAddress.streetAddress,
-          city: checkoutState.deliveryAddress.city,
-          postalCode: checkoutState.deliveryAddress.postalCode,
+          streetAddress: checkoutState.deliveryAddress.streetAddress || 'Position GPS',
+          city: checkoutState.deliveryAddress.city || 'Paris',
+          postalCode: checkoutState.deliveryAddress.postalCode || '75000',
           coordinates: checkoutState.deliveryAddress.coordinates,
         },
         delivery_instructions: checkoutState.deliveryAddress.instructions || undefined,
@@ -142,12 +189,7 @@ export default function ReviewScreen() {
         promo_code: checkoutState.promoCode || undefined,
       };
 
-      // DEMO MODE: Check if we should use mock order submission
-      // In production, this would always call the real API
-      const isDemoMode = process.env.EXPO_PUBLIC_ENV === 'demo' ||
-                         process.env.EXPO_PUBLIC_ENV === 'development' ||
-                         !process.env.EXPO_PUBLIC_API_URL;
-
+      // Use isDemoMode already defined above for order submission
       let orderId: string;
       let paymentIntentId: string;
 
@@ -204,6 +246,12 @@ export default function ReviewScreen() {
       }
 
       // Success! Order created (real or demo)
+      Toast.show({
+        type: 'success',
+        text1: 'Commande confirmée!',
+        text2: 'Préparation en cours...',
+        visibilityTime: 2000,
+      });
       orderSuccess(orderId, paymentIntentId);
       clearCart();
       router.replace('/checkout/confirmation');

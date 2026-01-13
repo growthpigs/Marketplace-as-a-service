@@ -5,6 +5,7 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
 import 'react-native-reanimated';
+import Toast from 'react-native-toast-message';
 
 // NativeWind CSS import
 import '../global.css';
@@ -12,6 +13,7 @@ import '../global.css';
 import { useColorScheme } from '@/components/useColorScheme';
 import { LaunchScreen } from '@/components/screens/LaunchScreen';
 import { CartProvider } from '@/context/CartContext';
+import { toastConfig } from '@/components/ui/ToastConfig';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -68,6 +70,7 @@ function RootLayoutNav() {
           <Stack.Screen name="checkout" options={{ headerShown: false }} />
           <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
         </Stack>
+        <Toast config={toastConfig} position="top" topOffset={60} />
       </ThemeProvider>
     </CartProvider>
   );
