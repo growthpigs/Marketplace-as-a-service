@@ -1,7 +1,7 @@
 import { View, ScrollView, Text, StyleSheet, Modal, TextInput, Pressable } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { useRouter } from 'expo-router';
-import { useState, useMemo } from 'react';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useState, useMemo, useEffect } from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import {
   HomeHeader,
@@ -115,6 +115,7 @@ const CATEGORY_NAMES: Record<string, string> = {
 
 export default function HomeScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams<{ category?: string; collection?: string }>();
 
   // State for filtering
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -122,6 +123,31 @@ export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [deliveryAddress, setDeliveryAddress] = useState('123 Rue de la République');
+
+  // Apply filters from URL params (from Browse page navigation)
+  useEffect(() => {
+    if (params.category) {
+      setSelectedCategory(params.category);
+    }
+    if (params.collection) {
+      // Map collection to filters
+      switch (params.collection) {
+        case 'deals':
+          setSelectedFilters(['offres']);
+          break;
+        case 'delivery':
+          setSelectedFilters(['livraison']);
+          break;
+        case 'popular':
+        case 'rated':
+          // These sort by rating - for MVP, just show all
+          setSelectedFilters([]);
+          break;
+        default:
+          break;
+      }
+    }
+  }, [params.category, params.collection]);
 
   // Filter restaurants based on category, filters, and search
   const filteredRestaurants = useMemo(() => {

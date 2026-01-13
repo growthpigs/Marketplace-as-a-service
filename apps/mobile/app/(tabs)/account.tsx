@@ -124,17 +124,48 @@ export default function AccountScreen() {
       {/* Settings Section */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Paramètres</Text>
-        <Pressable style={styles.settingItem}>
+        <Pressable
+          style={styles.settingItem}
+          onPress={() => Alert.alert(
+            'Paramètres du compte',
+            'Gérez votre profil, mot de passe et préférences.',
+            [{ text: 'OK', style: 'default' }]
+          )}
+        >
           <FontAwesome name="cog" size={18} color="#6B7280" />
           <Text style={styles.settingText}>Paramètres du compte</Text>
           <FontAwesome name="chevron-right" size={16} color="#D1D5DB" />
         </Pressable>
-        <Pressable style={styles.settingItem}>
+        <Pressable
+          style={styles.settingItem}
+          onPress={() => Alert.alert(
+            'Notifications',
+            'Activez les notifications pour recevoir des offres exclusives et suivre vos commandes.',
+            [
+              { text: 'Désactiver', style: 'destructive' },
+              { text: 'Activer', style: 'default' },
+            ]
+          )}
+        >
           <FontAwesome name="bell" size={18} color="#6B7280" />
           <Text style={styles.settingText}>Notifications</Text>
           <FontAwesome name="chevron-right" size={16} color="#D1D5DB" />
         </Pressable>
-        <Pressable style={[styles.settingItem, styles.settingItemDanger]}>
+        <Pressable
+          style={[styles.settingItem, styles.settingItemDanger]}
+          onPress={() => Alert.alert(
+            'Se déconnecter',
+            'Êtes-vous sûr de vouloir vous déconnecter ?',
+            [
+              { text: 'Annuler', style: 'cancel' },
+              {
+                text: 'Déconnecter',
+                style: 'destructive',
+                onPress: () => Alert.alert('Déconnexion', 'Vous avez été déconnecté avec succès.')
+              },
+            ]
+          )}
+        >
           <FontAwesome name="sign-out" size={18} color="#EF4444" />
           <Text style={[styles.settingText, styles.settingTextDanger]}>Se déconnecter</Text>
         </Pressable>

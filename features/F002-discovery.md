@@ -23,6 +23,8 @@
 - [x] CategoryRow horizontal scroll with selected state
 - [x] FilterChips horizontal scroll with selected state
 - [x] Location display in header (mock "La Garenne, 92250")
+- [x] **Browse tab navigation** (`app/(tabs)/browse.tsx`) - Collections & categories navigate to filtered home view
+- [x] **URL params filtering** - Home reads `?category=` and `?collection=` params to auto-apply filters
 
 **Components:**
 - `components/home/RestaurantCard.tsx` - Restaurant card with image, rating, delivery info

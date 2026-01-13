@@ -2,8 +2,35 @@
 
 **ID:** F001
 **Priority:** P0 (MVP)
-**Status:** Spec Complete
+**Status:** UI Implemented (Mobile)
 **Estimate:** 3 DU
+
+---
+
+## Implementation Status
+
+### Mobile App (apps/mobile)
+
+**Implemented:**
+- [x] Account tab in bottom navigation (`app/(tabs)/account.tsx`)
+- [x] Profile header with avatar, name, email display
+- [x] Favorites section with context menus (remove/share)
+- [x] Settings section with interactive buttons:
+  - [x] "Paramètres du compte" - shows info alert
+  - [x] "Notifications" - shows enable/disable dialog
+  - [x] "Se déconnecter" - logout confirmation with confirmation dialog
+
+**Mock Data:**
+- User: Jean Dupont (jean.dupont@email.com)
+- 3 favorite restaurants with images, ratings, delivery times
+
+**Not Yet Implemented:**
+- [ ] Supabase Auth integration
+- [ ] Real profile data fetching
+- [ ] Profile editing (name, email, avatar)
+- [ ] Password change flow
+- [ ] Delete account flow
+- [ ] Push notification settings
 
 ---
 

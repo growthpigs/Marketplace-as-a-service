@@ -15,7 +15,7 @@
 - [x] Loyalty tab in bottom navigation (`app/(tabs)/loyalty.tsx`)
 - [x] Wallet balance card with prominent display
 - [x] "Retirer" (withdraw) button with confirmation dialog
-- [x] "Historique" button for transaction history
+- [x] "Historique" button with onPress handler (shows info alert)
 - [x] Cashback summary showing total earned (10% rate)
 - [x] Referral program section with QR code placeholder
 - [x] Personal referral code display (TURK-XXXXXX format)

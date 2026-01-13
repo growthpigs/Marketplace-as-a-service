@@ -113,7 +113,10 @@ export default function LoyaltyScreen() {
               <FontAwesome name="bank" size={14} color="#000000" />
               <Text style={styles.walletButtonText}>Retirer</Text>
             </Pressable>
-            <Pressable style={styles.walletButtonOutline}>
+            <Pressable
+              style={styles.walletButtonOutline}
+              onPress={() => Alert.alert('Historique', 'Consultez vos transactions ci-dessous.')}
+            >
               <FontAwesome name="history" size={14} color="#FFFFFF" />
               <Text style={styles.walletButtonTextOutline}>Historique</Text>
             </Pressable>

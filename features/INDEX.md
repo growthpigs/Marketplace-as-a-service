@@ -9,7 +9,7 @@
 
 | ID | Feature | Priority | Status | Spec | DU |
 |----|---------|----------|--------|------|-----|
-| F001 | Customer Registration & Auth | P0 | **Spec Complete** | [F001-auth.md](F001-auth.md) | 3 |
+| F001 | Customer Registration & Auth | P0 | **UI Implemented** | [F001-auth.md](F001-auth.md) | 3 |
 | F002 | Restaurant Discovery | P0 | **UI Implemented** | [F002-discovery.md](F002-discovery.md) | 4 |
 | F003 | Menu Browsing | P0 | **Spec Complete** | [F003-menu.md](F003-menu.md) | 3 |
 | F004 | Order Placement | P0 | **Demo Ready** | [F004-ordering.md](F004-ordering.md) | 4 |
@@ -26,6 +26,25 @@
 | F015 | Restaurant Promotions | P2 | Not Started | [F015-promotions.md](F015-promotions.md) | TBD |
 
 **MVP Total: 36 DU** (9 features)
+
+---
+
+## UI Polish Complete (2026-01-13)
+
+**All tabs now 100% interactive:**
+
+| Tab | Status | Details |
+|-----|--------|---------|
+| Accueil | ✅ Complete | Category/filter chips, restaurant cards, search |
+| Parcourir | ✅ Complete | Collections → filtered home, Categories → filtered home |
+| Fidélité | ✅ Complete | Retirer/Historique buttons, referral share |
+| Panier | ✅ Complete | Full checkout flow in demo mode |
+| Compte | ✅ Complete | Favorites menu, Settings/Notifications/Logout buttons |
+
+**Key Navigation:**
+- Browse collections navigate to home with `?collection=` param
+- Browse categories navigate to home with `?category=` param
+- Home reads URL params and auto-applies filters via `useEffect`
 
 ---
 

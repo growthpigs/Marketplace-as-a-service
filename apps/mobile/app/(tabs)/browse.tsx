@@ -1,5 +1,26 @@
-import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Pressable, Alert } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useRouter } from 'expo-router';
+
+// Map collection IDs to filter actions
+const COLLECTION_FILTERS: Record<string, { filter?: string; message: string }> = {
+  popular: { message: 'Affichage des restaurants les mieux notés' },
+  new: { message: 'Affichage des nouveaux restaurants' },
+  rated: { message: 'Affichage des restaurants avec note 4.6+' },
+  deals: { filter: 'offres', message: 'Affichage des restaurants avec offres' },
+  quick: { message: 'Affichage des restaurants avec livraison < 20 min' },
+  delivery: { filter: 'livraison', message: 'Affichage des restaurants avec livraison gratuite' },
+};
+
+// Map category names to category IDs used in home
+const CATEGORY_MAP: Record<string, string> = {
+  'Kebab': 'kebab',
+  'Sandwich': 'sandwich',
+  'Pide': 'pide',
+  'Assiette': 'assiette',
+  'Lahmacun': 'lahmacun',
+  'Soupe': 'soup',
+};
 
 interface Collection {
   id: string;
@@ -71,6 +92,31 @@ const CATEGORIES = [
 ];
 
 export default function BrowseScreen() {
+  const router = useRouter();
+
+  // Handle collection press - navigate to home with filter
+  const handleCollectionPress = (collectionId: string) => {
+    const config = COLLECTION_FILTERS[collectionId];
+    if (config) {
+      // Navigate to home tab with filter param
+      router.push({
+        pathname: '/',
+        params: { collection: collectionId },
+      });
+    }
+  };
+
+  // Handle category press - navigate to home with category filter
+  const handleCategoryPress = (categoryName: string) => {
+    const categoryId = CATEGORY_MAP[categoryName];
+    if (categoryId) {
+      router.push({
+        pathname: '/',
+        params: { category: categoryId },
+      });
+    }
+  };
+
   return (
     <ScrollView style={styles.container}>
       {/* Header */}
@@ -83,7 +129,11 @@ export default function BrowseScreen() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Collections Spéciales</Text>
         {COLLECTIONS.map((collection) => (
-          <Pressable key={collection.id} style={styles.collectionCard}>
+          <Pressable
+            key={collection.id}
+            style={styles.collectionCard}
+            onPress={() => handleCollectionPress(collection.id)}
+          >
             <View
               style={[styles.collectionIcon, { backgroundColor: collection.color }]}
             >
@@ -103,7 +153,11 @@ export default function BrowseScreen() {
         <Text style={styles.sectionTitle}>Par Type de Cuisine</Text>
         <View style={styles.categoryGrid}>
           {CATEGORIES.map((category, index) => (
-            <Pressable key={index} style={styles.categoryCard}>
+            <Pressable
+              key={index}
+              style={styles.categoryCard}
+              onPress={() => handleCategoryPress(category.name)}
+            >
               <Text style={styles.categoryEmoji}>{category.icon}</Text>
               <Text style={styles.categoryName}>{category.name}</Text>
               <Text style={styles.categoryCount}>{category.count}</Text>
