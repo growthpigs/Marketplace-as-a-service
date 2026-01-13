@@ -73,10 +73,32 @@ marketplace-as-a-service/
 ### What's Mocked (Expected for MVP)
 
 - Payment processing (no real Stripe yet)
-- Order submission to backend
+- Order submission to backend (uses **Demo Mode** - see below)
 - Order tracking
 - Wallet redemption
 - Restaurant dashboard CRUD
+
+### Demo Mode (CRITICAL - Don't Regress)
+
+**Location:** `apps/mobile/app/checkout/review.tsx` lines 145-207
+
+**Behavior:** When `EXPO_PUBLIC_ENV=development` or `demo`, order submission:
+- Skips the real API call to `POST /api/orders`
+- Simulates 1.5s network delay
+- Generates mock order ID: `demo-order-{timestamp}`
+- Logs `[DEMO MODE]` to console
+- Proceeds to confirmation screen
+
+**Why:** Allows full checkout flow testing without running the API backend.
+
+**To enable real API:** Set `EXPO_PUBLIC_ENV=production` and ensure API is running on port 3000.
+
+```typescript
+// Demo mode detection (review.tsx:147-149)
+const isDemoMode = process.env.EXPO_PUBLIC_ENV === 'demo' ||
+                   process.env.EXPO_PUBLIC_ENV === 'development' ||
+                   !process.env.EXPO_PUBLIC_API_URL;
+```
 
 ---
 

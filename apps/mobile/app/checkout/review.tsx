@@ -142,48 +142,69 @@ export default function ReviewScreen() {
         promo_code: checkoutState.promoCode || undefined,
       };
 
-      // Call backend API with timeout
-      // TODO: Get real auth token from secure storage
-      const mockAuthToken = 'mock-jwt-token-placeholder';
-      const apiUrl = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000';
+      // DEMO MODE: Check if we should use mock order submission
+      // In production, this would always call the real API
+      const isDemoMode = process.env.EXPO_PUBLIC_ENV === 'demo' ||
+                         process.env.EXPO_PUBLIC_ENV === 'development' ||
+                         !process.env.EXPO_PUBLIC_API_URL;
 
-      // Add 30-second timeout
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000);
+      let orderId: string;
+      let paymentIntentId: string;
 
-      let response;
-      try {
-        response = await fetch(`${apiUrl}/api/orders`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${mockAuthToken}`,
-          },
-          body: JSON.stringify(orderRequest),
-          signal: controller.signal,
-        });
-      } finally {
-        clearTimeout(timeoutId);
-      }
+      if (isDemoMode) {
+        // Demo mode: simulate successful order without API call
+        // This allows testing the full UI flow without backend
+        console.log('[DEMO MODE] Simulating order submission:', orderRequest);
+        await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate network delay
 
-      if (!response.ok) {
-        let errorMessage = `Erreur serveur: ${response.status}`;
+        orderId = `demo-order-${Date.now()}`;
+        paymentIntentId = `demo-pi-${Date.now()}`;
+        console.log('[DEMO MODE] Order created:', { orderId, paymentIntentId });
+      } else {
+        // Production mode: Call backend API with timeout
+        const mockAuthToken = 'mock-jwt-token-placeholder';
+        const apiUrl = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000';
+
+        // Add 30-second timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+        let response;
         try {
-          const contentType = response.headers.get('content-type');
-          if (contentType && contentType.includes('application/json')) {
-            const errorData = await response.json();
-            errorMessage = errorData.message || errorMessage;
-          }
-        } catch (e) {
-          // Content is not JSON, use status code message
+          response = await fetch(`${apiUrl}/api/orders`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${mockAuthToken}`,
+            },
+            body: JSON.stringify(orderRequest),
+            signal: controller.signal,
+          });
+        } finally {
+          clearTimeout(timeoutId);
         }
-        throw new Error(errorMessage);
+
+        if (!response.ok) {
+          let errorMessage = `Erreur serveur: ${response.status}`;
+          try {
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+              const errorData = await response.json();
+              errorMessage = errorData.message || errorMessage;
+            }
+          } catch (e) {
+            // Content is not JSON, use status code message
+          }
+          throw new Error(errorMessage);
+        }
+
+        const orderResponse = await response.json();
+        orderId = orderResponse.id;
+        paymentIntentId = orderResponse.payment_intent_id;
       }
 
-      const orderResponse = await response.json();
-
-      // Success! Order created with client_secret for Stripe Payment Sheet
-      orderSuccess(orderResponse.id, orderResponse.payment_intent_id);
+      // Success! Order created (real or demo)
+      orderSuccess(orderId, paymentIntentId);
       clearCart();
       router.replace('/checkout/confirmation');
     } catch (error) {

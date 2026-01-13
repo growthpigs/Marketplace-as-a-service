@@ -85,12 +85,15 @@ I want to place my order
 So the restaurant can prepare my food
 
 Acceptance Criteria:
-- [ ] "Place Order" button
-- [ ] Loading state during submission
-- [ ] Order confirmation screen
-- [ ] Order number generated
+- [x] "Place Order" button
+- [x] Loading state during submission
+- [x] Order confirmation screen
+- [x] Order number generated (demo: demo-order-{timestamp})
 - [ ] Push notification sent
-- [ ] Clear cart after success
+- [x] Clear cart after success
+
+Demo Mode: When EXPO_PUBLIC_ENV=development, skips real API call.
+See: apps/mobile/app/checkout/review.tsx:145-207
 ```
 
 ---

@@ -12,8 +12,8 @@
 | F001 | Customer Registration & Auth | P0 | **Spec Complete** | [F001-auth.md](F001-auth.md) | 3 |
 | F002 | Restaurant Discovery | P0 | **UI Implemented** | [F002-discovery.md](F002-discovery.md) | 4 |
 | F003 | Menu Browsing | P0 | **Spec Complete** | [F003-menu.md](F003-menu.md) | 3 |
-| F004 | Order Placement | P0 | **UI Implemented** | [F004-ordering.md](F004-ordering.md) | 4 |
-| F005 | Payment Processing | P0 | **In Progress** | [F005-payments.md](F005-payments.md) | 5 |
+| F004 | Order Placement | P0 | **Demo Ready** | [F004-ordering.md](F004-ordering.md) | 4 |
+| F005 | Payment Processing | P0 | **Demo Mode** | [F005-payments.md](F005-payments.md) | 5 |
 | F006 | Order Tracking | P0 | **Spec Complete** | [F006-tracking.md](F006-tracking.md) | 3 |
 | F007 | Cashback Wallet | P0 | **UI Implemented** | [F007-wallet.md](F007-wallet.md) | 4 |
 | F008 | Group Ordering | P0 | **Spec Complete** | [F008-group-orders.md](F008-group-orders.md) | 5 |
@@ -26,6 +26,21 @@
 | F015 | Restaurant Promotions | P2 | Not Started | [F015-promotions.md](F015-promotions.md) | TBD |
 
 **MVP Total: 36 DU** (9 features)
+
+---
+
+## Demo Mode (2026-01-13)
+
+**CRITICAL - DO NOT REGRESS:** The checkout flow works in demo mode without backend API.
+
+**How it works:**
+- `EXPO_PUBLIC_ENV=development` triggers demo mode
+- Order submission skips `POST /api/orders` and simulates success
+- Generates mock order ID and proceeds to confirmation
+
+**Location:** `apps/mobile/app/checkout/review.tsx:145-207`
+
+**To enable real API:** Set `EXPO_PUBLIC_ENV=production` + run API on port 3000.
 
 ---
 

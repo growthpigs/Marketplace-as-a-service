@@ -303,7 +303,9 @@ switch (event.type) {
 
 ## Implementation Plan
 
-**Current State:** Frontend payment UI mocked (100% fake payment flow). Backend orders endpoint missing.
+**Current State:** Frontend payment UI mocked (100% fake payment flow). Backend orders endpoint exists but not integrated.
+
+**Demo Mode (Active):** When `EXPO_PUBLIC_ENV=development`, order submission skips API and simulates success. This allows full checkout UI testing without backend. See `apps/mobile/app/checkout/review.tsx:145-207`.
 
 **Approach:** Replace mock payment flow with real Stripe Payment Sheet integration, create backend orders API endpoint with payment processing, integrate database schema, test end-to-end.
 
