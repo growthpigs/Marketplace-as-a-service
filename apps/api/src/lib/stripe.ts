@@ -13,7 +13,7 @@ export class StripeService {
       this.isConfigured = true;
     } else {
       console.warn(
-        '[StripeService] STRIPE_SECRET_KEY not configured. Stripe operations will be mocked. This is expected for MVP - client will configure when ready.'
+        '[StripeService] STRIPE_SECRET_KEY not configured. Stripe operations will be mocked. This is expected for MVP - client will configure when ready.',
       );
       this.isConfigured = false;
     }
@@ -28,7 +28,9 @@ export class StripeService {
   async getOrCreateCustomer(userId: string, email: string): Promise<string> {
     // If Stripe is not configured, return mock customer ID
     if (!this.isConfigured) {
-      console.log(`[StripeService] Mocking customer creation for ${email} (Stripe not configured)`);
+      console.log(
+        `[StripeService] Mocking customer creation for ${email} (Stripe not configured)`,
+      );
       return `cus_mock_${userId}`;
     }
 
@@ -56,12 +58,13 @@ export class StripeService {
     userId: string,
     restaurantStripeAccountId: string,
     amountCents: number, // Amount in cents (e.g., 1000 for €10.00)
+    subtotalCents: number, // Subtotal in cents (for commission calculation - food order only)
     description: string,
   ): Promise<{ client_secret: string; payment_intent_id: string }> {
     // If Stripe is not configured, return mock payment intent
     if (!this.isConfigured) {
       console.log(
-        `[StripeService] Mocking PaymentIntent creation for order ${orderId} (Stripe not configured)`
+        `[StripeService] Mocking PaymentIntent creation for order ${orderId} (Stripe not configured)`,
       );
       return {
         client_secret: `pi_secret_mock_${orderId}`,
@@ -69,11 +72,11 @@ export class StripeService {
       };
     }
 
-    // Calculate platform fee: 7% (5% commission + 2% service fee)
-    // For Stripe Connect: application_fee is platform commission only (5% of order)
-    const platformFeeCents = Math.round(amountCents * 0.05); // 5% commission to platform
+    // Calculate platform fee: 5% of SUBTOTAL ONLY (not including delivery/service fees)
+    // For Stripe Connect: application_fee is platform commission only (5% of food order)
+    const platformFeeCents = Math.round(subtotalCents * 0.05); // 5% commission on subtotal only
 
-    // Amount for restaurant (95% of order)
+    // Amount for restaurant (95% of food order subtotal + delivery fee + service fee)
     const restaurantAmountCents = amountCents - platformFeeCents;
 
     // Create PaymentIntent with transfer to connected account
@@ -130,9 +133,12 @@ export class StripeService {
     if (!this.isConfigured) {
       return [];
     }
-    const methods = await this.stripe!.customers.listPaymentMethods(customerId, {
-      type: 'card',
-    });
+    const methods = await this.stripe!.customers.listPaymentMethods(
+      customerId,
+      {
+        type: 'card',
+      },
+    );
 
     return methods.data;
   }

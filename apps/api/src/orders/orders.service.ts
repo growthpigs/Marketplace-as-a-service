@@ -77,7 +77,7 @@ export class OrdersService {
     const supabase = this.supabaseService.getAdmin();
 
     // Validate restaurant exists
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
     const { data: restaurant, error: restaurantError } = await supabase
       .from('restaurants')
       .select('id, delivery_fee, commission_rate, stripe_account_id')
@@ -89,7 +89,8 @@ export class OrdersService {
     }
 
     // Validate restaurant has Stripe account for payments
-    const stripeAccountId = (restaurant as Record<string, unknown>).stripe_account_id as string;
+    const stripeAccountId = (restaurant as Record<string, unknown>)
+      .stripe_account_id as string;
     if (!stripeAccountId) {
       throw new Error('Restaurant does not have Stripe account configured');
     }
@@ -184,7 +185,9 @@ export class OrdersService {
     // Create Stripe PaymentIntent for this order
     // Amount in cents (total price + service fee, excluding wallet credit)
     const amountCents = Math.round(total * 100);
-    const orderNumber = (order as Record<string, unknown>).order_number as string;
+    const subtotalCents = Math.round(subtotal * 100); // For commission calculation (food order only)
+    const orderNumber = (order as Record<string, unknown>)
+      .order_number as string;
 
     let paymentIntentId: string;
     let clientSecret: string;
@@ -208,6 +211,7 @@ export class OrdersService {
         userId,
         stripeAccountId,
         amountCents,
+        subtotalCents,
         `Order ${orderNumber} from TurkEats`,
       );
 
