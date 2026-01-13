@@ -83,19 +83,71 @@ export default function ReviewScreen() {
     startProcessing();
 
     try {
-      // Simulate order processing (would be real API call)
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // Validate checkout state
+      if (!checkoutState.deliveryAddress) {
+        throw new Error('Adresse de livraison manquante');
+      }
+      if (!cartState.restaurantId) {
+        throw new Error('Restaurant non sélectionné');
+      }
+      if (cartState.items.length === 0) {
+        throw new Error('Panier vide');
+      }
 
-      // Generate mock order ID
-      const orderId = `TKE-${Date.now().toString(36).toUpperCase()}`;
-      const paymentIntentId = `pi_${Math.random().toString(36).substring(2, 15)}`;
+      // Build order request matching backend CreateOrderRequest schema
+      const orderRequest = {
+        restaurant_id: cartState.restaurantId,
+        items: cartState.items.map((item) => ({
+          menu_item_id: item.menuItem.id,
+          name: item.menuItem.name,
+          quantity: item.quantity,
+          unit_price: item.menuItem.price,
+          options_price: 0, // TODO: support menu item options
+          options: null,
+          special_instructions: null,
+        })),
+        delivery_address: {
+          formatted: checkoutState.deliveryAddress.formatted,
+          placeId: checkoutState.deliveryAddress.placeId,
+          streetAddress: checkoutState.deliveryAddress.streetAddress,
+          city: checkoutState.deliveryAddress.city,
+          postalCode: checkoutState.deliveryAddress.postalCode,
+          coordinates: checkoutState.deliveryAddress.coordinates,
+        },
+        delivery_instructions: checkoutState.deliveryAddress.instructions || undefined,
+        tips: checkoutState.tip || 0,
+        wallet_amount_to_apply: 0, // TODO: integrate wallet
+        promo_code: checkoutState.promoCode || undefined,
+      };
 
-      // Success!
-      orderSuccess(orderId, paymentIntentId);
+      // Call backend API
+      // TODO: Get real auth token from secure storage
+      const mockAuthToken = 'mock-jwt-token-placeholder';
+      const apiUrl = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000';
+
+      const response = await fetch(`${apiUrl}/api/orders`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${mockAuthToken}`,
+        },
+        body: JSON.stringify(orderRequest),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `Erreur serveur: ${response.status}`);
+      }
+
+      const orderResponse = await response.json();
+
+      // Success! Order created with client_secret for Stripe Payment Sheet
+      orderSuccess(orderResponse.id, orderResponse.payment_intent_id);
       clearCart();
       router.replace('/checkout/confirmation');
     } catch (error) {
-      orderError('Une erreur est survenue. Veuillez réessayer.');
+      const errorMessage = error instanceof Error ? error.message : 'Une erreur est survenue. Veuillez réessayer.';
+      orderError(errorMessage);
       setIsProcessing(false);
     }
   };

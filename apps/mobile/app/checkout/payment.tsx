@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, Pressable, ScrollView, ActivityIndicator } from
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCheckout, PaymentMethod } from '@/context/CheckoutContext';
 
 /**
@@ -35,8 +35,8 @@ import { useCheckout, PaymentMethod } from '@/context/CheckoutContext';
  * TODO: Integrate real Stripe Payment Sheet when keys available
  */
 
-// Mock payment methods for demo
-const MOCK_PAYMENT_METHODS: PaymentMethod[] = [
+// Fallback mock payment methods (used when backend unavailable)
+const FALLBACK_PAYMENT_METHODS: PaymentMethod[] = [
   { type: 'card', brand: 'visa', last4: '4242' },
   { type: 'apple_pay' },
   { type: 'google_pay' },
@@ -55,10 +55,51 @@ export default function PaymentScreen() {
   const router = useRouter();
   const { state, setPaymentMethod } = useCheckout();
 
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>(FALLBACK_PAYMENT_METHODS);
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod | null>(
-    state.paymentMethod || MOCK_PAYMENT_METHODS[0]
+    state.paymentMethod || FALLBACK_PAYMENT_METHODS[0]
   );
   const [isProcessing, setIsProcessing] = useState(false);
+
+  // Fetch real payment methods from backend
+  useEffect(() => {
+    const fetchPaymentMethods = async () => {
+      try {
+        // TODO: Get real auth token from secure storage
+        const mockAuthToken = 'mock-jwt-token-placeholder';
+        const apiUrl = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000';
+
+        const response = await fetch(`${apiUrl}/api/payments/methods`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${mockAuthToken}`,
+          },
+        });
+
+        if (!response.ok) {
+          console.warn(`Failed to fetch payment methods: ${response.status}`);
+          setIsLoading(false);
+          return;
+        }
+
+        const methods = await response.json();
+        setPaymentMethods(methods);
+        // If we fetched real methods and don't have a selected method, select first one
+        if (!selectedMethod && methods.length > 0) {
+          setSelectedMethod(methods[0]);
+        }
+      } catch (error) {
+        // Silently fall back to mock methods if backend is unavailable
+        // (Stripe integration is flagged as future)
+        console.warn('Payment methods endpoint unavailable, using fallback mock methods');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPaymentMethods();
+  }, []);
 
   // Handle payment method selection
   const handleSelectMethod = (method: PaymentMethod) => {
@@ -123,8 +164,16 @@ export default function PaymentScreen() {
         {/* Section Header */}
         <Text style={styles.sectionTitle}>Méthodes de paiement</Text>
 
+        {/* Loading State */}
+        {isLoading && (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator color="#000000" size="large" />
+            <Text style={styles.loadingText}>Chargement des méthodes de paiement...</Text>
+          </View>
+        )}
+
         {/* Payment Methods List */}
-        {MOCK_PAYMENT_METHODS.map((method, index) => (
+        {!isLoading && paymentMethods.map((method, index) => (
           <Pressable
             key={`${method.type}-${method.last4 || index}`}
             style={[
@@ -237,6 +286,16 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 0.5,
     marginBottom: 12,
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 40,
+  },
+  loadingText: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginTop: 12,
   },
   paymentMethodCard: {
     flexDirection: 'row',

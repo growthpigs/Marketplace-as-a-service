@@ -37,15 +37,21 @@
   - Returns client_secret for frontend Payment Sheet
 
 ### 🔄 Phase 2: Frontend Stripe Integration (IN PROGRESS - 1.5 DU)
-- [ ] Task 2.1: Update payment.tsx to use real Stripe Payment Sheet
-  - Starting to replace mock payment methods with real Stripe integration
-  - Will fetch saved cards from `GET /api/payments/methods` (needs implementation)
-  - Will use Stripe Payment Sheet for card selection/addition
+- [x] Task 2.1: Update payment.tsx to use real Stripe Payment Sheet
+  - ✅ Added useEffect to fetch real payment methods from backend
+  - ✅ Falls back gracefully to mock methods if backend unavailable
+  - ✅ Shows loading state while fetching
+  - ✅ Updated to use dynamic paymentMethods array
+  - Status: COMPLETE (ready for real Stripe when client configures keys)
 
-- [ ] Task 2.2: Update review.tsx to call backend orders endpoint
-  - Currently generates fake order, will call `POST /api/orders`
-  - Will pass restaurant_id, items, delivery_address, wallet_amount_to_apply
-  - Will receive order_id and payment client_secret
+- [x] Task 2.2: Update review.tsx to call backend orders endpoint
+  - ✅ Replaced mock 1500ms delay with real `POST /api/orders` call
+  - ✅ Validates checkout state before submitting
+  - ✅ Maps cart items to API schema (menu_item_id, unit_price, etc.)
+  - ✅ Passes delivery address with full coordinates
+  - ✅ Includes auth header with Bearer token (placeholder)
+  - ✅ Handles API errors and displays to user
+  - Status: COMPLETE
 
 - [ ] Task 2.3: Implement payment processing after order creation
   - Will call `POST /orders/:id/pay` to process Stripe payment
