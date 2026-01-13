@@ -33,6 +33,7 @@ TurkEats is a specialized food delivery marketplace targeting the Turkish/kebab 
 
 | Doc | Location |
 |-----|----------|
+| **Runbook** | [`docs/RUNBOOK.md`](docs/RUNBOOK.md) - How to implement features |
 | Vision | `docs/01-product/VISION.md` |
 | MVP PRD | `docs/01-product/MVP-PRD.md` |
 | Scope | `docs/01-product/SCOPE.md` |
@@ -64,6 +65,14 @@ TurkEats is a specialized food delivery marketplace targeting the Turkish/kebab 
 - Conventional commits
 - Feature branches → PR → main
 - Tests for business logic (wallet, payments, affiliates)
+
+### Living Documents (CRITICAL)
+- **Feature specs live in `/features/F0XX-*.md`** - These are the source of truth
+- **Never create orphan plan files** like `docs/plans/YYYY-MM-DD-*.md`
+- **Implementation plans go INSIDE feature specs** - Add "Implementation Plan" section to the feature file
+- **Update feature status in `features/INDEX.md`** when starting implementation
+- **Active tasks tracked in `working/active-tasks.md`** - Links to living feature docs, never standalone
+- Reason: Single source of truth, easier to maintain, prevents documentation drift
 
 ---
 
