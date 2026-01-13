@@ -87,11 +87,27 @@ export default function ReviewScreen() {
       if (!checkoutState.deliveryAddress) {
         throw new Error('Adresse de livraison manquante');
       }
+
+      // Validate delivery address has all required fields
+      const addressFields = ['streetAddress', 'city', 'postalCode'];
+      for (const field of addressFields) {
+        if (!checkoutState.deliveryAddress[field as keyof typeof checkoutState.deliveryAddress]) {
+          throw new Error(`Adresse incomplète: ${field} manquant`);
+        }
+      }
+
       if (!cartState.restaurantId) {
         throw new Error('Restaurant non sélectionné');
       }
+
       if (cartState.items.length === 0) {
         throw new Error('Panier vide');
+      }
+
+      // Validate at least one item has quantity > 0
+      const hasItems = cartState.items.some(item => item.quantity > 0);
+      if (!hasItems) {
+        throw new Error('Quantités invalides - ajoutez au moins un article');
       }
 
       // Build order request matching backend CreateOrderRequest schema
