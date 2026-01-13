@@ -1,78 +1,181 @@
 # TurkEats - Project Instructions
 
-**Codename:** TurkEats (working title)
-**Type:** Food delivery marketplace
-**Phase:** A (Intake & Requirements)
+**Codename:** TurkEats
+**Type:** Food delivery marketplace (Uber Eats clone for Turkish/kebab restaurants)
+**Phase:** D (Development) - Mobile MVP Complete, Demo Ready
+**Confidence:** 8.5/10
 
 ---
 
-## Project Overview
+## Quick Start
 
-TurkEats is a specialized food delivery marketplace targeting the Turkish/kebab restaurant market in France. "Uber Eats for kebabs" with built-in viral mechanics (10% cashback + affiliate system).
+```bash
+# Mobile app (Expo)
+cd apps/mobile && npm run start
 
-**Key differentiators:**
-- 5% restaurant commission (vs 15-30% competitors)
-- Cash withdrawal from wallet (unique feature)
-- Community-driven growth via Turkish restaurant network
+# API (NestJS)
+cd apps/api && npm run start:dev
 
----
+# Restaurant Dashboard (Next.js)
+cd apps/restaurant-dashboard && npm run dev
+```
 
-## Team
-
-| Partner | Role | Contact |
-|---------|------|---------|
-| Roderic | Tech, Product, Marketing, Design | (internal) |
-| Daniel | Sales, BizDev, Operations, Finance | TBD |
-| Stéphane | Market Access (revenue share) | TBD |
-
-**Legal entity:** Badaboost LLC (Delaware)
+**GitHub:** https://github.com/growthpigs/Marketplace-as-a-service
+**Branches:** `main` (production), `staging` (current work)
 
 ---
 
-## Quick Links
+## Architecture
 
-| Doc | Location |
-|-----|----------|
-| **Runbook** | [`docs/RUNBOOK.md`](docs/RUNBOOK.md) - How to implement features |
-| Vision | `docs/01-product/VISION.md` |
-| MVP PRD | `docs/01-product/MVP-PRD.md` |
-| Scope | `docs/01-product/SCOPE.md` |
-| Tech Stack | `docs/04-technical/TECH-STACK.md` |
-| Data Model | `docs/04-technical/DATA-MODEL.md` |
-| API Contracts | `docs/04-technical/API-CONTRACTS.md` |
-| Risk Register | `docs/05-planning/RISK-REGISTER.md` |
-| Features | `features/INDEX.md` |
-| MOU (Daniel) | `docs/07-business/MOU-DANIEL.md` |
-| Revenue Share (Stéphane) | `docs/07-business/REVENUE-SHARE-STEPHANE.md` |
+### Monorepo Structure
+
+```
+marketplace-as-a-service/
+├── apps/
+│   ├── mobile/              # React Native + Expo Router (customer app)
+│   ├── api/                 # NestJS backend
+│   └── restaurant-dashboard/ # Next.js restaurant portal
+├── docs/                    # PAI documentation (10-folder structure)
+├── features/                # Feature specs (F0XX-*.md)
+├── working/                 # Active session docs
+└── supabase/                # Database migrations & config
+```
+
+### Tech Stack
+
+| Layer | Technology | Notes |
+|-------|-----------|-------|
+| Mobile | Expo + React Native | Expo Router for navigation |
+| State | React Context + useReducer | CartContext, CheckoutContext |
+| Backend | NestJS | TypeScript, modular architecture |
+| Database | Supabase (PostgreSQL) | RLS enabled |
+| Dashboard | Next.js 14 | App router, TypeScript |
+| Payments | Stripe (planned) | Currently 100% mocked |
+| Maps | Google Maps API | For delivery address |
 
 ---
 
-## Development Rules
+## Current Status: Demo Ready
 
-### Philosophy
-- **Copy Uber Eats 90-95%** - Don't reinvent working patterns
-- **Custom only where needed** - Cashback, affiliates, withdrawal
-- **Android-first** - Target market is students on Android
-- **AI-assisted development** - Use Claude Code for all coding
+### What Works (Verified 2026-01-13)
 
-### Technical Decisions (Pending)
-- [ ] Mobile framework: React Native vs Flutter
-- [ ] Backend: Node.js vs Python vs extend Daniel's PHP
-- [ ] Hosting: Render vs Vercel vs Fly.io
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Home Screen | ✅ | Restaurant listings, categories, search |
+| Restaurant Detail | ✅ | Menu, ratings, delivery info |
+| Cart Management | ✅ | Add/remove items, quantity, totals |
+| Checkout Flow | ✅ | Address → Time → Payment → Review |
+| Address Entry | ✅ | Manual + GPS location |
+| Fee Calculations | ✅ | Service fee 2%, delivery, cashback 10% |
+| Error Handling | ✅ | French user-friendly messages |
+| Minimum Order | ✅ | Validation added (commit e8c191b) |
+
+### What's Mocked (Expected for MVP)
+
+- Payment processing (no real Stripe yet)
+- Order submission to backend
+- Order tracking
+- Wallet redemption
+- Restaurant dashboard CRUD
+
+---
+
+## Key Business Rules
+
+```
+Customer pays:     Order + 2% service fee + delivery
+Restaurant keeps:  95% of order value
+Platform gets:     5% commission + 2% service fee
+Cashback:          10% to customer wallet (after delivery)
+```
+
+### Fee Calculation Example
+```
+Assiette Grec:     €12.90
+Service (2%):      €0.26
+Delivery:          €0.49
+Total:             €13.65
+Cashback (10%):    €1.29 → wallet
+```
+
+---
+
+## Critical Files
+
+### Mobile App (`apps/mobile/`)
+
+| File | Purpose |
+|------|---------|
+| `context/CartContext.tsx` | Cart state, meetsMinOrder, fee calculations |
+| `context/CheckoutContext.tsx` | Checkout flow state machine |
+| `app/checkout/review.tsx` | Order review + submission handler |
+| `app/checkout/payment.tsx` | Mock payment selection |
+| `app/checkout/confirmation.tsx` | Success screen with animation |
+| `app/(tabs)/index.tsx` | Home screen with restaurants |
+| `app/restaurant/[id].tsx` | Restaurant detail + menu |
+
+### API (`apps/api/`)
+
+| File | Purpose |
+|------|---------|
+| `src/orders/orders.controller.ts` | Order endpoints |
+| `src/orders/dto/create-order.dto.ts` | Order schema validation |
+| `src/lib/supabase.ts` | Database client + mock auth |
+
+---
+
+## Known Issues & Limitations
+
+### Critical (Must Fix Before Real Payments)
+
+1. **No idempotency key** - Risk of duplicate orders on retry
+2. **Mock auth token hardcoded** - `'mock-jwt-token-placeholder'` in multiple files
+
+### Medium Priority
+
+3. **Address parsing** - Manual entry as single string doesn't extract postalCode
+4. **Fee calculations duplicated** - In both CartContext and review.tsx
+
+### Low Priority (Expected for MVP)
+
+5. **Context resets on URL navigation** - React state is in-memory only
+6. **Scheduled delivery not implemented** - UI shows "Bientôt disponible"
+
+---
+
+## Development Conventions
 
 ### Code Standards
-- TypeScript everywhere
-- Conventional commits
-- Feature branches → PR → main
-- Tests for business logic (wallet, payments, affiliates)
+- TypeScript everywhere (strict mode)
+- Conventional commits: `feat:`, `fix:`, `docs:`, `chore:`
+- Pre-commit hooks run: secrets check, TypeScript, lint, build
 
-### Living Documents (CRITICAL)
-- **Feature specs live in `/features/F0XX-*.md`** - These are the source of truth
-- **Never create orphan plan files** like `docs/plans/YYYY-MM-DD-*.md`
-- **Implementation plans go INSIDE feature specs** - Add "Implementation Plan" section to the feature file
-- **Update feature status in `features/INDEX.md`** when starting implementation
-- **Active tasks tracked in `working/active-tasks.md`** - Links to living feature docs, never standalone
-- Reason: Single source of truth, easier to maintain, prevents documentation drift
+### File Naming
+- Components: PascalCase (`RestaurantCard.tsx`)
+- Hooks: camelCase with `use` prefix (`useCart.ts`)
+- Utils: camelCase (`calculateFees.ts`)
+
+### Context Pattern
+```typescript
+// State + reducer for complex state
+const [state, dispatch] = useReducer(cartReducer, initialState);
+
+// Computed values derived from state
+const subtotal = useMemo(() => calculateSubtotal(state.items), [state.items]);
+const meetsMinOrder = subtotal >= state.minOrder;
+
+// Return both state and computed
+return { state, subtotal, total, meetsMinOrder, addItem, removeItem };
+```
+
+---
+
+## Living Documents (CRITICAL)
+
+- **Feature specs live in `/features/F0XX-*.md`** - Source of truth
+- **Never create orphan plan files** - Add "Implementation Plan" to feature file
+- **Update `features/INDEX.md`** when starting/completing features
+- **Active tasks in `working/active-tasks.md`** - Links to living docs
 
 ---
 
@@ -80,54 +183,55 @@ TurkEats is a specialized food delivery marketplace targeting the Turkish/kebab 
 
 ### Start of Session
 1. Read `working/handover.md` (if exists)
-2. Check `features/INDEX.md` for current feature work
-3. Review active PRs/issues
+2. Check `features/INDEX.md` for current work
+3. Run `git status` to see pending changes
+4. Start Expo: `cd apps/mobile && npm run start`
 
 ### End of Session
 1. Update `working/handover.md` with progress
 2. Update feature status in `features/INDEX.md`
-3. Commit and push work
+3. Commit and push: `git push origin staging`
+4. Kill Expo if running: `pkill -f expo`
 
 ---
 
-## Key Business Rules
+## Demo Script
 
-### Commission Structure
-```
-Customer pays:     Order + 2% service fee
-Restaurant keeps:  95% of order value
-Platform gets:     5% commission + 2% service fee
-Cashback:          10% to customer wallet
-```
-
-### Affiliate Model
-- Referrer gets 10% of referred users' lifetime orders
-- OR one-time 40% of first order (choice)
-- Tracked via unique referral code/QR
-
-### Wallet Rules
-- Cashback credited after order delivered
-- Can use wallet balance on any restaurant
-- Cash withdrawal to bank (unique feature)
-- Minimum withdrawal: €10
+1. **Home** → Show restaurant listings (Kebab Palace, Le Roi du Döner)
+2. **Select restaurant** → Show menu with prices
+3. **Add item** → Assiette Grec (€12.90) - shows cart bar
+4. **Checkout** → Use GPS for address (avoids manual parsing issue)
+5. **Delivery time** → ASAP selected by default
+6. **Payment** → Point out "Mode démo" yellow banner
+7. **Review** → Show fee breakdown and cashback
+8. **Talk track:** "This is the full checkout flow. Payment integration is phase 2."
 
 ---
 
-## Current Phase Tasks
+## Quick Links
 
-### Phase A - Intake (Current)
-- [x] Project brief created
-- [x] MOU draft (Daniel)
-- [x] Revenue share draft (Stéphane)
-- [x] PAI structure setup
-- [ ] Evaluate Daniel's existing PHP system
-- [ ] Technical stack decision
-- [ ] Mobile framework decision
+| Doc | Location |
+|-----|----------|
+| **Verification Report** | `working/CHECKOUT-FLOW-VERIFIED-2026-01-13.md` |
+| **Audit Report** | `working/AUDIT-EXPERT-REVIEW-2026-01-13.md` |
+| Vision | `docs/01-product/VISION.md` |
+| MVP PRD | `docs/01-product/MVP-PRD.md` |
+| Data Model | `docs/04-technical/DATA-MODEL.md` |
+| API Contracts | `docs/04-technical/API-CONTRACTS.md` |
+| Features | `features/INDEX.md` |
+| Runbook | `docs/06-reference/RUNBOOK.md` |
 
-### Next: Phase D - SpecKit Init
-- Create detailed feature specs
-- Finalize data model
-- Set up development environment
+---
+
+## Team
+
+| Partner | Role |
+|---------|------|
+| Roderic | Tech, Product, Marketing, Design |
+| Daniel | Sales, BizDev, Operations |
+| Stéphane | Market Access (revenue share) |
+
+**Legal entity:** Badaboost LLC (Delaware)
 
 ---
 
