@@ -109,8 +109,9 @@ const styles = StyleSheet.create({
   },
   info: {
     flex: 1,
-    marginRight: 12,
+    marginRight: 20,
     paddingVertical: 4,
+    paddingRight: 4,
   },
   name: {
     fontSize: 16,

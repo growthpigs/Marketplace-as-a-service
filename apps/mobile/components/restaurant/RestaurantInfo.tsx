@@ -29,6 +29,7 @@ interface RestaurantInfoProps {
   distance: string;
   deliveryTime: string;
   deliveryFee: string;
+  onRatingPress?: () => void;
   onMoreInfoPress?: () => void;
 }
 
@@ -41,6 +42,7 @@ export function RestaurantInfo({
   distance,
   deliveryTime,
   deliveryFee,
+  onRatingPress,
   onMoreInfoPress,
 }: RestaurantInfoProps) {
   return (
@@ -48,8 +50,8 @@ export function RestaurantInfo({
       {/* Name + Rating Row */}
       <View style={styles.headerRow}>
         <Text style={styles.name} numberOfLines={1}>{name}</Text>
-        <Pressable style={styles.ratingBadge}>
-          <FontAwesome name="star" size={12} color="#000000" />
+        <Pressable style={styles.ratingBadge} onPress={onRatingPress}>
+          <FontAwesome name="star" size={12} color="#FFB800" />
           <Text style={styles.ratingText}>{rating.toFixed(1)}</Text>
           <Text style={styles.reviewCount}>({reviewCount}+)</Text>
         </Pressable>
@@ -107,10 +109,12 @@ const styles = StyleSheet.create({
   ratingBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F3F4F6',
+    backgroundColor: '#FFF8E6',
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#FFE8B8',
   },
   ratingText: {
     fontSize: 14,

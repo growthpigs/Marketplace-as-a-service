@@ -2,6 +2,7 @@ import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { View, ScrollView, Text, StyleSheet, Pressable, Dimensions } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useState } from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 import { RestaurantHero } from '@/components/restaurant/RestaurantHero';
@@ -409,6 +410,11 @@ export default function RestaurantDetailScreen() {
   // Cart state from context
   const { addItem, itemCount, total } = useCart();
 
+  // Local UI state
+  const [isFavorited, setIsFavorited] = useState(false);
+  const [showMoreMenu, setShowMoreMenu] = useState(false);
+  const [showRestaurantDetails, setShowRestaurantDetails] = useState(false);
+
   const handleAddToCart = (item: MenuItemData) => {
     addItem(
       restaurant.id,
@@ -422,6 +428,26 @@ export default function RestaurantDetailScreen() {
       },
       10 // minOrder €10
     );
+  };
+
+  const handleFavoritePress = () => {
+    setIsFavorited(!isFavorited);
+    console.log(`Favorite ${!isFavorited ? 'added' : 'removed'} for ${restaurant.name}`);
+  };
+
+  const handleMorePress = () => {
+    setShowMoreMenu(!showMoreMenu);
+    console.log(`More menu ${!showMoreMenu ? 'opened' : 'closed'}`);
+  };
+
+  const handleRatingPress = () => {
+    console.log(`Reviews for ${restaurant.name}: ${restaurant.rating} stars (${restaurant.reviewCount}+)`);
+    // TODO: Navigate to reviews screen or show reviews modal
+  };
+
+  const handleMoreInfoPress = () => {
+    setShowRestaurantDetails(!showRestaurantDetails);
+    console.log(`Restaurant details ${!showRestaurantDetails ? 'expanded' : 'collapsed'}`);
   };
 
   return (
@@ -440,9 +466,10 @@ export default function RestaurantDetailScreen() {
         {/* Hero Image with Back Button Overlay */}
         <RestaurantHero
           image={restaurant.image}
+          isFavorited={isFavorited}
           onBackPress={() => router.back()}
-          onFavoritePress={() => console.log('Favorite pressed')}
-          onMorePress={() => console.log('More pressed')}
+          onFavoritePress={handleFavoritePress}
+          onMorePress={handleMorePress}
         />
 
         {/* Restaurant Info */}
@@ -455,6 +482,8 @@ export default function RestaurantDetailScreen() {
           distance={restaurant.distance}
           deliveryTime={restaurant.deliveryTime}
           deliveryFee={restaurant.deliveryFee}
+          onRatingPress={handleRatingPress}
+          onMoreInfoPress={handleMoreInfoPress}
         />
 
         {/* Menu Sections */}

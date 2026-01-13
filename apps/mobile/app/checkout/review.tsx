@@ -219,7 +219,7 @@ export default function ReviewScreen() {
           <Text style={styles.errorTitle}>Une erreur s'est produite</Text>
           <Text style={styles.errorMessage}>{checkoutState.error}</Text>
           <Pressable style={styles.retryButton} onPress={handlePlaceOrder}>
-            <FontAwesome name="redo" size={16} color="#FFFFFF" />
+            <FontAwesome name="refresh" size={16} color="#FFFFFF" />
             <Text style={styles.retryButtonText}>  Réessayer</Text>
           </Pressable>
           <Pressable style={styles.cancelButton} onPress={() => router.back()}>

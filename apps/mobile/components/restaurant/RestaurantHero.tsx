@@ -24,6 +24,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 interface RestaurantHeroProps {
   image: string | null;
+  isFavorited?: boolean;
   onBackPress?: () => void;
   onFavoritePress?: () => void;
   onMorePress?: () => void;
@@ -35,6 +36,7 @@ const BUTTON_SIZE = 36;
 
 export function RestaurantHero({
   image,
+  isFavorited = false,
   onBackPress,
   onFavoritePress,
   onMorePress,
@@ -70,11 +72,15 @@ export function RestaurantHero({
         {/* Right: Favorite + More */}
         <View style={styles.rightButtons}>
           <Pressable
-            style={styles.circleButton}
+            style={[styles.circleButton, isFavorited && styles.favoriteActive]}
             onPress={onFavoritePress}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
-            <FontAwesome name="heart-o" size={16} color="#000000" />
+            <FontAwesome
+              name={isFavorited ? "heart" : "heart-o"}
+              size={16}
+              color={isFavorited ? "#FF6B6B" : "#000000"}
+            />
           </Pressable>
           <Pressable
             style={[styles.circleButton, styles.moreButton]}
@@ -135,6 +141,9 @@ const styles = StyleSheet.create({
   },
   moreButton: {
     marginLeft: 8,
+  },
+  favoriteActive: {
+    backgroundColor: '#FFE8E8',
   },
 });
 
