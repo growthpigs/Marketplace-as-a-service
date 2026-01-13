@@ -121,23 +121,42 @@ export default function ReviewScreen() {
         promo_code: checkoutState.promoCode || undefined,
       };
 
-      // Call backend API
+      // Call backend API with timeout
       // TODO: Get real auth token from secure storage
       const mockAuthToken = 'mock-jwt-token-placeholder';
       const apiUrl = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000';
 
-      const response = await fetch(`${apiUrl}/api/orders`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${mockAuthToken}`,
-        },
-        body: JSON.stringify(orderRequest),
-      });
+      // Add 30-second timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+      let response;
+      try {
+        response = await fetch(`${apiUrl}/api/orders`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${mockAuthToken}`,
+          },
+          body: JSON.stringify(orderRequest),
+          signal: controller.signal,
+        });
+      } finally {
+        clearTimeout(timeoutId);
+      }
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || `Erreur serveur: ${response.status}`);
+        let errorMessage = `Erreur serveur: ${response.status}`;
+        try {
+          const contentType = response.headers.get('content-type');
+          if (contentType && contentType.includes('application/json')) {
+            const errorData = await response.json();
+            errorMessage = errorData.message || errorMessage;
+          }
+        } catch (e) {
+          // Content is not JSON, use status code message
+        }
+        throw new Error(errorMessage);
       }
 
       const orderResponse = await response.json();
@@ -147,11 +166,53 @@ export default function ReviewScreen() {
       clearCart();
       router.replace('/checkout/confirmation');
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Une erreur est survenue. Veuillez réessayer.';
+      let errorMessage = 'Une erreur est survenue. Veuillez réessayer.';
+
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          errorMessage = 'Délai d\'attente dépassé (30s). Vérifiez votre connexion et réessayez.';
+        } else {
+          errorMessage = error.message;
+        }
+      }
+
       orderError(errorMessage);
       setIsProcessing(false);
     }
   };
+
+  // Show loading state during order processing
+  if (isProcessing) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#FF6B35" />
+          <Text style={styles.loadingText}>Traitement de votre commande...</Text>
+          <Text style={styles.loadingSubtext}>Veuillez patienter</Text>
+        </View>
+      </View>
+    );
+  }
+
+  // Show error state
+  if (checkoutState.error) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.errorContainer}>
+          <FontAwesome name="exclamation-circle" size={48} color="#DC2626" style={styles.errorIcon} />
+          <Text style={styles.errorTitle}>Une erreur s'est produite</Text>
+          <Text style={styles.errorMessage}>{checkoutState.error}</Text>
+          <Pressable style={styles.retryButton} onPress={handlePlaceOrder}>
+            <FontAwesome name="redo" size={16} color="#FFFFFF" />
+            <Text style={styles.retryButtonText}>  Réessayer</Text>
+          </Pressable>
+          <Pressable style={styles.cancelButton} onPress={() => router.back()}>
+            <Text style={styles.cancelButtonText}>Retour</Text>
+          </Pressable>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -456,5 +517,80 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#FFFFFF',
     marginLeft: 8,
+  },
+  // Loading state
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F9FAFB',
+    padding: 20,
+  },
+  loadingText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#000000',
+    marginTop: 16,
+    textAlign: 'center',
+  },
+  loadingSubtext: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  // Error state
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F9FAFB',
+    padding: 20,
+  },
+  errorIcon: {
+    marginBottom: 16,
+  },
+  errorTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#DC2626',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  errorMessage: {
+    fontSize: 15,
+    color: '#374151',
+    marginBottom: 24,
+    textAlign: 'center',
+    lineHeight: 22,
+  },
+  retryButton: {
+    backgroundColor: '#FF6B35',
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    marginBottom: 12,
+    width: '100%',
+  },
+  retryButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  cancelButton: {
+    backgroundColor: '#E5E7EB',
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    alignItems: 'center',
+    width: '100%',
+  },
+  cancelButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#374151',
   },
 });
