@@ -3,24 +3,38 @@ import Stripe from 'stripe';
 
 @Injectable()
 export class StripeService {
-  private stripe: Stripe;
+  private stripe: Stripe | null = null;
+  private isConfigured = false;
 
   constructor() {
     const secretKey = process.env.STRIPE_SECRET_KEY;
-    if (!secretKey) {
-      throw new Error('STRIPE_SECRET_KEY is not configured');
+    if (secretKey) {
+      this.stripe = new Stripe(secretKey);
+      this.isConfigured = true;
+    } else {
+      console.warn(
+        '[StripeService] STRIPE_SECRET_KEY not configured. Stripe operations will be mocked. This is expected for MVP - client will configure when ready.'
+      );
+      this.isConfigured = false;
     }
-    this.stripe = new Stripe(secretKey);
   }
 
   /**
    * Create Stripe customer for user if not exists
    * Returns Stripe customer ID
+   *
+   * If Stripe is not configured (MVP mode), returns mock customer ID
    */
   async getOrCreateCustomer(userId: string, email: string): Promise<string> {
+    // If Stripe is not configured, return mock customer ID
+    if (!this.isConfigured) {
+      console.log(`[StripeService] Mocking customer creation for ${email} (Stripe not configured)`);
+      return `cus_mock_${userId}`;
+    }
+
     // In a real app, we'd look up the customer in Supabase first
     // For now, create a new one with user ID as metadata
-    const customer = await this.stripe.customers.create({
+    const customer = await this.stripe!.customers.create({
       email,
       metadata: {
         user_id: userId,
@@ -34,6 +48,8 @@ export class StripeService {
    * Create PaymentIntent for order
    * Handles platform commission via application_fee
    * Transfers funds to restaurant's connected account
+   *
+   * If Stripe is not configured (MVP mode), returns mock payment intent
    */
   async createPaymentIntent(
     orderId: string,
@@ -42,6 +58,17 @@ export class StripeService {
     amountCents: number, // Amount in cents (e.g., 1000 for €10.00)
     description: string,
   ): Promise<{ client_secret: string; payment_intent_id: string }> {
+    // If Stripe is not configured, return mock payment intent
+    if (!this.isConfigured) {
+      console.log(
+        `[StripeService] Mocking PaymentIntent creation for order ${orderId} (Stripe not configured)`
+      );
+      return {
+        client_secret: `pi_secret_mock_${orderId}`,
+        payment_intent_id: `pi_mock_${orderId}`,
+      };
+    }
+
     // Calculate platform fee: 7% (5% commission + 2% service fee)
     // For Stripe Connect: application_fee is platform commission only (5% of order)
     const platformFeeCents = Math.round(amountCents * 0.05); // 5% commission to platform
@@ -50,7 +77,7 @@ export class StripeService {
     const restaurantAmountCents = amountCents - platformFeeCents;
 
     // Create PaymentIntent with transfer to connected account
-    const paymentIntent = await this.stripe.paymentIntents.create({
+    const paymentIntent = await this.stripe!.paymentIntents.create({
       amount: amountCents,
       currency: 'eur',
       description: description,
@@ -75,14 +102,20 @@ export class StripeService {
    * Confirm PaymentIntent (after 3DS)
    */
   async confirmPaymentIntent(paymentIntentId: string) {
-    return await this.stripe.paymentIntents.retrieve(paymentIntentId);
+    if (!this.isConfigured) {
+      return { status: 'succeeded', client_secret: null };
+    }
+    return await this.stripe!.paymentIntents.retrieve(paymentIntentId);
   }
 
   /**
    * Create SetupIntent for saving card
    */
   async createSetupIntent(customerId: string): Promise<string> {
-    const setupIntent = await this.stripe.setupIntents.create({
+    if (!this.isConfigured) {
+      return `si_secret_mock_${customerId}`;
+    }
+    const setupIntent = await this.stripe!.setupIntents.create({
       customer: customerId,
       usage: 'off_session',
     });
@@ -94,7 +127,10 @@ export class StripeService {
    * Get payment methods for customer
    */
   async getPaymentMethods(customerId: string) {
-    const methods = await this.stripe.customers.listPaymentMethods(customerId, {
+    if (!this.isConfigured) {
+      return [];
+    }
+    const methods = await this.stripe!.customers.listPaymentMethods(customerId, {
       type: 'card',
     });
 
@@ -105,6 +141,9 @@ export class StripeService {
    * Delete payment method
    */
   async deletePaymentMethod(paymentMethodId: string) {
-    return await this.stripe.paymentMethods.detach(paymentMethodId);
+    if (!this.isConfigured) {
+      return { id: paymentMethodId };
+    }
+    return await this.stripe!.paymentMethods.detach(paymentMethodId);
   }
 }
