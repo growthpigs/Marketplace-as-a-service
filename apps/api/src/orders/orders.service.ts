@@ -117,10 +117,22 @@ export class OrdersService {
     const cashbackAmount =
       Math.round(subtotal * (cashbackRate / 100) * 100) / 100;
 
-    // Apply wallet credit
+    // Apply wallet credit - WITH BALANCE VERIFICATION
     const walletAmountToApply = request.wallet_amount_to_apply || 0;
+
+    // SECURITY: Query actual wallet balance from database
+    const { data: userWallet } = await supabase
+      .from('wallets')
+      .select('balance')
+      .eq('user_id', userId)
+      .single();
+
+    const actualWalletBalance = (userWallet?.balance as number) || 0;
+
+    // SECURITY: Limit wallet credit to actual balance (prevent fraud)
     const walletCreditUsed = Math.min(
       walletAmountToApply,
+      actualWalletBalance, // NEW: Check against actual balance
       subtotal + deliveryFee,
     );
 
