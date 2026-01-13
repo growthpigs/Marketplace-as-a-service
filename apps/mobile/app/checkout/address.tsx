@@ -118,12 +118,27 @@ export default function AddressScreen() {
     router.push('/checkout/delivery-time');
   };
 
-  // Use current location with real GPS
+  // Use current location with real GPS (native) or demo location (web)
   const handleUseCurrentLocation = async () => {
     setIsLoadingLocation(true);
 
     try {
-      // Request permission
+      // Web fallback: use default Paris location
+      if (isWeb) {
+        const address: DeliveryAddress = {
+          formatted: '123 Rue de la République, 75010 Paris, France',
+          placeId: 'web_demo_location',
+          streetAddress: '123 Rue de la République',
+          city: 'Paris',
+          postalCode: '75010',
+          coordinates: { lat: 48.8693, lng: 2.3635 },
+        };
+        setSelectedAddress(address);
+        setIsLoadingLocation(false);
+        return;
+      }
+
+      // Native: Request real GPS permission
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         Alert.alert(
