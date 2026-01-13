@@ -13,7 +13,7 @@
 | F002 | Restaurant Discovery | P0 | **UI Implemented** | [F002-discovery.md](F002-discovery.md) | 4 |
 | F003 | Menu Browsing | P0 | **Spec Complete** | [F003-menu.md](F003-menu.md) | 3 |
 | F004 | Order Placement | P0 | **UI Implemented** | [F004-ordering.md](F004-ordering.md) | 4 |
-| F005 | Payment Processing | P0 | **Spec Complete** | [F005-payments.md](F005-payments.md) | 5 |
+| F005 | Payment Processing | P0 | **In Progress** | [F005-payments.md](F005-payments.md) | 5 |
 | F006 | Order Tracking | P0 | **Spec Complete** | [F006-tracking.md](F006-tracking.md) | 3 |
 | F007 | Cashback Wallet | P0 | **UI Implemented** | [F007-wallet.md](F007-wallet.md) | 4 |
 | F008 | Group Ordering | P0 | **Spec Complete** | [F008-group-orders.md](F008-group-orders.md) | 5 |

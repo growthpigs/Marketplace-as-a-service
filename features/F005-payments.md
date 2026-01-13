@@ -2,7 +2,7 @@
 
 **ID:** F005
 **Priority:** P0 (MVP)
-**Status:** Spec Complete
+**Status:** In Progress
 **Estimate:** 5 DU
 
 ---
@@ -298,6 +298,89 @@ switch (event.type) {
 - F007 (Wallet) - Wallet balance for partial payment
 - Stripe account with Connect enabled
 - Restaurants must have connected accounts
+
+---
+
+## Implementation Plan
+
+**Current State:** Frontend payment UI mocked (100% fake payment flow). Backend orders endpoint missing.
+
+**Approach:** Replace mock payment flow with real Stripe Payment Sheet integration, create backend orders API endpoint with payment processing, integrate database schema, test end-to-end.
+
+### Phase 1: Backend Orders Service (1.5 DU)
+
+**Task 1.1: Create orders database schema**
+- Create: Database migrations for `orders` and `payments` tables per schema above
+- Add: Stripe customer ID column to `user_profiles`
+- Add: Stripe account columns to `restaurants` table
+- Verify: Supabase migrations run without errors
+
+**Task 1.2: Create POST /api/orders endpoint**
+- Create: `apps/api/src/orders/orders.controller.ts`
+- Implement: Accept order creation request with items, delivery address, restaurant_id
+- Logic: Calculate total, platform fee (5% + 2% service), restaurant amount
+- Return: Order object with order_id, status "pending", estimated_delivery_at
+- Validation: Amount > 0, restaurant exists, user authenticated
+
+**Task 1.3: Integrate Stripe payment setup in orders endpoint**
+- Modify: POST /api/orders to also create Stripe PaymentIntent
+- Pass: Application fee and transfer data to Stripe Connect
+- Return: Order with `client_secret` for frontend payment sheet
+- Validation: Stripe API key configured, restaurant has stripe_account_id
+
+### Phase 2: Frontend Stripe Integration (1.5 DU)
+
+**Task 2.1: Update payment.tsx to use real Stripe Payment Sheet**
+- Modify: `apps/mobile/app/checkout/payment.tsx` line 35-100
+- Remove: Hardcoded mock payment methods (lines 39-43)
+- Add: Call to `GET /api/payments/methods` to fetch saved cards
+- Implement: Real Stripe Payment Sheet initialization with publishable key
+- UI: Display actual saved cards instead of mock data
+
+**Task 2.2: Update review.tsx to call backend orders endpoint**
+- Modify: `apps/mobile/app/checkout/review.tsx` handlePlaceOrder (lines 87-91)
+- Remove: Fake 500ms delay and local orderId generation
+- Add: Call to `POST /api/orders` with order details
+- Pass: restaurant_id, items, delivery_address, tips, customer_notes
+- Wait: For response with order_id and payment client_secret
+- Store: Order details in checkout context
+
+**Task 2.3: Implement payment processing after order creation**
+- Modify: handlePlaceOrder to call `POST /orders/:id/pay` after order exists
+- Pass: payment_method_id (from selected card or "new_card")
+- Handle: 3D Secure flow if required (status: "requires_action")
+- Navigation: Redirect to confirmation screen on success
+- Error: Show error modal and allow user to retry
+
+### Phase 3: Wallet Integration (0.5 DU)
+
+**Task 3.1: Add wallet balance to payment options**
+- Modify: payment.tsx to show wallet balance option
+- Logic: Allow user to apply wallet to partial or full payment
+- Update: POST /orders/:id/pay to accept `use_wallet` flag
+- Backend: Calculate wallet_amount and card_amount
+- Deduction: Subtract from wallet on successful payment
+
+### Phase 4: Testing & Cleanup (1 DU)
+
+**Task 4.1: End-to-end payment flow test**
+- Test: Full checkout from cart → order creation → payment → confirmation
+- Verify: Stripe Payment Sheet appears (real, not mock)
+- Verify: Order created in database with correct amounts
+- Verify: Wallet deducted if used
+- Test: 3D Secure flow (test card 4000 0025 0000 3155)
+
+**Task 4.2: Error handling and edge cases**
+- Test: Payment failure (test card 4000 0000 0000 0002)
+- Test: Insufficient funds
+- Test: Network errors during payment
+- Verify: User can retry payment
+
+**Task 4.3: Clean up mock code**
+- Remove: Fake payment methods from payment.tsx
+- Remove: TODO comments about Stripe integration
+- Delete: Any unused mock payment utilities
+- Verify: No console errors or warnings
 
 ---
 
