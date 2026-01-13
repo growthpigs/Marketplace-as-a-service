@@ -65,34 +65,47 @@ export default function PaymentScreen() {
   // Fetch real payment methods from backend
   useEffect(() => {
     const fetchPaymentMethods = async () => {
+      // Skip API call in demo mode - use fallback methods
+      const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+      if (!apiUrl) {
+        console.log('[Payment] Demo mode - using fallback payment methods');
+        setIsLoading(false);
+        return;
+      }
+
       try {
-        // TODO: Get real auth token from secure storage
-        const mockAuthToken = 'mock-jwt-token-placeholder';
-        const apiUrl = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000';
+        // Use centralized auth config
+        const authToken = process.env.EXPO_PUBLIC_ENV === 'production'
+          ? null // TODO: Get from secure storage
+          : 'mock-jwt-token-placeholder'; // MVP demo token
+
+        if (!authToken) {
+          console.warn('[Payment] No auth token available');
+          setIsLoading(false);
+          return;
+        }
 
         const response = await fetch(`${apiUrl}/api/payments/methods`, {
           method: 'GET',
           headers: {
-            'Authorization': `Bearer ${mockAuthToken}`,
+            'Authorization': `Bearer ${authToken}`,
           },
         });
 
         if (!response.ok) {
-          console.warn(`Failed to fetch payment methods: ${response.status}`);
+          console.warn(`[Payment] Failed to fetch methods: ${response.status}`);
           setIsLoading(false);
           return;
         }
 
         const methods = await response.json();
         setPaymentMethods(methods);
-        // If we fetched real methods and don't have a selected method, select first one
         if (!selectedMethod && methods.length > 0) {
           setSelectedMethod(methods[0]);
         }
       } catch (error) {
-        // Silently fall back to mock methods if backend is unavailable
-        // (Stripe integration is flagged as future)
-        console.warn('Payment methods endpoint unavailable, using fallback mock methods');
+        // Fall back to mock methods if backend unavailable
+        console.warn('[Payment] API unavailable, using fallback methods');
       } finally {
         setIsLoading(false);
       }

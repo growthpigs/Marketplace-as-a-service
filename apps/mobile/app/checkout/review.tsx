@@ -204,8 +204,21 @@ export default function ReviewScreen() {
         console.log('[DEMO MODE] Order created:', { orderId, paymentIntentId });
       } else {
         // Production mode: Call backend API with timeout
-        const mockAuthToken = 'mock-jwt-token-placeholder';
-        const apiUrl = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000';
+        const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+
+        // API URL is REQUIRED in production mode
+        if (!apiUrl) {
+          throw new Error('Configuration erreur: API non configurée');
+        }
+
+        // Auth token - MVP uses placeholder, production needs real auth
+        const authToken = process.env.EXPO_PUBLIC_ENV === 'production'
+          ? null // TODO: Get from secure storage after real auth
+          : 'mock-jwt-token-placeholder'; // MVP demo token
+
+        if (!authToken) {
+          throw new Error('Authentification requise');
+        }
 
         // Add 30-second timeout
         const controller = new AbortController();
@@ -217,7 +230,7 @@ export default function ReviewScreen() {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${mockAuthToken}`,
+              'Authorization': `Bearer ${authToken}`,
             },
             body: JSON.stringify(orderRequest),
             signal: controller.signal,
