@@ -9,39 +9,56 @@
 
 **F005 - Payment Processing** - In Progress (Living Document: [`features/F005-payments.md`](../features/F005-payments.md))
 
-**Current State:** Frontend payment UI mocked (100% fake). Backend orders endpoint missing.
+**Current State:** ✅ Backend complete. Frontend in progress.
 
 **Goal:** Implement real Stripe Payment Sheet integration + backend payment processing.
 
 ---
 
-## Implementation Roadmap
+## Implementation Progress
 
-### Phase 1: Backend Orders Service (1.5 DU)
-- [ ] Task 1.1: Create orders database schema
-- [ ] Task 1.2: Create POST /api/orders endpoint
-- [ ] Task 1.3: Integrate Stripe payment setup in orders endpoint
+### ✅ Phase 1: Backend Orders Service (COMPLETE - 1.5 DU)
+- [x] Task 1.1: Create orders database schema
+  - Created migration: `supabase/migrations/00002_add_stripe_fields.sql`
+  - Added `stripe_customer_id` to user_profiles
+  - Added `stripe_account_status` to restaurants
 
-**Estimated:** 2-3 hours
+- [x] Task 1.2: Create POST /api/orders endpoint
+  - Created `apps/api/src/orders/orders.controller.ts`
+  - Created `apps/api/src/orders/orders.service.ts`
+  - Validates restaurant, calculates fees (5% commission + 2% service)
+  - Calculates wallet credit and cashback (10%)
+  - Creates orders and order_items in database
 
-### Phase 2: Frontend Stripe Integration (1.5 DU)
+- [x] Task 1.3: Integrate Stripe payment setup
+  - Created `apps/api/src/lib/stripe.ts` with PaymentIntent creation
+  - Stripe Connect: 5% platform fee + automatic restaurant transfer
+  - Creates/stores Stripe customer ID for user
+  - Returns client_secret for frontend Payment Sheet
+
+### 🔄 Phase 2: Frontend Stripe Integration (IN PROGRESS - 1.5 DU)
 - [ ] Task 2.1: Update payment.tsx to use real Stripe Payment Sheet
+  - Starting to replace mock payment methods with real Stripe integration
+  - Will fetch saved cards from `GET /api/payments/methods` (needs implementation)
+  - Will use Stripe Payment Sheet for card selection/addition
+
 - [ ] Task 2.2: Update review.tsx to call backend orders endpoint
+  - Currently generates fake order, will call `POST /api/orders`
+  - Will pass restaurant_id, items, delivery_address, wallet_amount_to_apply
+  - Will receive order_id and payment client_secret
+
 - [ ] Task 2.3: Implement payment processing after order creation
+  - Will call `POST /orders/:id/pay` to process Stripe payment
+  - Handle 3D Secure if required
+  - Navigate to confirmation on success
 
-**Estimated:** 2-3 hours
-
-### Phase 3: Wallet Integration (0.5 DU)
+### ⏳ Phase 3: Wallet Integration (0.5 DU)
 - [ ] Task 3.1: Add wallet balance to payment options
 
-**Estimated:** 1 hour
-
-### Phase 4: Testing & Cleanup (1 DU)
+### ⏳ Phase 4: Testing & Cleanup (1 DU)
 - [ ] Task 4.1: End-to-end payment flow test
 - [ ] Task 4.2: Error handling and edge cases
 - [ ] Task 4.3: Clean up mock code
-
-**Estimated:** 1.5-2 hours
 
 ---
 
