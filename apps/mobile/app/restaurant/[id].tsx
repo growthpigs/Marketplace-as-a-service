@@ -475,12 +475,12 @@ export default function RestaurantDetailScreen() {
         <View style={{ height: 120 }} />
       </ScrollView>
 
-      {/* Floating Cart Button */}
+      {/* Floating Cart Button - Navigate to checkout address screen */}
       {itemCount > 0 && (
         <FloatingCartButton
           itemCount={itemCount}
           total={total}
-          onPress={() => router.push('/(tabs)/baskets')}
+          onPress={() => router.push('/checkout/address')}
         />
       )}
     </View>

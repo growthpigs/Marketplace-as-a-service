@@ -12,8 +12,7 @@ import { useColorScheme } from '@/components/useColorScheme';
  * 1. Home (house icon) - Main restaurant feed
  * 2. Loyalty (star icon) - Wallet + Referral program
  * 3. Browse (search/compass) - Category browsing
- * 4. Baskets (shopping bag) - Cart/orders
- * 5. Account (user icon) - Profile settings
+ * 4. Account (user icon) - Profile settings
  *
  * DESIGN TOKENS:
  * - Active: #000000 (black)
@@ -64,13 +63,6 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <TabBarIcon name="star" color={color} />,
         }}
       />
-      {/* Hide grocery tab */}
-      <Tabs.Screen
-        name="grocery"
-        options={{
-          href: null, // Hide from tab bar
-        }}
-      />
       <Tabs.Screen
         name="browse"
         options={{
@@ -79,24 +71,10 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="baskets"
-        options={{
-          title: 'Panier',
-          tabBarIcon: ({ color }) => <TabBarIcon name="shopping-bag" color={color} />,
-        }}
-      />
-      <Tabs.Screen
         name="account"
         options={{
           title: 'Compte',
           tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
-        }}
-      />
-      {/* Hide the old two.tsx route */}
-      <Tabs.Screen
-        name="two"
-        options={{
-          href: null, // Hide from tab bar
         }}
       />
     </Tabs>
