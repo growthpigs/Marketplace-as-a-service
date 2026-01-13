@@ -96,6 +96,7 @@ export default function ReviewScreen() {
 
       // Build order request matching backend CreateOrderRequest schema
       const orderRequest = {
+        user_id: 'mock-user-id', // TODO: Get real user ID from auth context
         restaurant_id: cartState.restaurantId,
         items: cartState.items.map((item) => ({
           menu_item_id: item.menuItem.id,

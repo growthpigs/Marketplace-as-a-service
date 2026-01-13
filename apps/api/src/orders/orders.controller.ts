@@ -70,6 +70,16 @@ export class OrdersController {
       throw new UnauthorizedException('Invalid token');
     }
 
+    // SECURITY: Validate user_id in request matches authenticated user
+    if (!request.user_id) {
+      throw new BadRequestException('user_id is required in request body');
+    }
+    if (request.user_id !== user.id) {
+      throw new UnauthorizedException(
+        `User mismatch: request claims ${request.user_id}, token claims ${user.id}`,
+      );
+    }
+
     // Validate request
     if (!request.restaurant_id) {
       throw new BadRequestException('restaurant_id is required');

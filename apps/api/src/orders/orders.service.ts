@@ -3,6 +3,7 @@ import { SupabaseService } from '../lib/supabase';
 import { StripeService } from '../lib/stripe';
 
 export interface CreateOrderRequest {
+  user_id: string; // SECURITY: For authorization validation
   restaurant_id: string;
   items: Array<{
     menu_item_id: string;
@@ -104,21 +105,29 @@ export class OrdersService {
       .in('id', menuItemIds);
 
     if (menuError || !menuItems) {
-      throw new Error(`Failed to fetch menu items: ${menuError?.message || 'Unknown error'}`);
+      throw new Error(
+        `Failed to fetch menu items: ${menuError?.message || 'Unknown error'}`,
+      );
     }
 
-    const menuPricesMap = new Map(menuItems.map((m) => [m.id, m.price as number]));
+    const menuPricesMap = new Map(
+      menuItems.map((m) => [m.id, m.price as number]),
+    );
 
     // Validate each item and calculate subtotal
     const subtotal = request.items.reduce((sum, item) => {
       // Validate quantity
       if (!Number.isInteger(item.quantity) || item.quantity <= 0) {
-        throw new Error(`Invalid quantity for ${item.name}: must be positive integer`);
+        throw new Error(
+          `Invalid quantity for ${item.name}: must be positive integer`,
+        );
       }
 
       // Validate price is non-negative
       if (item.unit_price < 0) {
-        throw new Error(`Invalid unit_price for ${item.name}: cannot be negative`);
+        throw new Error(
+          `Invalid unit_price for ${item.name}: cannot be negative`,
+        );
       }
 
       // Validate price matches menu (tolerance 0.01 for rounding)
@@ -134,7 +143,9 @@ export class OrdersService {
 
       // Validate options price
       if ((item.options_price || 0) < 0) {
-        throw new Error(`Invalid options_price for ${item.name}: cannot be negative`);
+        throw new Error(
+          `Invalid options_price for ${item.name}: cannot be negative`,
+        );
       }
 
       return (
