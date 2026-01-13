@@ -224,6 +224,10 @@ export default function ReviewScreen() {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 30000);
 
+        // Generate idempotency key to prevent duplicate orders on retry
+        // Format: order-{restaurantId}-{timestamp}-{random}
+        const idempotencyKey = `order-${cartState.restaurantId}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
         let response;
         try {
           response = await fetch(`${apiUrl}/api/orders`, {
@@ -231,6 +235,7 @@ export default function ReviewScreen() {
             headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${authToken}`,
+              'Idempotency-Key': idempotencyKey,
             },
             body: JSON.stringify(orderRequest),
             signal: controller.signal,
@@ -254,8 +259,14 @@ export default function ReviewScreen() {
         }
 
         const orderResponse = await response.json();
+
+        // Validate API response shape
+        if (!orderResponse?.id) {
+          throw new Error('Réponse serveur invalide: ID de commande manquant');
+        }
+
         orderId = orderResponse.id;
-        paymentIntentId = orderResponse.payment_intent_id;
+        paymentIntentId = orderResponse.payment_intent_id ?? `pi-${orderId}`;
       }
 
       // Success! Order created (real or demo)

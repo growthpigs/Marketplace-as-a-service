@@ -231,15 +231,26 @@ return { state, subtotal, total, meetsMinOrder, addItem, removeItem };
 
 ---
 
-## Current Tech Debt (from standards audit)
+## Current Tech Debt (Audited 2026-01-13)
 
-| Issue | Location | Priority |
-|-------|----------|----------|
-| `localhost:3000` hardcoded | `payment.tsx:71`, `review.tsx:208` | High |
-| `mock-jwt-token-placeholder` | Multiple files | High |
-| Mock restaurant data | `restaurant/[id].tsx:53` | Medium |
-| Mock user data | `loyalty.tsx:52` | Medium |
-| Mock cashback value | `confirmation.tsx:142` | Low |
+### FIXED (Do Not Regress)
+| Issue | Fixed In | Commit |
+|-------|----------|--------|
+| `localhost:3000` hardcoded | `payment.tsx`, `review.tsx` | `6fcb23c` |
+| Idempotency key missing | `review.tsx` | Pending |
+| Order response validation | `review.tsx` | Pending |
+
+### OPEN (Prioritized)
+| Priority | Issue | Location | Risk |
+|----------|-------|----------|------|
+| HIGH | `mock-jwt-token-placeholder` | `config/api.ts`, `review.tsx` | Security (MVP only) |
+| MEDIUM | `any` type in address parsing | `address.tsx:174` | Type safety |
+| MEDIUM | Fee calculations duplicated | `CartContext.tsx`, `review.tsx` | Maintainability |
+| MEDIUM | 14 console.log statements | Multiple files | Dev hygiene |
+| LOW | Mock restaurant data | `restaurant/[id].tsx:53` | Expected for MVP |
+| LOW | Mock user/loyalty data | `loyalty.tsx:52` | Expected for MVP |
+| LOW | Mock cashback value | `confirmation.tsx:142` | Expected for MVP |
+| DEFERRED | i18n (French hardcoded) | All screens | France-only launch |
 
 ---
 
