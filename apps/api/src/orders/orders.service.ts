@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { SupabaseService } from '../lib/supabase';
+import { StripeService } from '../lib/stripe';
 
 export interface CreateOrderRequest {
   restaurant_id: string;
@@ -50,32 +51,47 @@ export interface Order {
   created_at: string;
 }
 
+export interface CreateOrderResponse extends Order {
+  client_secret: string;
+  payment_intent_id: string;
+}
+
 @Injectable()
 export class OrdersService {
-  constructor(private supabaseService: SupabaseService) {}
+  constructor(
+    private supabaseService: SupabaseService,
+    private stripeService: StripeService,
+  ) {}
 
   /**
    * Create an order from cart
-   * Calculates totals, fees, and creates order in database
+   * Calculates totals, fees, creates order in database, and initializes Stripe payment
    *
-   * Current state: Creates order without payment processing
-   * Next: Task 1.3 will add Stripe PaymentIntent creation
+   * Returns client_secret for frontend Payment Sheet
    */
   async createOrder(
     userId: string,
+    userEmail: string,
     request: CreateOrderRequest,
-  ): Promise<Order> {
+  ): Promise<CreateOrderResponse> {
     const supabase = this.supabaseService.getAdmin();
 
     // Validate restaurant exists
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { data: restaurant, error: restaurantError } = await supabase
       .from('restaurants')
-      .select('id, delivery_fee, commission_rate')
+      .select('id, delivery_fee, commission_rate, stripe_account_id')
       .eq('id', request.restaurant_id)
       .single();
 
     if (restaurantError || !restaurant) {
       throw new Error('Restaurant not found');
+    }
+
+    // Validate restaurant has Stripe account for payments
+    const stripeAccountId = (restaurant as Record<string, unknown>).stripe_account_id as string;
+    if (!stripeAccountId) {
+      throw new Error('Restaurant does not have Stripe account configured');
     }
 
     // Calculate order totals
@@ -165,7 +181,78 @@ export class OrdersService {
       throw new Error(`Failed to create order items: ${itemsError.message}`);
     }
 
-    return order as Order;
+    // Create Stripe PaymentIntent for this order
+    // Amount in cents (total price + service fee, excluding wallet credit)
+    const amountCents = Math.round(total * 100);
+    const orderNumber = (order as Record<string, unknown>).order_number as string;
+
+    let paymentIntentId: string;
+    let clientSecret: string;
+
+    try {
+      // Get or create Stripe customer for user
+      const stripeCustomerId = await this.stripeService.getOrCreateCustomer(
+        userId,
+        userEmail,
+      );
+
+      // Update user profile with Stripe customer ID
+      await supabase
+        .from('user_profiles')
+        .update({ stripe_customer_id: stripeCustomerId })
+        .eq('id', userId);
+
+      // Create PaymentIntent with restaurant transfer
+      const paymentData = await this.stripeService.createPaymentIntent(
+        orderId,
+        userId,
+        stripeAccountId,
+        amountCents,
+        `Order ${orderNumber} from TurkEats`,
+      );
+
+      clientSecret = paymentData.client_secret;
+      paymentIntentId = paymentData.payment_intent_id;
+
+      // Update order with Stripe payment intent ID
+      await supabase
+        .from('orders')
+        .update({ stripe_payment_intent_id: paymentIntentId })
+        .eq('id', orderId);
+    } catch (stripeError) {
+      console.error('Stripe payment setup error:', stripeError);
+      throw new Error(
+        stripeError instanceof Error
+          ? `Payment setup failed: ${stripeError.message}`
+          : 'Failed to setup payment',
+      );
+    }
+
+    const orderData = order as Record<string, unknown>;
+    return {
+      id: orderData.id as string,
+      order_number: orderData.order_number as string,
+      user_id: orderData.user_id as string,
+      restaurant_id: orderData.restaurant_id as string,
+      delivery_address: orderData.delivery_address,
+      delivery_instructions: orderData.delivery_instructions as string | null,
+      subtotal: orderData.subtotal as number,
+      delivery_fee: orderData.delivery_fee as number,
+      service_fee: orderData.service_fee as number,
+      promo_discount: orderData.promo_discount as number,
+      wallet_credit_used: orderData.wallet_credit_used as number,
+      total: orderData.total as number,
+      cashback_rate: orderData.cashback_rate as number,
+      cashback_amount: orderData.cashback_amount as number,
+      status: orderData.status as string,
+      payment_method: orderData.payment_method as string | null,
+      payment_status: orderData.payment_status as string,
+      stripe_payment_intent_id: paymentIntentId,
+      estimated_delivery_at: orderData.estimated_delivery_at as string,
+      created_at: orderData.created_at as string,
+      client_secret: clientSecret,
+      payment_intent_id: paymentIntentId,
+    };
   }
 
   /**

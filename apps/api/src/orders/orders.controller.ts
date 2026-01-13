@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
   Headers,
 } from '@nestjs/common';
-import type { CreateOrderRequest, Order } from './orders.service';
+import type { CreateOrderRequest, CreateOrderResponse } from './orders.service';
 import { OrdersService } from './orders.service';
 import { SupabaseService } from '../lib/supabase';
 
@@ -100,9 +100,13 @@ export class OrdersController {
     }
 
     // Create order
-    let order: Order;
+    let orderResponse: CreateOrderResponse;
     try {
-      order = await this.ordersService.createOrder(user.id, request);
+      orderResponse = await this.ordersService.createOrder(
+        user.id,
+        user.email || '',
+        request,
+      );
     } catch (error) {
       console.error('Order creation failed:', error);
       throw new BadRequestException(
@@ -110,23 +114,23 @@ export class OrdersController {
       );
     }
 
-    // Response includes order details
-    // Note: client_secret will be added in Task 1.3 when Stripe PaymentIntent is created
+    // Response includes order details and payment setup
     return {
-      id: order.id,
-      order_number: order.order_number,
-      user_id: order.user_id,
-      restaurant_id: order.restaurant_id,
-      subtotal: order.subtotal,
-      delivery_fee: order.delivery_fee,
-      service_fee: order.service_fee,
-      wallet_credit_used: order.wallet_credit_used,
-      total: order.total,
-      status: order.status,
-      payment_status: order.payment_status,
-      estimated_delivery_at: order.estimated_delivery_at,
-      created_at: order.created_at,
-      // client_secret: will be populated in Task 1.3
+      id: orderResponse.id,
+      order_number: orderResponse.order_number,
+      user_id: orderResponse.user_id,
+      restaurant_id: orderResponse.restaurant_id,
+      subtotal: orderResponse.subtotal,
+      delivery_fee: orderResponse.delivery_fee,
+      service_fee: orderResponse.service_fee,
+      wallet_credit_used: orderResponse.wallet_credit_used,
+      total: orderResponse.total,
+      status: orderResponse.status,
+      payment_status: orderResponse.payment_status,
+      estimated_delivery_at: orderResponse.estimated_delivery_at,
+      created_at: orderResponse.created_at,
+      client_secret: orderResponse.client_secret,
+      payment_intent_id: orderResponse.payment_intent_id,
     };
   }
 }
