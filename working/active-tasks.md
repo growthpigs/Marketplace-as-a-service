@@ -22,10 +22,33 @@
 - `browse.tsx` navigates with `router.push({ pathname: '/', params: { category/collection } })`
 - `index.tsx` reads params with `useLocalSearchParams()` and applies via `useEffect`
 
-**Outcome Notes:**
-- Created `working/RUNBOOK.md` with verification commands
-- Documented "File Existence Fallacy" pattern in error-patterns.md
-- Lesson stored in mem0: Always use runtime verification, not file existence checks
+---
+
+## ✅ MILESTONE: Checkout Hardening Complete (2026-01-13)
+
+**Status:** ✅ COMPLETE
+**Verified:** TypeScript ✅ | Build ✅ | Git Clean ✅
+
+### Fixes Implemented
+
+| Fix | File | Impact |
+|-----|------|--------|
+| Toast notifications for validation | `review.tsx`, `ToastConfig.tsx` | UX: Friendly warnings vs scary errors |
+| Idempotency key for orders | `review.tsx:158` | Prevents duplicate order submission |
+| Order response validation | `review.tsx:195` | Guards against malformed API responses |
+| Centralized API config | `config/api.ts` | No hardcoded URLs |
+| Removed `localhost:3000` fallback | `payment.tsx`, `review.tsx` | Security: No accidental local calls |
+
+### Documentation Updated
+
+| Document | Update | Link |
+|----------|--------|------|
+| ErrorPatterns.md | EP-084 "File Existence Fallacy" | `~/.claude/troubleshooting/error-patterns.md` |
+| Runbook.md | Verification Commands section | [`docs/RUNBOOK.md#verification-commands`](../docs/RUNBOOK.md) |
+| mem0 | Runtime verification rule | Committed 2026-01-13 |
+| CLAUDE.md | Tech debt audit table | Project root |
+
+**Lesson Learned:** When verifying infrastructure or config, never rely on file existence checks alone. Always execute runtime tests. See Runbook.md for verification commands.
 
 ---
 

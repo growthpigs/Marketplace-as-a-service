@@ -224,6 +224,77 @@ TurkEats/
 
 ---
 
+## Verification Commands (Runtime Tests)
+
+**CRITICAL:** Never verify by file existence alone. Use these runtime tests.
+
+### Mobile App Verification
+
+```bash
+# TypeScript compiles (not just "file exists")
+cd apps/mobile && npx tsc --noEmit && echo "✅ TypeScript: PASS"
+
+# Actually builds (not just "packages installed")
+cd apps/mobile && npx expo export --platform ios && echo "✅ Build: PASS"
+
+# Dev server starts
+cd apps/mobile && npx expo start --tunnel  # Must see QR code
+```
+
+### API Verification
+
+```bash
+# API actually starts
+cd apps/api && npm run start:dev
+# Should see: "Nest application successfully started"
+
+# Health check endpoint responds
+curl http://localhost:3000/health && echo "✅ API: PASS"
+
+# Auth token validation (demo mode)
+curl -X POST http://localhost:3000/api/orders \
+  -H "Authorization: Bearer mock-jwt-token-placeholder" \
+  -H "Content-Type: application/json" \
+  -d '{"test": true}'
+# Should return 400 (validation error), not 401 (auth error)
+```
+
+### Environment Verification
+
+```bash
+# Env vars actually load (not just "file exists")
+cd apps/mobile && node -e "
+  require('dotenv').config();
+  const required = ['EXPO_PUBLIC_SUPABASE_URL', 'EXPO_PUBLIC_ENV'];
+  const missing = required.filter(k => !process.env[k]);
+  if (missing.length) throw new Error('Missing: ' + missing.join(', '));
+  console.log('✅ Env vars: PASS');
+"
+```
+
+### Git Status Verification
+
+```bash
+# Clean working tree (not just "committed")
+git status | grep "nothing to commit" && echo "✅ Git: CLEAN"
+
+# Pushed to remote (not just "committed locally")
+git status | grep "Your branch is up to date" && echo "✅ Remote: SYNCED"
+```
+
+### Pre-Commit Verification (Automatic)
+
+The pre-commit hook runs these checks automatically:
+1. Secrets detection
+2. TypeScript (all apps)
+3. Linting (API, Dashboard)
+4. Build verification (Dashboard)
+5. Dependency audit
+
+If any fail, commit is rejected.
+
+---
+
 ## Questions?
 
 - **"Where do I put the implementation tasks?"** → In the feature spec file (`features/F0XX-*.md`)
