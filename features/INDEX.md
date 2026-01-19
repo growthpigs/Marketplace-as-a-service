@@ -124,7 +124,24 @@ Implementation considerations.
 
 ---
 
+---
+
+## Design Assets (2026-01-19)
+
+**Status:** ✅ UPLOADED TO GOOGLE WORKSPACE
+
+| Asset | Location | Count |
+|-------|----------|-------|
+| Wireframes | [Google Slides](https://docs.google.com/presentation/d/1EoDTpRWbZyrmVGsHpFjNxnWWvUAAwxX6O53fXLI_TZA/edit) | 30 screens |
+| User Stories | Google Sheets | 30 stories (EN/FR) |
+| Source PNGs | [Drive Folder](https://drive.google.com/drive/folders/1_8o4eEuY1INwMVrSnmhst3AUQf-OK6j4) | 30 files |
+
+**Living Doc:** [DESIGN.md](DESIGN.md) - Full wireframe inventory
+
+---
+
 ## Related Documents
 
 - [../docs/01-product/MVP-PRD.md](../docs/01-product/MVP-PRD.md) - Product requirements
 - [../docs/01-product/SCOPE.md](../docs/01-product/SCOPE.md) - Feature scope
+- [DESIGN.md](DESIGN.md) - Design assets and wireframes

@@ -50,5 +50,5 @@
 
 ## Related Documents
 
-- [RUNBOOK.md](RUNBOOK.md)
+- [RUNBOOK.md](projects/marketplace-as-a-service/06-reference/RUNBOOK.md)
 - [../04-technical/TECH-STACK.md](../04-technical/TECH-STACK.md)

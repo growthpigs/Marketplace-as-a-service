@@ -1,0 +1,96 @@
+{
+  "project": "TurkEats Restaurateur Dashboard",
+  "platform": "mobile",
+  "screens": [
+    {
+      "id": "01-orders-home",
+      "name": "Orders Dashboard",
+      "description": "Main orders screen with horizontal status tabs. Header shows 'Commandes' title with green 'Ouvert' status toggle. Three tabs below: 'Nouvelles' (with red badge count), 'En cours', 'Prêtes'. Main content is vertical list of order cards. Each card shows: order number (#TK-2847) bold, time elapsed badge (12 min), item summary (Döner Assiette x2, Frites), total price right-aligned (€24.50). Cards have subtle shadow, white background. Bottom navigation bar with 5 tabs: Commandes (active, filled icon), Menu, Stats, Paiements, Plus.",
+      "user_stories": ["US-RD-001", "US-RD-005"]
+    },
+    {
+      "id": "02-order-detail",
+      "name": "Order Detail",
+      "description": "Single order detail view. Top header: back arrow, 'Commande #TK-2847', timer badge showing '12 min'. Customer section: customer first name 'Jean D.', delivery address below. Order items section: vertical list with item name, quantity, price per line. Special instructions in gray italic. Subtotal, delivery fee, total breakdown. Two large action buttons at bottom: 'ACCEPTER' (green, primary) and 'REFUSER' (gray outline, secondary). Both buttons are extra large (72px height) for kitchen use.",
+      "user_stories": ["US-RD-002", "US-RD-003", "US-RD-004"]
+    },
+    {
+      "id": "03-order-preparing",
+      "name": "Order Preparing State",
+      "description": "Order detail in 'preparing' state. Same layout as order detail but status shows 'En préparation' blue badge. Timer shows prep time remaining. Single large button at bottom: 'PRÊT POUR RÉCUPÉRATION' (Ready for pickup). Estimated driver arrival time shown: 'Livreur dans ~8 min'.",
+      "user_stories": ["US-RD-004"]
+    },
+    {
+      "id": "04-menu-management",
+      "name": "Menu Management",
+      "description": "Menu items list view. Header: 'Menu' title with search icon. Category tabs below header: 'Tous', 'Kebabs', 'Assiettes', 'Boissons', 'Desserts'. Main content: vertical list of menu items. Each item row shows: item image thumbnail (square, 48px), item name and price, toggle switch on right for availability. Items marked unavailable show 'ÉPUISÉ' badge and are slightly grayed. Floating action button bottom right: '+' to add new item. Bottom navigation bar.",
+      "user_stories": ["US-RD-008", "US-RD-009"]
+    },
+    {
+      "id": "05-menu-item-edit",
+      "name": "Menu Item Editor",
+      "description": "Edit menu item form. Header: back arrow, 'Modifier l'article' title, checkmark save icon. Large photo area at top (square placeholder for item image, tap to change). Form fields below: 'Nom' text input with value 'Döner Assiette', 'Description' multiline textarea, 'Prix' number input with € prefix showing '12.90', 'Catégorie' dropdown showing 'Assiettes', 'Disponible' toggle switch (on position). Primary button at bottom: 'Enregistrer les modifications'.",
+      "user_stories": ["US-RD-009", "US-RD-010"]
+    },
+    {
+      "id": "06-daily-dashboard",
+      "name": "Daily Revenue Dashboard",
+      "description": "Analytics home screen. Header: 'Statistiques' title with date picker showing 'Aujourd'hui'. Large revenue card at top: '€687.40' in large bold text, 'Chiffre d'affaires' label above, '+12% vs hier' green comparison below. Three stat cards in row below: 'Commandes' showing '23', 'Panier moyen' showing '€29.88', 'Note' showing '4.8⭐'. Simple bar chart showing hourly orders (12h-22h). Section: 'Articles populaires' with top 3 items listed. Bottom navigation bar.",
+      "user_stories": ["US-RD-012", "US-RD-013", "US-RD-014"]
+    },
+    {
+      "id": "07-payments",
+      "name": "Payments Screen",
+      "description": "Payments and earnings view. Header: 'Paiements' title. Balance card at top: 'Solde disponible' label, '€623.45' large amount, 'Prochain virement: Vendredi' below. Earnings breakdown card: 'Cette semaine' with gross (€2,847), commission -15% (€427.05), net (€2,419.95). Each line clearly labeled. Transaction history list below: date, order count, amount for each day. 'Télécharger relevé' link at bottom. Bottom navigation bar.",
+      "user_stories": ["US-RD-015", "US-RD-016", "US-RD-017"]
+    },
+    {
+      "id": "08-settings-main",
+      "name": "Settings Menu",
+      "description": "Settings overview screen. Header: 'Plus' title. Grouped settings list. Section 'Restaurant': 'Horaires d'ouverture' row with chevron, 'Informations' row with chevron, 'Zone de livraison' row with chevron. Section 'Notifications': 'Sons et alertes' row with chevron, 'Volume' row showing 'Fort'. Section 'Équipe': 'Gérer l'équipe' row with chevron, showing '3 membres'. Section 'Fidélité': 'Tableau de bord fidélité' row. Footer: 'Kebab Sultan' restaurant name, 'Version 1.0.0', 'Déconnexion' red text button. Bottom navigation bar.",
+      "user_stories": ["US-RD-022", "US-RD-023", "US-RD-024"]
+    },
+    {
+      "id": "09-operating-hours",
+      "name": "Operating Hours",
+      "description": "Configure opening hours screen. Header: back arrow, 'Horaires d'ouverture' title. List of days, each row showing: day name (Lundi, Mardi...), toggle switch, hours if open (11:00 - 22:00). Dimanche shows 'Fermé' in gray. 'Fermeture exceptionnelle' button to schedule holiday closure. 'Mode vacances' toggle at bottom to pause all operations.",
+      "user_stories": ["US-RD-022"]
+    },
+    {
+      "id": "10-notification-settings",
+      "name": "Notification Settings",
+      "description": "Sound and alert configuration. Header: back arrow, 'Sons et alertes' title. Section 'Volume des alertes': slider from low to high, currently at high. Section 'Son de commande': list of sound options with radio buttons (Classique, Urgent, Doux, Personnalisé). 'Écouter' play button next to each. Section 'Annonces vocales': toggle for 'Annoncer les nouvelles commandes', language dropdown showing 'Français'. Section 'Vibration': toggle switch (on).",
+      "user_stories": ["US-RD-023"]
+    },
+    {
+      "id": "11-busy-mode-active",
+      "name": "Busy Mode Active",
+      "description": "Orders screen with busy mode enabled. Same as orders home but with prominent yellow banner at top: '⚠️ MODE OCCUPÉ ACTIF - Délais +10 min'. Banner has 'Désactiver' button. Order cards show adjusted delivery times. Subtle yellow tint to indicate busy state.",
+      "user_stories": ["US-RD-006"]
+    },
+    {
+      "id": "12-pause-confirmation",
+      "name": "Pause Orders Confirmation",
+      "description": "Modal overlay confirming order pause. Dimmed background. White modal card centered: warning icon, 'Mettre en pause les commandes?' title, 'Vous ne recevrez plus de nouvelles commandes jusqu'à la reprise.' description. Two buttons: 'Annuler' (gray outline) and 'Confirmer la pause' (red primary).",
+      "user_stories": ["US-RD-007"]
+    },
+    {
+      "id": "13-loyalty-scan",
+      "name": "Loyalty QR Scanner",
+      "description": "Camera view for scanning customer loyalty QR. Full screen camera viewfinder with QR frame overlay in center. Header: close X button, 'Scanner fidélité' title. Instructions below frame: 'Placez le code QR du client dans le cadre'. Torch/flashlight toggle button in corner.",
+      "user_stories": ["US-RD-021"]
+    },
+    {
+      "id": "14-loyalty-confirmed",
+      "name": "Loyalty Points Confirmed",
+      "description": "Success modal after scanning loyalty QR. Green checkmark animation at top. 'Points attribués!' title. Customer name: 'Marie L.' Amount: '+12 points'. Customer's new total: '127 points'. 'Terminé' button to dismiss.",
+      "user_stories": ["US-RD-021"]
+    },
+    {
+      "id": "15-reviews-list",
+      "name": "Customer Reviews",
+      "description": "Reviews management screen. Header: 'Avis clients' title with filter dropdown (Tous, Non répondus). Summary card: average rating '4.7⭐' with '89 avis'. List of review cards below. Each card shows: star rating (1-5), customer name, date, review text (truncated), 'Répondre' button if not yet replied, or 'Votre réponse:' with response text. Badge on non-replied reviews.",
+      "user_stories": ["US-RD-018"]
+    }
+  ]
+}

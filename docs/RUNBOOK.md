@@ -302,3 +302,28 @@ If any fail, commit is rejected.
 - **"How do I track progress?"** → Update `working/active-tasks.md` (which links to the spec)
 - **"What if the spec needs updating?"** → Update it directly (it's a living doc!)
 
+---
+
+## Changelog
+
+### 2026-01-19 - Restaurateur Dashboard PRD + Wireframe Tooling
+
+**Documentation:**
+- Created `docs/00-intake/COMPETITIVE-RESEARCH-MERCHANT-DASHBOARDS.md` - Uber Eats + Deliveroo analysis
+- Created `docs/01-product/RESTAURATEUR-DASHBOARD-PRD.md` - Full PRD with 26 user stories
+- Created `docs/03-design/wireframes/screens.json` - 15-screen config for batch generation
+
+**Tooling:**
+- Created NanoBanana Pro skill (`~/.claude/skills/NanoBananaPro/`)
+- Fixed SDK issues (google-genai, not google-generativeai)
+- Fixed model name (gemini-2.0-flash-exp)
+
+**Platform Strategy:** 90% mobile, 10% web for restaurateur dashboard
+
+### 2026-01-13 - Consumer App UI 100% Complete
+
+- All 5 tabs fully interactive for demo
+- Browse → Home navigation with URL params
+- Account settings dialogs implemented
+- Commit: `3841202`
+

@@ -1,0 +1,337 @@
+Story ID,Epic,User Role,User Story (EN),User Story (FR),Acceptance Criteria (EN),Acceptance Criteria (FR),Priority,Sprint,Wireframe Ref,Status
+US-001,Vendor Onboarding,Vendor,"As a new vendor, I want to create my restaurant profile so that customers can discover my business","En tant que nouveau vendeur, je souhaite créer mon profil de restaurant afin que les clients puissent découvrir mon établissement","1. Vendor can enter restaurant name, description, cuisine type
+2. Vendor can upload logo (PNG/JPG, max 5MB)
+3. Vendor can set operating hours for each day
+4. Vendor can define delivery zones on map
+5. Profile is saved and visible to customers within 24 hours
+6. Email confirmation sent upon profile completion","1. Le vendeur peut saisir le nom, la description, le type de cuisine
+2. Le vendeur peut télécharger un logo (PNG/JPG, max 5Mo)
+3. Le vendeur peut définir les horaires d'ouverture
+4. Le vendeur peut définir les zones de livraison
+5. Le profil est visible sous 24h
+6. Email de confirmation envoyé",P0,Sprint 1,09-onboarding-welcome.png,Draft
+US-002,Vendor Onboarding,Vendor,"As a vendor, I want to connect my bank account for payouts so I can receive my earnings","En tant que vendeur, je souhaite connecter mon compte bancaire pour recevoir mes paiements","1. Vendor can enter bank account details (routing, account number)
+2. System validates account via micro-deposits
+3. Vendor confirms micro-deposit amounts
+4. Payout schedule options displayed (daily, weekly, monthly)
+5. Confirmation email sent with payout schedule","1. Le vendeur peut saisir les coordonnées bancaires
+2. Validation par micro-virements
+3. Confirmation des montants
+4. Options de fréquence de paiement
+5. Email de confirmation",P0,Sprint 1,06-settings.png,Draft
+US-003,Order Management,Vendor,"As a vendor, I want to view incoming orders in real-time so I can prepare food promptly","En tant que vendeur, je souhaite voir les commandes entrantes en temps réel pour préparer rapidement","1. New orders appear within 5 seconds of placement
+2. Audio/visual notification for new orders
+3. Order shows customer name, items, special instructions, total
+4. Order timestamp visible
+5. Orders grouped by status (New, Preparing, Ready, Delivered)
+6. Pull-to-refresh available","1. Nouvelles commandes affichées en 5 secondes
+2. Notification audio/visuelle
+3. Détails de la commande visibles
+4. Horodatage visible
+5. Commandes groupées par statut
+6. Rafraîchissement manuel disponible",P0,Sprint 1,02-orders-queue.png,Draft
+US-004,Order Management,Vendor,"As a vendor, I want to accept or reject incoming orders so I can manage my kitchen capacity","En tant que vendeur, je souhaite accepter ou refuser les commandes pour gérer ma capacité","1. Accept/Reject buttons visible on new orders
+2. Accept triggers 'Preparing' status and starts prep timer
+3. Reject requires reason selection (too busy, item unavailable, closing soon)
+4. Customer notified of acceptance within 10 seconds
+5. Customer notified of rejection with reason
+6. Rejected order refunded automatically","1. Boutons Accepter/Refuser visibles
+2. Acceptation lance le timer de préparation
+3. Refus nécessite une raison
+4. Client notifié en 10 secondes
+5. Client informé du refus
+6. Remboursement automatique",P0,Sprint 1,02-orders-queue.png,Draft
+US-005,Order Management,Vendor,"As a vendor, I want to mark orders as 'Ready' so drivers know when to pick up","En tant que vendeur, je souhaite marquer les commandes 'Prêtes' pour que les livreurs sachent quand récupérer","1. 'Mark Ready' button visible on Preparing orders
+2. Status changes to 'Ready for Pickup' immediately
+3. Driver receives push notification
+4. Timer shows time since marked ready
+5. Customer ETA updates based on ready status","1. Bouton 'Marquer Prêt' visible
+2. Statut change immédiatement
+3. Livreur reçoit notification
+4. Timer depuis marquage prêt
+5. ETA client mis à jour",P1,Sprint 1,03-order-detail.png,Draft
+US-006,Order Management,Vendor,"As a vendor, I want to view detailed order information so I can prepare orders accurately","En tant que vendeur, je souhaite voir les détails de commande pour préparer avec précision","1. Tap order opens detail view
+2. Shows all items with quantities, modifiers, prices
+3. Shows special instructions prominently (highlighted)
+4. Shows customer contact info (phone, address)
+5. Shows order timeline (placed, accepted, preparing, ready, delivered)
+6. Contact customer button available","1. Tap ouvre le détail
+2. Tous les articles avec quantités, modificateurs, prix
+3. Instructions spéciales en évidence
+4. Coordonnées client
+5. Timeline de commande
+6. Bouton contacter client",P1,Sprint 1,03-order-detail.png,Draft
+US-007,Menu Management,Vendor,"As a vendor, I want to add menu items so customers can order from my restaurant","En tant que vendeur, je souhaite ajouter des articles au menu pour que les clients puissent commander","1. Add item form with name, description, price, category, image
+2. Category selection from predefined + custom categories
+3. Prep time estimate field
+4. Modifier groups (size, spice level, add-ons)
+5. Image upload with preview
+6. Item visible on menu after save","1. Formulaire avec nom, description, prix, catégorie, image
+2. Sélection de catégorie
+3. Temps de préparation estimé
+4. Groupes de modificateurs
+5. Téléchargement d'image avec aperçu
+6. Article visible après sauvegarde",P0,Sprint 2,07-add-menu-item.png,Draft
+US-008,Menu Management,Vendor,"As a vendor, I want to mark items as unavailable so customers don't order out-of-stock items","En tant que vendeur, je souhaite marquer les articles indisponibles pour éviter les commandes en rupture","1. Toggle switch for each menu item (Available/Unavailable)
+2. Unavailable items show 'Sold Out' badge to customers
+3. Unavailable items grayed out but visible
+4. Bulk mark unavailable option
+5. Notification to vendor when popular item marked unavailable
+6. Option to set automatic re-availability time","1. Interrupteur Disponible/Indisponible
+2. Badge 'Épuisé' affiché aux clients
+3. Articles grisés mais visibles
+4. Option marquage en masse
+5. Notification pour articles populaires
+6. Option de re-disponibilité automatique",P0,Sprint 2,04-menu-management.png,Draft
+US-009,Menu Management,Vendor,"As a vendor, I want to edit menu item prices so I can adjust for costs or promotions","En tant que vendeur, je souhaite modifier les prix pour ajuster aux coûts ou promotions","1. Edit button on each menu item
+2. Price field editable
+3. Price history logged
+4. Changes reflected immediately on customer app
+5. Option to schedule price changes
+6. Bulk price update option (percentage or fixed amount)","1. Bouton éditer sur chaque article
+2. Prix modifiable
+3. Historique des prix
+4. Changements immédiats
+5. Planification des changements
+6. Mise à jour en masse",P1,Sprint 2,07-add-menu-item.png,Draft
+US-010,Menu Management,Vendor,"As a vendor, I want to organize my menu into categories so customers can browse easily","En tant que vendeur, je souhaite organiser mon menu en catégories pour faciliter la navigation","1. Default categories provided (Appetizers, Mains, Desserts, Drinks)
+2. Custom category creation
+3. Drag-and-drop reordering
+4. Category visibility toggle
+5. Items can be moved between categories
+6. Category images optional","1. Catégories par défaut fournies
+2. Création de catégories personnalisées
+3. Réorganisation par glisser-déposer
+4. Visibilité des catégories
+5. Déplacement d'articles entre catégories
+6. Images de catégorie optionnelles",P1,Sprint 2,04-menu-management.png,Draft
+US-011,Analytics,Vendor,"As a vendor, I want to view my sales analytics so I can understand my business performance","En tant que vendeur, je souhaite voir mes statistiques de ventes pour comprendre ma performance","1. Dashboard shows today's orders, revenue, avg order time
+2. Trend indicators (up/down vs yesterday/last week)
+3. Time range selector (today, week, month, custom)
+4. Revenue chart (line graph)
+5. Orders chart (bar graph)
+6. Top selling items list
+7. Export data option (CSV)","1. Tableau de bord avec commandes, revenus, temps moyen
+2. Indicateurs de tendance
+3. Sélecteur de période
+4. Graphique des revenus
+5. Graphique des commandes
+6. Liste des meilleures ventes
+7. Export CSV",P1,Sprint 3,05-analytics.png,Draft
+US-012,Analytics,Vendor,"As a vendor, I want to see my top-selling items so I can optimize my menu","En tant que vendeur, je souhaite voir mes articles les plus vendus pour optimiser mon menu","1. Top 10 items by order count
+2. Top 10 items by revenue
+3. Time period filter
+4. Compare to previous period
+5. Click item to see detailed stats","1. Top 10 par nombre de commandes
+2. Top 10 par revenus
+3. Filtre par période
+4. Comparaison avec période précédente
+5. Clic pour statistiques détaillées",P2,Sprint 3,05-analytics.png,Draft
+US-013,Notifications,Vendor,"As a vendor, I want to receive notifications for new orders so I don't miss any sales","En tant que vendeur, je souhaite recevoir des notifications de nouvelles commandes pour ne rien manquer","1. Push notification on new order
+2. In-app notification with sound
+3. Notification shows order summary (items, total)
+4. Tap notification opens order detail
+5. Notification settings customizable
+6. Do not disturb mode for closed hours","1. Notification push pour nouvelle commande
+2. Notification in-app avec son
+3. Résumé de commande affiché
+4. Tap ouvre le détail
+5. Paramètres personnalisables
+6. Mode Ne pas déranger",P0,Sprint 1,08-notifications.png,Draft
+US-014,Notifications,Vendor,"As a vendor, I want to receive notifications for reviews so I can respond to customers","En tant que vendeur, je souhaite être notifié des avis pour répondre aux clients","1. Push notification on new review
+2. Notification shows rating and snippet
+3. Tap opens review detail
+4. Badge count on notifications tab
+5. Filter reviews by rating","1. Notification push pour nouvel avis
+2. Note et extrait affichés
+3. Tap ouvre le détail
+4. Badge sur l'onglet notifications
+5. Filtrer par note",P2,Sprint 3,08-notifications.png,Draft
+US-015,Settings,Vendor,"As a vendor, I want to update my store hours so customers know when I'm open","En tant que vendeur, je souhaite mettre à jour mes horaires pour informer les clients","1. Edit hours for each day of week
+2. Set open/close times with picker
+3. Mark days as closed
+4. Add break periods (e.g., 2-5pm closed)
+5. Set holiday hours
+6. Changes effective immediately","1. Éditer les horaires par jour
+2. Définir heures ouverture/fermeture
+3. Marquer jours fermés
+4. Ajouter des pauses
+5. Horaires de jours fériés
+6. Changements immédiats",P1,Sprint 2,26-store-hours.png,Draft
+US-016,Settings,Vendor,"As a vendor, I want to set my delivery zones so I only receive orders I can fulfill","En tant que vendeur, je souhaite définir mes zones de livraison pour recevoir les bonnes commandes","1. Map-based zone editor
+2. Draw polygon or set radius
+3. Multiple zones with different fees
+4. Minimum order by zone
+5. Estimated delivery time by zone
+6. Zones visible to customers during checkout","1. Éditeur de zone sur carte
+2. Dessiner polygone ou rayon
+3. Zones multiples avec frais différents
+4. Commande minimum par zone
+5. Temps de livraison estimé
+6. Zones visibles au checkout",P1,Sprint 2,06-settings.png,Draft
+US-017,Payments,Vendor,"As a vendor, I want to view my payout history so I can reconcile my earnings","En tant que vendeur, je souhaite voir mon historique de paiements pour réconcilier mes gains","1. List of all payouts with date, amount, status
+2. Filter by date range
+3. Payout details (orders included, fees deducted)
+4. Download statement (PDF)
+5. Running balance shown
+6. Pending payouts highlighted","1. Liste des paiements avec date, montant, statut
+2. Filtre par période
+3. Détails des paiements
+4. Télécharger relevé PDF
+5. Solde courant affiché
+6. Paiements en attente mis en évidence",P1,Sprint 3,27-payout-history.png,Draft
+US-018,Reviews,Vendor,"As a vendor, I want to respond to customer reviews so I can address feedback","En tant que vendeur, je souhaite répondre aux avis clients pour gérer les retours","1. View all reviews with ratings
+2. Reply button on each review
+3. Reply character limit (500)
+4. Reply visible to all customers
+5. One reply per review (edit option)
+6. Reply notification to reviewer","1. Voir tous les avis avec notes
+2. Bouton répondre sur chaque avis
+3. Limite de caractères (500)
+4. Réponse visible par tous
+5. Une réponse par avis
+6. Notification au client",P2,Sprint 3,24-reviews.png,Draft
+US-019,Support,Vendor,"As a vendor, I want to contact support so I can get help with issues","En tant que vendeur, je souhaite contacter le support pour obtenir de l'aide","1. In-app chat with support
+2. Chat history preserved
+3. Support hours shown
+4. FAQ/Help center link
+5. Escalation to phone option
+6. Ticket number for tracking","1. Chat in-app avec support
+2. Historique préservé
+3. Horaires du support affichés
+4. Lien FAQ/Centre d'aide
+5. Escalade téléphonique possible
+6. Numéro de ticket pour suivi",P1,Sprint 2,29-support-chat.png,Draft
+US-020,Customer Browse,Customer,"As a customer, I want to browse nearby restaurants so I can find food I want","En tant que client, je souhaite parcourir les restaurants à proximité pour trouver ce que je veux","1. Location-based restaurant list
+2. Distance shown for each restaurant
+3. Delivery time estimates
+4. Rating and review count
+5. Cuisine type filters
+6. Search by restaurant or dish name
+7. Sort by distance, rating, delivery time","1. Liste basée sur la localisation
+2. Distance affichée
+3. Temps de livraison estimé
+4. Note et nombre d'avis
+5. Filtres par cuisine
+6. Recherche par nom
+7. Tri par distance, note, temps",P0,Sprint 4,17-customer-home.png,Draft
+US-021,Customer Browse,Customer,"As a customer, I want to view a restaurant's menu so I can decide what to order","En tant que client, je souhaite voir le menu d'un restaurant pour décider quoi commander","1. Menu organized by categories
+2. Item photos, names, descriptions, prices
+3. Dietary tags (vegetarian, gluten-free, spicy)
+4. Popular items highlighted
+5. Search within menu
+6. Add to cart button on each item","1. Menu organisé par catégories
+2. Photos, noms, descriptions, prix
+3. Tags diététiques
+4. Articles populaires mis en avant
+5. Recherche dans le menu
+6. Bouton ajouter au panier",P0,Sprint 4,18-restaurant-menu.png,Draft
+US-022,Customer Order,Customer,"As a customer, I want to customize my order so I get exactly what I want","En tant que client, je souhaite personnaliser ma commande pour obtenir exactement ce que je veux","1. Item detail modal with customization options
+2. Required vs optional modifiers
+3. Modifier prices shown
+4. Special instructions text field
+5. Quantity selector
+6. Running total shown
+7. Add to cart button","1. Modal de détail avec options
+2. Modificateurs requis vs optionnels
+3. Prix des modificateurs affichés
+4. Champ instructions spéciales
+5. Sélecteur de quantité
+6. Total courant affiché
+7. Bouton ajouter au panier",P0,Sprint 4,19-item-detail.png,Draft
+US-023,Customer Order,Customer,"As a customer, I want to review my cart before checkout so I can verify my order","En tant que client, je souhaite revoir mon panier avant de payer pour vérifier ma commande","1. Cart shows all items with customizations
+2. Edit item option (returns to customization)
+3. Remove item option
+4. Quantity adjustable
+5. Subtotal, fees, taxes, total shown
+6. Promo code entry
+7. Proceed to checkout button","1. Panier avec tous les articles et personnalisations
+2. Option modifier article
+3. Option supprimer article
+4. Quantité ajustable
+5. Sous-total, frais, taxes, total
+6. Saisie code promo
+7. Bouton procéder au paiement",P0,Sprint 4,20-cart.png,Draft
+US-024,Customer Order,Customer,"As a customer, I want to complete checkout so I can place my order","En tant que client, je souhaite finaliser ma commande pour la passer","1. Delivery address selection/entry
+2. Delivery time (ASAP or scheduled)
+3. Payment method selection
+4. Tip selection
+5. Order summary
+6. Place order button
+7. Order confirmation screen","1. Sélection/saisie adresse de livraison
+2. Heure de livraison
+3. Sélection moyen de paiement
+4. Sélection pourboire
+5. Résumé de commande
+6. Bouton commander
+7. Écran de confirmation",P0,Sprint 4,21-checkout.png,Draft
+US-025,Customer Order,Customer,"As a customer, I want to track my order in real-time so I know when it will arrive","En tant que client, je souhaite suivre ma commande en temps réel pour savoir quand elle arrive","1. Order status updates (confirmed, preparing, on the way, delivered)
+2. Map with driver location
+3. ETA countdown
+4. Driver info (name, photo, vehicle)
+5. Contact driver option
+6. Contact restaurant option","1. Mises à jour de statut
+2. Carte avec position du livreur
+3. Compte à rebours ETA
+4. Info livreur
+5. Option contacter livreur
+6. Option contacter restaurant",P1,Sprint 5,22-order-tracking.png,Draft
+US-026,Customer Order,Customer,"As a customer, I want to rate my order so I can share my experience","En tant que client, je souhaite noter ma commande pour partager mon expérience","1. Post-delivery rating prompt
+2. Star rating (1-5)
+3. Optional text review
+4. Photo upload option
+5. Tip adjustment option
+6. Reorder button
+7. Skip option","1. Demande de note après livraison
+2. Note étoiles (1-5)
+3. Avis texte optionnel
+4. Téléchargement photo optionnel
+5. Ajustement pourboire possible
+6. Bouton recommander
+7. Option ignorer",P2,Sprint 5,23-order-complete.png,Draft
+US-027,Promotions,Vendor,"As a vendor, I want to create promotions so I can attract more customers","En tant que vendeur, je souhaite créer des promotions pour attirer plus de clients","1. Create promotion form
+2. Discount types (percentage, fixed amount, free delivery)
+3. Promo code generation
+4. Usage limits (per customer, total)
+5. Date range scheduling
+6. Target items or entire order
+7. Performance tracking","1. Formulaire création promo
+2. Types de réduction
+3. Génération code promo
+4. Limites d'utilisation
+5. Planification par dates
+6. Articles ciblés ou commande entière
+7. Suivi performance",P2,Sprint 4,25-promotions.png,Draft
+US-028,Team,Vendor,"As a vendor, I want to add team members so they can help manage orders","En tant que vendeur, je souhaite ajouter des membres d'équipe pour gérer les commandes","1. Invite by email
+2. Role selection (Manager, Staff)
+3. Permission levels defined
+4. Pending invites shown
+5. Resend/cancel invite option
+6. Remove team member option
+7. Activity log per member","1. Invitation par email
+2. Sélection de rôle
+3. Niveaux de permission définis
+4. Invitations en attente affichées
+5. Renvoyer/annuler invitation
+6. Supprimer membre
+7. Journal d'activité",P2,Sprint 4,28-team-management.png,Draft
+US-029,Empty States,Vendor,"As a vendor, I want to see helpful empty states so I know what to do when there's no data","En tant que vendeur, je souhaite voir des états vides utiles pour savoir quoi faire","1. Empty orders shows illustration + helpful text
+2. Empty menu prompts adding first item
+3. Empty analytics explains data collection
+4. All empty states have CTA buttons
+5. Empty states are visually appealing","1. État vide commandes avec illustration
+2. Menu vide incite à ajouter
+3. Analytics vide explique la collecte
+4. Tous ont des boutons CTA
+5. États visuellement attrayants",P1,Sprint 2,11-empty-orders.png,Draft
+US-030,Error Handling,System,"As a user, I want clear error messages so I can understand and resolve issues","En tant qu'utilisateur, je souhaite des messages d'erreur clairs pour comprendre et résoudre les problèmes","1. All errors have user-friendly messages
+2. Technical errors logged separately
+3. Retry options where applicable
+4. Contact support links for unresolvable errors
+5. Offline mode indication
+6. Auto-recovery when possible","1. Messages conviviaux
+2. Erreurs techniques loguées séparément
+3. Options de retry
+4. Liens vers support
+5. Indication mode hors-ligne
+6. Auto-récupération quand possible",P0,Sprint 1,15-order-error.png,Draft

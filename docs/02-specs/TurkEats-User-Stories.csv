@@ -1,0 +1,277 @@
+Story ID,Epic,User Role,User Story,Acceptance Criteria,Edge Cases,Priority,Sprint,Dependencies,Wireframe Ref,Status
+US-001,Vendor Onboarding,Vendor,"As a new vendor, I want to create my restaurant profile so that customers can discover my business","1. Vendor can enter restaurant name, description, cuisine type
+2. Vendor can upload logo (PNG/JPG, max 5MB)
+3. Vendor can set operating hours for each day
+4. Vendor can define delivery zones on map
+5. Profile is saved and visible to customers within 24 hours
+6. Email confirmation sent upon profile completion","- Logo upload fails (show retry with error message)
+- Internet disconnects during save (auto-save draft)
+- Vendor leaves mid-setup (save progress, allow resume)
+- Invalid image format (show supported formats)
+- Special characters in restaurant name",P0,Sprint 1,None,09-onboarding-welcome.png,Draft
+US-002,Vendor Onboarding,Vendor,"As a vendor, I want to connect my bank account for payouts so I can receive my earnings","1. Vendor can enter bank account details (routing, account number)
+2. System validates account via micro-deposits
+3. Vendor confirms micro-deposit amounts
+4. Payout schedule options displayed (daily, weekly, monthly)
+5. Confirmation email sent with payout schedule","- Invalid routing number (show error, suggest format)
+- Micro-deposits not received within 3 days (resend option)
+- Account already linked to another vendor (block with support contact)
+- International bank accounts (show unsupported message)",P0,Sprint 1,US-001,06-settings.png,Draft
+US-003,Order Management,Vendor,"As a vendor, I want to view incoming orders in real-time so I can prepare food promptly","1. New orders appear within 5 seconds of placement
+2. Audio/visual notification for new orders
+3. Order shows customer name, items, special instructions, total
+4. Order timestamp visible
+5. Orders grouped by status (New, Preparing, Ready, Delivered)
+6. Pull-to-refresh available","- Multiple orders arrive simultaneously (queue with timestamps)
+- App in background (push notification)
+- Internet disconnects (show cached orders, indicate offline)
+- Order cancelled while viewing (update status, show banner)",P0,Sprint 1,US-001,02-orders-queue.png,Draft
+US-004,Order Management,Vendor,"As a vendor, I want to accept or reject incoming orders so I can manage my kitchen capacity","1. Accept/Reject buttons visible on new orders
+2. Accept triggers 'Preparing' status and starts prep timer
+3. Reject requires reason selection (too busy, item unavailable, closing soon)
+4. Customer notified of acceptance within 10 seconds
+5. Customer notified of rejection with reason
+6. Rejected order refunded automatically","- Vendor doesn't respond in 5 minutes (auto-reject, notify vendor)
+- Accept pressed but internet fails (retry with confirmation)
+- Customer cancels while vendor accepting (show cancellation notice)
+- All items in order marked unavailable (suggest rejection)",P0,Sprint 1,US-003,02-orders-queue.png,Draft
+US-005,Order Management,Vendor,"As a vendor, I want to mark orders as 'Ready' so drivers know when to pick up","1. 'Mark Ready' button visible on Preparing orders
+2. Status changes to 'Ready for Pickup' immediately
+3. Driver receives push notification
+4. Timer shows time since marked ready
+5. Customer ETA updates based on ready status","- Driver not assigned yet (queue for next available)
+- Mark ready accidentally (allow undo within 30 seconds)
+- Multiple orders ready at once (batch update option)
+- Driver cancels after ready (reassign driver, notify vendor)",P1,Sprint 1,US-004,03-order-detail.png,Draft
+US-006,Order Management,Vendor,"As a vendor, I want to view detailed order information so I can prepare orders accurately","1. Tap order opens detail view
+2. Shows all items with quantities, modifiers, prices
+3. Shows special instructions prominently (highlighted)
+4. Shows customer contact info (phone, address)
+5. Shows order timeline (placed, accepted, preparing, ready, delivered)
+6. Contact customer button available","- Special instructions contain allergen info (highlight in red)
+- Long item list (scrollable with item count)
+- Customer address incomplete (show warning, allow contact)
+- Phone number invalid (disable call button, show error)",P1,Sprint 1,US-003,03-order-detail.png,Draft
+US-007,Menu Management,Vendor,"As a vendor, I want to add menu items so customers can order from my restaurant","1. Add item form with name, description, price, category, image
+2. Category selection from predefined + custom categories
+3. Prep time estimate field
+4. Modifier groups (size, spice level, add-ons)
+5. Image upload with preview
+6. Item visible on menu after save","- Duplicate item name in same category (show warning)
+- Price entered as $0 (require confirmation)
+- Image upload fails (allow save without image, show placeholder)
+- Very long description (show character limit, truncate preview)
+- Special characters in price field (validate, show error)",P0,Sprint 2,US-001,07-add-menu-item.png,Draft
+US-008,Menu Management,Vendor,"As a vendor, I want to mark items as unavailable so customers don't order out-of-stock items","1. Toggle switch for each menu item (Available/Unavailable)
+2. Unavailable items show 'Sold Out' badge to customers
+3. Unavailable items grayed out but visible
+4. Bulk mark unavailable option
+5. Notification to vendor when popular item marked unavailable
+6. Option to set automatic re-availability time","- Item in active order marked unavailable (allow order completion)
+- All items in category unavailable (show category as limited)
+- Customer has item in cart when marked unavailable (notify, suggest alternatives)
+- Scheduled unavailability conflicts (show overlap warning)",P0,Sprint 2,US-007,04-menu-management.png,Draft
+US-009,Menu Management,Vendor,"As a vendor, I want to edit menu item prices so I can adjust for costs or promotions","1. Edit button on each menu item
+2. Price field editable
+3. Price history logged
+4. Changes reflected immediately on customer app
+5. Option to schedule price changes
+6. Bulk price update option (percentage or fixed amount)","- Price decreased significantly (confirm not accidental)
+- Active orders have old price (honor original price)
+- Scheduled price change conflicts (show warning)
+- Price set to $0 (require confirmation, flag as promotion)",P1,Sprint 2,US-007,07-add-menu-item.png,Draft
+US-010,Menu Management,Vendor,"As a vendor, I want to organize my menu into categories so customers can browse easily","1. Default categories provided (Appetizers, Mains, Desserts, Drinks)
+2. Custom category creation
+3. Drag-and-drop reordering
+4. Category visibility toggle
+5. Items can be moved between categories
+6. Category images optional","- Empty category (hide from customer view)
+- Category name already exists (append number or reject)
+- Delete category with items (prompt to reassign items)
+- Very long category name (truncate with ellipsis)",P1,Sprint 2,US-007,04-menu-management.png,Draft
+US-011,Analytics,Vendor,"As a vendor, I want to view my sales analytics so I can understand my business performance","1. Dashboard shows today's orders, revenue, avg order time
+2. Trend indicators (up/down vs yesterday/last week)
+3. Time range selector (today, week, month, custom)
+4. Revenue chart (line graph)
+5. Orders chart (bar graph)
+6. Top selling items list
+7. Export data option (CSV)","- No data for selected period (show empty state with message)
+- Data still loading (show skeleton/shimmer)
+- Very large dataset (paginate or summarize)
+- Timezone differences (show vendor's local timezone)",P1,Sprint 3,US-003,05-analytics.png,Draft
+US-012,Analytics,Vendor,"As a vendor, I want to see my top-selling items so I can optimize my menu","1. Top 10 items by order count
+2. Top 10 items by revenue
+3. Time period filter
+4. Compare to previous period
+5. Click item to see detailed stats","- Tie in ranking (show both, sort alphabetically)
+- New item with few orders (indicate 'New' badge)
+- Item removed from menu (show as discontinued in historical data)
+- Zero orders in period (show message, no chart)",P2,Sprint 3,US-011,05-analytics.png,Draft
+US-013,Notifications,Vendor,"As a vendor, I want to receive notifications for new orders so I don't miss any sales","1. Push notification on new order
+2. In-app notification with sound
+3. Notification shows order summary (items, total)
+4. Tap notification opens order detail
+5. Notification settings customizable
+6. Do not disturb mode for closed hours","- Phone on silent (show visual notification prominently)
+- Multiple rapid orders (batch notifications)
+- Notification permissions denied (show setup prompt)
+- App force closed (still receive push)
+- Notification language matches app language",P0,Sprint 1,US-003,08-notifications.png,Draft
+US-014,Notifications,Vendor,"As a vendor, I want to receive notifications for reviews so I can respond to customers","1. Push notification on new review
+2. Notification shows rating and snippet
+3. Tap opens review detail
+4. Badge count on notifications tab
+5. Filter reviews by rating","- Negative review (prioritize notification)
+- Review edited by customer (notify of update)
+- Response submitted (confirm notification)
+- Review flagged/removed (notify vendor)",P2,Sprint 3,US-013,08-notifications.png,Draft
+US-015,Settings,Vendor,"As a vendor, I want to update my store hours so customers know when I'm open","1. Edit hours for each day of week
+2. Set open/close times with picker
+3. Mark days as closed
+4. Add break periods (e.g., 2-5pm closed)
+5. Set holiday hours
+6. Changes effective immediately","- Closing time before opening time (show error)
+- Currently open, changing to closed now (confirm, handle active orders)
+- Holiday conflicts with regular schedule (holiday takes precedence)
+- 24-hour operation (allow open = close or dedicated toggle)",P1,Sprint 2,US-001,26-store-hours.png,Draft
+US-016,Settings,Vendor,"As a vendor, I want to set my delivery zones so I only receive orders I can fulfill","1. Map-based zone editor
+2. Draw polygon or set radius
+3. Multiple zones with different fees
+4. Minimum order by zone
+5. Estimated delivery time by zone
+6. Zones visible to customers during checkout","- Zone overlaps another restaurant (allowed)
+- Customer address on zone boundary (include in closer zone)
+- Zone too small (warn minimum area)
+- Zone extremely large (warn about delivery times)",P1,Sprint 2,US-001,06-settings.png,Draft
+US-017,Payments,Vendor,"As a vendor, I want to view my payout history so I can reconcile my earnings","1. List of all payouts with date, amount, status
+2. Filter by date range
+3. Payout details (orders included, fees deducted)
+4. Download statement (PDF)
+5. Running balance shown
+6. Pending payouts highlighted","- Payout failed (show reason, retry option)
+- Payout delayed (show expected date)
+- Dispute on payout (show hold status)
+- Very old payouts (paginate, archive access)",P1,Sprint 3,US-002,27-payout-history.png,Draft
+US-018,Reviews,Vendor,"As a vendor, I want to respond to customer reviews so I can address feedback","1. View all reviews with ratings
+2. Reply button on each review
+3. Reply character limit (500)
+4. Reply visible to all customers
+5. One reply per review (edit option)
+6. Reply notification to reviewer","- Inappropriate reply (content moderation)
+- Reply to edited review (show edit history)
+- Customer deletes review after reply (archive reply)
+- Very old reviews (still allow reply)",P2,Sprint 3,US-014,24-reviews.png,Draft
+US-019,Support,Vendor,"As a vendor, I want to contact support so I can get help with issues","1. In-app chat with support
+2. Chat history preserved
+3. Support hours shown
+4. FAQ/Help center link
+5. Escalation to phone option
+6. Ticket number for tracking","- Outside support hours (show estimated response time)
+- Chat disconnects (auto-reconnect, preserve messages)
+- Urgent issue (priority flag option)
+- Attachment upload (images, screenshots)",P1,Sprint 2,US-001,29-support-chat.png,Draft
+US-020,Customer Browse,Customer,"As a customer, I want to browse nearby restaurants so I can find food I want","1. Location-based restaurant list
+2. Distance shown for each restaurant
+3. Delivery time estimates
+4. Rating and review count
+5. Cuisine type filters
+6. Search by restaurant or dish name
+7. Sort by distance, rating, delivery time","- No restaurants nearby (expand search radius, show message)
+- Location services denied (manual address entry)
+- Restaurant closed now (show as closed, opening time)
+- Very slow internet (cache previous results)",P0,Sprint 4,None,17-customer-home.png,Draft
+US-021,Customer Browse,Customer,"As a customer, I want to view a restaurant's menu so I can decide what to order","1. Menu organized by categories
+2. Item photos, names, descriptions, prices
+3. Dietary tags (vegetarian, gluten-free, spicy)
+4. Popular items highlighted
+5. Search within menu
+6. Add to cart button on each item","- Very long menu (sticky category nav)
+- Item out of stock (show sold out badge)
+- Restaurant closes soon (show warning banner)
+- Price changes while viewing (update silently or notify)",P0,Sprint 4,US-020,18-restaurant-menu.png,Draft
+US-022,Customer Order,Customer,"As a customer, I want to customize my order so I get exactly what I want","1. Item detail modal with customization options
+2. Required vs optional modifiers
+3. Modifier prices shown
+4. Special instructions text field
+5. Quantity selector
+6. Running total shown
+7. Add to cart button","- Conflicting modifiers (prevent selection, show message)
+- Very long special instructions (character limit)
+- Required modifier not selected (prevent add to cart)
+- Free modifier limit exceeded (show upcharge)",P0,Sprint 4,US-021,19-item-detail.png,Draft
+US-023,Customer Order,Customer,"As a customer, I want to review my cart before checkout so I can verify my order","1. Cart shows all items with customizations
+2. Edit item option (returns to customization)
+3. Remove item option
+4. Quantity adjustable
+5. Subtotal, fees, taxes, total shown
+6. Promo code entry
+7. Proceed to checkout button","- Item became unavailable (notify, remove from cart)
+- Restaurant closed while shopping (show warning, suggest save for later)
+- Cart expires (time limit on reserved items?)
+- Empty cart (show empty state, suggest restaurants)",P0,Sprint 4,US-022,20-cart.png,Draft
+US-024,Customer Order,Customer,"As a customer, I want to complete checkout so I can place my order","1. Delivery address selection/entry
+2. Delivery time (ASAP or scheduled)
+3. Payment method selection
+4. Tip selection
+5. Order summary
+6. Place order button
+7. Order confirmation screen","- Payment fails (show error, retry option)
+- Address outside delivery zone (show error, suggest alternatives)
+- Restaurant closes before delivery time (warn, adjust)
+- Promo code invalid (show reason)
+- Duplicate order detection (confirm intent)",P0,Sprint 4,US-023,21-checkout.png,Draft
+US-025,Customer Order,Customer,"As a customer, I want to track my order in real-time so I know when it will arrive","1. Order status updates (confirmed, preparing, on the way, delivered)
+2. Map with driver location
+3. ETA countdown
+4. Driver info (name, photo, vehicle)
+5. Contact driver option
+6. Contact restaurant option","- Driver location unavailable (show last known, message)
+- ETA changes significantly (notify, explain)
+- Driver changed mid-delivery (update info, notify)
+- Delivery delayed (notify, offer compensation option)",P1,Sprint 5,US-024,22-order-tracking.png,Draft
+US-026,Customer Order,Customer,"As a customer, I want to rate my order so I can share my experience","1. Post-delivery rating prompt
+2. Star rating (1-5)
+3. Optional text review
+4. Photo upload option
+5. Tip adjustment option
+6. Reorder button
+7. Skip option","- Order had issues (link to support before rating)
+- Rating prompt too soon (delay until likely consumed)
+- Edit rating later (allow within 7 days)
+- Multiple orders same day (prompt for each separately)",P2,Sprint 5,US-025,23-order-complete.png,Draft
+US-027,Promotions,Vendor,"As a vendor, I want to create promotions so I can attract more customers","1. Create promotion form
+2. Discount types (percentage, fixed amount, free delivery)
+3. Promo code generation
+4. Usage limits (per customer, total)
+5. Date range scheduling
+6. Target items or entire order
+7. Performance tracking","- Promo conflicts with another (show warning)
+- Promo used beyond limit (enforce, show error to customer)
+- Promo expired but still being used (graceful expiration)
+- Very high discount (confirm with warning)",P2,Sprint 4,US-011,25-promotions.png,Draft
+US-028,Team,Vendor,"As a vendor, I want to add team members so they can help manage orders","1. Invite by email
+2. Role selection (Manager, Staff)
+3. Permission levels defined
+4. Pending invites shown
+5. Resend/cancel invite option
+6. Remove team member option
+7. Activity log per member","- Email already registered (show error)
+- Invite expired (auto-resend option)
+- Remove self (prevent, show error)
+- Team member deletes critical data (audit log, restore option)",P2,Sprint 4,US-001,28-team-management.png,Draft
+US-029,Empty States,Vendor,"As a vendor, I want to see helpful empty states so I know what to do when there's no data","1. Empty orders shows illustration + helpful text
+2. Empty menu prompts adding first item
+3. Empty analytics explains data collection
+4. All empty states have CTA buttons
+5. Empty states are visually appealing","- First-time user (extra guidance)
+- Data exists but filtered out (show clear filters option)
+- Temporary empty (show different message than permanent)",P1,Sprint 2,None,11-empty-orders.png,Draft
+US-030,Error Handling,System,"As a user, I want clear error messages so I can understand and resolve issues","1. All errors have user-friendly messages
+2. Technical errors logged separately
+3. Retry options where applicable
+4. Contact support links for unresolvable errors
+5. Offline mode indication
+6. Auto-recovery when possible","- Network timeout (retry with exponential backoff)
+- Server error (show friendly message, log details)
+- Validation error (highlight field, show requirement)
+- Fatal error (crash reporting, restart prompt)",P0,Sprint 1,None,15-order-error.png,Draft

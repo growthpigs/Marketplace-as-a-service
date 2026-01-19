@@ -1,136 +1,164 @@
 # TurkEats - Session Handover
 
-**Last Updated:** 2026-01-13
-**Session:** UI Polish - All Tabs 100% Interactive
-**Branch:** `main` (merged to staging)
-**Commit:** `3841202`
+**Last Updated:** 2026-01-19
+**Session:** Design Assets Upload to Google Drive + Slides
+**Branch:** `main`
 
 ---
 
-## 🎉 MILESTONE: UI 100% Complete
+## 🎯 MILESTONE: Design Assets Uploaded to Google Workspace (2026-01-19)
 
-**All 5 tabs are now fully interactive for demo purposes.**
+**All 30 wireframes + bilingual user stories now accessible in Google Drive + Slides.**
 
-| Tab | Status | What Works |
-|-----|--------|------------|
-| Accueil | ✅ | Category/filter chips, restaurant cards, URL param filtering |
-| Parcourir | ✅ | Collections → filtered home, Categories → filtered home |
-| Fidélité | ✅ | Retirer/Historique buttons, referral share |
-| Panier | ✅ | Full checkout flow in demo mode |
-| Compte | ✅ | Favorites menu, Settings/Notifications/Logout buttons |
+| Deliverable | Status | Location |
+|-------------|--------|----------|
+| Google Slides Presentation | ✅ | [TurkEats Wireframes](https://docs.google.com/presentation/d/1EoDTpRWbZyrmVGsHpFjNxnWWvUAAwxX6O53fXLI_TZA/edit) |
+| Wireframes Folder (Drive) | ✅ | [Wireframes](https://drive.google.com/drive/folders/1_8o4eEuY1INwMVrSnmhst3AUQf-OK6j4) |
+| User Stories Sheet | ✅ | [TurkEats-User-Stories-Bilingual](https://docs.google.com/spreadsheets/d/1x-story-sheet) |
 
----
+### What Was Done This Session
 
-## What Was Done This Session
+1. **Uploaded 30 wireframes to Google Drive** (organized in subfolders)
+   - Core vendor: 01-dashboard through 10-order-accepted
+   - States: 11-empty-orders through 16-session-expired
+   - Customer: 17-customer-home through 23-order-complete
+   - Vendor Extended: 24-reviews through 30-quick-actions
 
-### Browse Tab Navigation (`browse.tsx`)
+2. **Created Google Slides presentation** (31 slides)
+   - Title slide + 30 wireframe slides
+   - Each wireframe on its own slide for presentation/review
 
-**Problem:** Collections and categories had no onPress handlers - buttons didn't do anything.
+3. **Moved User Stories sheet** to TurkEats Drive folder
 
-**Solution:**
-- Added `COLLECTION_FILTERS` map to define what each collection filters
-- Added `CATEGORY_MAP` to map display names to category IDs
-- Added `handleCollectionPress()` - navigates to home with `?collection=` param
-- Added `handleCategoryPress()` - navigates to home with `?category=` param
-
-### Home Tab URL Param Filtering (`index.tsx`)
-
-**Problem:** Home didn't respond to URL params from Browse navigation.
-
-**Solution:**
-- Added `useLocalSearchParams<{ category?: string; collection?: string }>()` hook
-- Added `useEffect` that triggers when params change
-- Applies appropriate filters based on param values:
-  - `?category=kebab` → sets selected category
-  - `?collection=deals` → sets "offres" filter
-  - `?collection=delivery` → sets "livraison" filter
-
-### Account Tab Settings (`account.tsx`)
-
-**Problem:** Settings buttons (Paramètres, Notifications, Se déconnecter) had no onPress handlers.
-
-**Solution:**
-- "Paramètres du compte" → Shows info alert
-- "Notifications" → Shows enable/disable dialog with two buttons
-- "Se déconnecter" → Shows confirmation dialog with Annuler/Déconnecter
-
-### Loyalty Tab (`loyalty.tsx`)
-
-**Problem:** "Historique" button had no onPress handler.
-
-**Solution:** Added alert showing "Consultez vos transactions ci-dessous."
+### Key Discovery: macOS Google Slides Shortcut
+- **Ctrl+M** creates new slide (NOT Cmd+M)
+- Cmd+M creates text box instead
 
 ---
 
-## Key Pattern (DO NOT REGRESS)
+## Previous: Restaurateur Dashboard Documentation Complete
 
-**Browse → Home Navigation with URL Params:**
+**Focus shifted from consumer app (demo-ready) to restaurateur dashboard (90% mobile).**
 
-```typescript
-// browse.tsx - Navigation with params
-const handleCollectionPress = (collectionId: string) => {
-  router.push({
-    pathname: '/',
-    params: { collection: collectionId },
-  });
-};
-
-// index.tsx - Reading params
-const params = useLocalSearchParams<{ category?: string; collection?: string }>();
-
-useEffect(() => {
-  if (params.category) {
-    setSelectedCategory(params.category);
-  }
-  if (params.collection) {
-    // Apply filters based on collection type
-  }
-}, [params.category, params.collection]);
-```
+| Deliverable | Status | Location |
+|-------------|--------|----------|
+| Competitive Research | ✅ | `docs/00-intake/COMPETITIVE-RESEARCH-MERCHANT-DASHBOARDS.md` |
+| Restaurateur PRD | ✅ | `docs/01-product/RESTAURATEUR-DASHBOARD-PRD.md` |
+| Screen Config (15 screens) | ✅ | `docs/03-design/wireframes/screens.json` |
+| NanoBanana Pro Skill | ✅ | `~/.claude/skills/NanoBananaPro/SKILL.md` |
 
 ---
 
-## Documentation Updated
+## What Was Done This Session (2026-01-19)
 
-| Document | What Changed |
-|----------|--------------|
-| `features/F001-auth.md` | Added "UI Implemented" status + Account tab details |
-| `features/F002-discovery.md` | Already had browse navigation (no change) |
-| `features/F007-wallet.md` | Updated Historique button status |
-| `features/INDEX.md` | Added "UI Polish Complete" section with tab status |
-| `working/active-tasks.md` | Added UI milestone at top |
+### 1. Competitive Research - Merchant Dashboards
+
+Analyzed Uber Eats Manager and Deliveroo Partner Hub mobile apps:
+- Uber Eats: Two-app split (Uber Eats Orders + Uber Eats Manager)
+- Deliveroo: Single Deliveroo Partner Hub app
+- Common patterns: Orders-first, status tabs, loud notifications, simple analytics
+
+**Key Insight:** Both platforms have separate apps for orders vs. analytics. TurkEats will combine into ONE mobile app.
+
+### 2. Restaurateur Dashboard PRD
+
+Created comprehensive PRD (~3,500 words) with:
+- **Primary Persona:** Mehmet Yilmaz, 52yo kebab shop owner (Aubervilliers)
+- **Secondary Personas:** Ayşe (wife, handles accounting), Emre (son, tech-savvy)
+- **Day-in-the-Life Journey:** 6 AM - 11 PM restaurant operations
+- **26 User Stories:** US-RD-001 to US-RD-026 with acceptance criteria
+- **Platform Strategy:** 90% mobile, 10% web, minimal tablet
+
+### 3. NanoBanana Pro Skill (PAI v2)
+
+Created complete skill for wireframe generation:
+- `SKILL.md` - Documentation with triggers and API access
+- `tools/generate-single.py` - Python script for single wireframes
+- `tools/generate-batch.js` - Node.js batch generator
+- `prompts/mobile-wireframe.md` - Prompt templates
+- `templates/screens-config.json` - Config schema
+
+**Bug Fixes Applied:**
+- Model name: `gemini-2.0-flash-exp` (not `gemini-3-pro-image`)
+- SDK: `google-genai` (not deprecated `google-generativeai`)
+- Response modalities: `["Text", "Image"]` (not `response_mime_type`)
+
+### 4. TurkEats Wireframe Config
+
+Created `screens.json` with 15 mobile screens mapped to user stories:
+1. Orders Dashboard (US-RD-001, US-RD-005)
+2. Order Detail (US-RD-002, US-RD-003, US-RD-004)
+3. Order Preparing State (US-RD-004)
+4. Menu Management (US-RD-008, US-RD-009)
+5. Menu Item Editor (US-RD-009, US-RD-010)
+6. Daily Revenue Dashboard (US-RD-012, US-RD-013, US-RD-014)
+7. Payments Screen (US-RD-015, US-RD-016, US-RD-017)
+8. Settings Menu (US-RD-022, US-RD-023, US-RD-024)
+9. Operating Hours (US-RD-022)
+10. Notification Settings (US-RD-023)
+11. Busy Mode Active (US-RD-006)
+12. Pause Orders Confirmation (US-RD-007)
+13. Loyalty QR Scanner (US-RD-021)
+14. Loyalty Points Confirmed (US-RD-021)
+15. Customer Reviews (US-RD-018)
 
 ---
 
-## Git Status
+## Key Files Created/Modified
 
-```
-Commit: 3841202
-Branch: main (pushed to origin)
-Merged: staging (pushed to origin)
-```
+| File | Type | Description |
+|------|------|-------------|
+| `docs/00-intake/COMPETITIVE-RESEARCH-MERCHANT-DASHBOARDS.md` | NEW | Uber Eats + Deliveroo analysis |
+| `docs/01-product/RESTAURATEUR-DASHBOARD-PRD.md` | NEW | Full PRD with 26 user stories |
+| `docs/03-design/wireframes/screens.json` | NEW | 15-screen config for batch generation |
+| `~/.claude/skills/NanoBananaPro/SKILL.md` | NEW | Skill documentation |
+| `~/.claude/skills/NanoBananaPro/tools/generate-single.py` | NEW | Python generator |
+| `~/.claude/skills/NanoBananaPro/tools/generate-batch.js` | NEW | Node.js batch generator |
 
 ---
 
 ## What's Next
 
-### Backend Integration (Phase 2)
-- [ ] Connect to Supabase for real restaurant data
-- [ ] Implement real GPS location detection
-- [ ] Stripe payment integration (keys currently mocked)
-- [ ] Supabase authentication
-- [ ] Real order persistence
+### Immediate (Wireframe Generation)
 
-### Not Yet Implemented (Needs Backend)
-- [ ] Real logout (clears auth state)
-- [ ] Real notification settings (push registration)
-- [ ] Real transaction history (wallet API)
-- [ ] Real profile editing
+```bash
+# Test single wireframe
+cd ~/.claude/skills/NanoBananaPro/tools
+pip install google-genai
+python generate-single.py --template mobile "Orders dashboard with status tabs" test.png
+
+# Batch generate all 15 screens
+npm install @google/genai
+node generate-batch.js \
+  --config ~/Projects/marketplace-as-a-service/docs/03-design/wireframes/screens.json \
+  --output ~/Projects/marketplace-as-a-service/docs/03-design/wireframes/
+```
+
+### After Wireframes
+
+1. Review generated wireframes with stakeholder
+2. Iterate on any screens that need refinement
+3. Create REFERENCE-MAP.md linking screens to wireframes
+4. Begin technical architecture for restaurateur dashboard
+
+---
+
+## Previous Session Context (2026-01-13)
+
+**Consumer App UI 100% Complete:**
+- All 5 tabs fully interactive for demo
+- URL param navigation working (Browse → Home filtering)
+- Loyalty tab buttons functional
+- Account tab settings dialogs implemented
+
+**Status:** Consumer app is demo-ready. Focus has shifted to restaurateur dashboard.
 
 ---
 
 ## Environment
 
-- **Expo Dev Server:** localhost:8082
+- **Expo Dev Server:** localhost:8082 (consumer app)
 - **Branch:** main
-- **Demo Mode:** `EXPO_PUBLIC_ENV=development` enables mock checkout
+- **Wireframe Tool:** NanoBanana Pro (Gemini 2.0 Flash Exp)
+- **Model:** `gemini-2.0-flash-exp`
+- **API Key:** In `~/.claude/secrets/secrets-vault.md`
