@@ -8,7 +8,9 @@ export function getSupabaseAdmin(): ReturnType<typeof createClient> {
   const supabaseUrl = process.env.SUPABASE_URL;
   const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!supabaseUrl || !supabaseServiceKey) {
-    throw new Error('Supabase configuration not available (SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY missing)');
+    throw new Error(
+      'Supabase configuration not available (SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY missing)',
+    );
   }
   return createClient(supabaseUrl, supabaseServiceKey, {
     auth: {
