@@ -140,8 +140,27 @@ Implementation considerations.
 
 ---
 
+---
+
+## Business & Partnership (2026-01-23)
+
+**Status:** ✅ RIVE GOSH LLC FORMATION PLANNED
+
+| Aspect | Decision |
+|--------|----------|
+| Entity | Rive Gosh LLC (Wyoming) |
+| Partners | Roderic 50% + Daniel Amaury 50% |
+| Stéphane | Profit share per project (not equity) |
+| Bank | Revolut Business |
+
+**Living Doc:** [BUSINESS.md](BUSINESS.md) - Partnership structure & formation
+**Master Plan:** [../docs/07-business/RIVE-GOSH-MASTER-PLAN.md](../docs/07-business/RIVE-GOSH-MASTER-PLAN.md)
+
+---
+
 ## Related Documents
 
 - [../docs/01-product/MVP-PRD.md](../docs/01-product/MVP-PRD.md) - Product requirements
 - [../docs/01-product/SCOPE.md](../docs/01-product/SCOPE.md) - Feature scope
 - [DESIGN.md](DESIGN.md) - Design assets and wireframes
+- [BUSINESS.md](BUSINESS.md) - Partnership & business structure

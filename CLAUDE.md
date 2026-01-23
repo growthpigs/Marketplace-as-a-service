@@ -296,6 +296,8 @@ return { state, subtotal, total, meetsMinOrder, addItem, removeItem };
 
 | Doc | Location |
 |-----|----------|
+| **Rive Gosh Master Plan** | `docs/07-business/RIVE-GOSH-MASTER-PLAN.md` |
+| **Business Living Doc** | `features/BUSINESS.md` |
 | **Verification Report** | `working/CHECKOUT-FLOW-VERIFIED-2026-01-13.md` |
 | **Audit Report** | `working/AUDIT-EXPERT-REVIEW-2026-01-13.md` |
 | Vision | `docs/01-product/VISION.md` |
@@ -309,13 +311,15 @@ return { state, subtotal, total, meetsMinOrder, addItem, removeItem };
 
 ## Team
 
-| Partner | Role |
-|---------|------|
-| Roderic | Tech, Product, Marketing, Design |
-| Daniel | Sales, BizDev, Operations |
-| Stéphane | Market Access (revenue share) |
+| Partner | Role | Equity |
+|---------|------|--------|
+| Roderic Andrews | Tech, Product, Marketing, Design | 50% |
+| Daniel Amaury | Sales, BizDev, Operations | 50% |
+| Stéphane | Market Access | Profit Share (10%) |
 
-**Legal entity:** Badaboost LLC (Delaware)
+**Legal Entity:** Rive Gosh LLC (Wyoming) - Formation Pending
+**Bank:** Revolut Business
+**See:** `docs/07-business/RIVE-GOSH-MASTER-PLAN.md` for full structure
 
 ---
 

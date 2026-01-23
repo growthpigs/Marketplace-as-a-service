@@ -1,11 +1,57 @@
 # Active Tasks - TurkEats
 
-**Updated:** 2026-01-19
-**Focus:** Design Assets Complete - Ready for Development
+**Updated:** 2026-01-23
+**Focus:** Partnership Formation + Monday Meeting Prep
 
 ---
 
-## Completed This Session (2026-01-19)
+## 🚀 PRIORITY: Monday Meeting with Daniel (2026-01-27)
+
+**New venture: Rive Gosh LLC** (Wyoming) - Roderic + Daniel Amaury 50/50
+
+### Master Plan Ready ✅
+
+Full structure, formation plan, and Stéphane compensation model documented:
+- **[RIVE-GOSH-MASTER-PLAN.md](../docs/07-business/RIVE-GOSH-MASTER-PLAN.md)** ← READ THIS
+
+### Monday Discussion Points
+
+| Topic | Decision Needed |
+|-------|-----------------|
+| Ownership split | Confirm 50/50 or adjust? |
+| Stéphane's share | VIP Drivers %, TurkEats % |
+| VIP Drivers transition | How does existing structure fold in? |
+| Expense threshold | €500 ok? |
+| Distribution frequency | Monthly or quarterly? |
+
+### Formation Timeline (After Monday)
+
+| Week | Milestone |
+|------|-----------|
+| Week 1 | File Wyoming LLC, get EIN |
+| Week 2 | Apply Revolut Business, draft agreements |
+| Week 3 | Accounts active, sign agreements |
+| Week 4+ | Operating under Rive Gosh |
+
+### Documents to Review Before Call
+
+- [`docs/07-business/RIVE-GOSH-MASTER-PLAN.md`](../docs/07-business/RIVE-GOSH-MASTER-PLAN.md) - Complete plan
+- [`docs/07-business/RIVE-GOSH-LLC-RESEARCH.md`](../docs/07-business/RIVE-GOSH-LLC-RESEARCH.md) - Research findings
+- [`docs/00-intake/2026-01-23-DANIEL-CALL-SUMMARY.md`](../docs/00-intake/2026-01-23-DANIEL-CALL-SUMMARY.md) - Call notes
+
+---
+
+## Completed This Session (2026-01-23)
+
+- [x] Recorded Daniel call summary in `docs/00-intake/`
+- [x] Created PARTNERSHIP.md for MaaS umbrella
+- [x] Updated MOU-DANIEL.md (now references umbrella)
+- [x] Created EQUITY-STEPHANE.md (upgraded from revenue share)
+- [x] Updated handover.md with new context
+
+---
+
+## Completed Previous Session (2026-01-19)
 
 - [x] Uploaded 30 wireframes to Google Drive
 - [x] Created Google Slides presentation (31 slides)

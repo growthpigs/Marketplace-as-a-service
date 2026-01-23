@@ -1,12 +1,61 @@
 # TurkEats - Session Handover
 
-**Last Updated:** 2026-01-19
-**Session:** Design Assets Upload to Google Drive + Slides
+**Last Updated:** 2026-01-23
+**Session:** Rive Gosh LLC Formation Planning
 **Branch:** `main`
 
 ---
 
-## 🎯 MILESTONE: Design Assets Uploaded to Google Workspace (2026-01-19)
+## 🎯 MAJOR UPDATE: Rive Gosh LLC Formation (2026-01-23)
+
+**New venture with Daniel Amaury - Wyoming LLC, NOT Badaboost.**
+
+### Structure (Finalized)
+
+```
+RIVE GOSH LLC (Wyoming)
+├── Roderic Andrews ─────── 50%
+└── Daniel Amaury ───────── 50%
+
+Stéphane = Profit share per project (NOT equity)
+```
+
+### Key Decisions Made
+
+| Decision | Choice |
+|----------|--------|
+| Jurisdiction | **Wyoming** (not Delaware) - saves $325/yr |
+| Bank | **Revolut Business** |
+| Stéphane | Profit share, not equity |
+| Badaboost | Stays separate (Roderic's solo entity) |
+
+### Projects Under Rive Gosh
+
+| Project | Stéphane Share |
+|---------|----------------|
+| VIP Drivers | 15-20% (operations) |
+| TurkEats | 10% (market access) |
+| Hotel Booking | TBD |
+
+### Documents Created
+
+| Document | Purpose |
+|----------|---------|
+| [RIVE-GOSH-MASTER-PLAN.md](../docs/07-business/RIVE-GOSH-MASTER-PLAN.md) | **Complete plan - READ THIS** |
+| [RIVE-GOSH-LLC-RESEARCH.md](../docs/07-business/RIVE-GOSH-LLC-RESEARCH.md) | Delaware vs Wyoming research |
+| [2026-01-23-DANIEL-CALL-SUMMARY.md](../docs/00-intake/2026-01-23-DANIEL-CALL-SUMMARY.md) | Original call notes |
+
+### Monday Meeting Agenda
+
+1. Confirm 50/50 or adjust split
+2. Agree Stéphane's share per project
+3. Discuss VIP Drivers transition
+4. Set expense thresholds
+5. Decide distribution frequency
+
+---
+
+## Previous: Design Assets Uploaded to Google Workspace (2026-01-19)
 
 **All 30 wireframes + bilingual user stories now accessible in Google Drive + Slides.**
 

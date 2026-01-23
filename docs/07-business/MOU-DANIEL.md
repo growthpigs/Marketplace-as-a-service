@@ -1,10 +1,19 @@
 # MOU - Daniel Partnership
 
-**Status:** DRAFT (See original: [../00-intake/MOU_Daniel_DRAFT.md](../00-intake/MOU_Daniel_DRAFT.md))
+**Status:** SUPERSEDED by [PARTNERSHIP.md](./PARTNERSHIP.md)
+**Last Updated:** 2026-01-23
 
 ---
 
-## Summary
+## Update Notice (2026-01-23)
+
+> This MOU has been incorporated into the broader **Marketplace as a Service** partnership agreement.
+>
+> See: [PARTNERSHIP.md](./PARTNERSHIP.md) for the current umbrella structure.
+
+---
+
+## Original Terms (Still Valid)
 
 | Term | Value |
 |------|-------|
@@ -45,15 +54,29 @@
 
 ---
 
+## Changes from Original MOU (2026-01-23)
+
+| Original | Updated |
+|----------|---------|
+| TurkEats only | Multiple ventures under "Marketplace as a Service" |
+| Daniel is sole 50% partner | Daniel shares his 50% with Stephane |
+| Stephane = revenue share | Stephane = equity (within Daniel's 50%) |
+| New venture | VIP Drivers already operational (5K drivers) |
+
+---
+
 ## Action Items
 
 - [ ] Get Daniel's full legal name
 - [ ] Choose governing law (recommend Delaware)
+- [ ] Update Badaboost LLC Operating Agreement
 - [ ] Legal review before signing
 - [ ] Sign and date
 
 ---
 
-## Source Document
+## Source Documents
 
-Original draft from Claude CTO: [../00-intake/MOU_Daniel_DRAFT.md](../00-intake/MOU_Daniel_DRAFT.md)
+- Original draft: [../00-intake/MOU_Daniel_DRAFT.md](../00-intake/MOU_Daniel_DRAFT.md)
+- Current umbrella: [PARTNERSHIP.md](./PARTNERSHIP.md)
+- Call summary: [../00-intake/2026-01-23-DANIEL-CALL-SUMMARY.md](../00-intake/2026-01-23-DANIEL-CALL-SUMMARY.md)

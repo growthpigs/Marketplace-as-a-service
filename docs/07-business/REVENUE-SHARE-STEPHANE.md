@@ -1,6 +1,14 @@
 # Revenue Share Agreement - Stéphane
 
-**Status:** DRAFT (See original: [../00-intake/REVENUE_SHARE_Stephane_DRAFT.md](../00-intake/REVENUE_SHARE_Stephane_DRAFT.md))
+**Status:** ARCHIVED - Superseded by [EQUITY-STEPHANE.md](./EQUITY-STEPHANE.md)
+
+> **2026-01-23 Update:** Partnership structure changed. Stephane is now an **equity partner** (shares Daniel's 50%), not just revenue share.
+>
+> See: [EQUITY-STEPHANE.md](./EQUITY-STEPHANE.md) | [PARTNERSHIP.md](./PARTNERSHIP.md)
+
+---
+
+**Original Status:** DRAFT (See original: [../00-intake/REVENUE_SHARE_Stephane_DRAFT.md](../00-intake/REVENUE_SHARE_Stephane_DRAFT.md))
 
 ---
 

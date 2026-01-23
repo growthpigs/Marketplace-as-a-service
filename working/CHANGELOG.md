@@ -4,6 +4,58 @@ All notable changes to this project are documented here.
 
 ---
 
+## [2026-01-23] Rive Gosh LLC Partnership Formation
+
+### Summary
+
+Established partnership structure with Daniel Amaury. TurkEats becomes first project under new Wyoming LLC.
+
+### Key Decisions
+
+| Decision | Choice |
+|----------|--------|
+| Entity | Rive Gosh LLC (Wyoming) |
+| Ownership | Roderic 50% / Daniel Amaury 50% |
+| Stéphane | Profit share per project (not equity) |
+| Bank | Revolut Business |
+| Delaware | Rejected (Wyoming $325/yr cheaper) |
+
+### Documents Created
+
+| Document | Location |
+|----------|----------|
+| Master Plan | `docs/07-business/RIVE-GOSH-MASTER-PLAN.md` |
+| Research | `docs/07-business/RIVE-GOSH-LLC-RESEARCH.md` |
+| Call Summary | `docs/00-intake/2026-01-23-DANIEL-CALL-SUMMARY.md` |
+| Living Doc | `features/BUSINESS.md` |
+
+### Projects Under Rive Gosh
+
+- TurkEats (this project) - Development
+- VIP Drivers - Operational (5K drivers, 50 states)
+- Hotel Booking - Planning
+- Restaurant/Tourism - Future
+
+### Next Steps
+
+1. Monday meeting with Daniel (2026-01-27)
+2. File Wyoming LLC (~$150)
+3. Get EIN, open Revolut Business
+4. Sign Operating Agreement
+
+---
+
+## [2026-01-19] Design Assets Upload
+
+### Completed
+
+- Uploaded 30 wireframes to Google Drive
+- Created Google Slides presentation (31 slides)
+- Moved User Stories to TurkEats folder
+- Created `features/DESIGN.md` living document
+
+---
+
 ## [2026-01-13] Payment Processing Implementation (F005)
 
 ### ✅ COMPLETED

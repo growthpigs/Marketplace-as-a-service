@@ -2,7 +2,103 @@
 
 **Project:** TurkEats (Marketplace-as-a-Service)
 **Created:** 2026-01-12
-**Status:** Pre-Development
+**Last Updated:** 2026-01-23
+**Status:** Demo Ready (Mobile MVP Complete)
+
+---
+
+## Verification Commands
+
+**Rule:** Run these commands FIRST before assuming anything works.
+
+### Expo Dev Server Health Check
+
+```bash
+# Check if Expo is running on expected port
+lsof -i :8082 | head -3
+
+# Expected: node or expo process on port 8082
+# If empty: npx expo start --web --port 8082
+```
+
+### API Server Health Check
+
+```bash
+# Test API is responding
+curl -s http://localhost:3000/health | jq .
+
+# Expected: { "status": "ok" }
+# If error: cd apps/api && npm run dev
+```
+
+### TypeScript Compilation Check
+
+```bash
+# Verify no type errors across monorepo
+cd /Users/rodericandrews/_PAI/projects/personal/marketplace
+
+# API
+npx tsc --noEmit -p apps/api/tsconfig.json
+
+# Mobile
+npx tsc --noEmit -p apps/mobile/tsconfig.json
+
+# Expected: No output (success) or specific errors to fix
+```
+
+### Startup Checklist
+
+Before working on this project, verify:
+
+```
+□ 1. Git branch: main or feature branch? (git branch --show-current)
+□ 2. Expo server running? (lsof -i :8082)
+□ 3. API server running? (curl localhost:3000/health)
+□ 4. .env files have REAL values (not placeholders)?
+□ 5. TypeScript compiles? (npx tsc --noEmit)
+□ 6. Last commit synced? (git status)
+```
+
+---
+
+## Critical Patterns (DO NOT REGRESS)
+
+### Browse → Home Navigation
+
+The Browse tab navigates to Home with URL params. This pattern MUST be preserved:
+
+```typescript
+// browse.tsx - Navigating with params
+router.push({
+  pathname: '/',
+  params: { collection: collectionId }
+});
+
+// index.tsx - Reading params and applying filters
+const params = useLocalSearchParams<{ category?: string; collection?: string }>();
+
+useEffect(() => {
+  if (params.category) setSelectedCategory(params.category);
+  if (params.collection) {
+    // Apply appropriate filter based on collection
+  }
+}, [params.category, params.collection]);
+```
+
+### Demo Mode Checkout
+
+The checkout flow works without backend in demo mode:
+
+```typescript
+// review.tsx - Demo mode detection
+const isDemoMode = Constants.expoConfig?.extra?.ENV === 'development';
+
+if (isDemoMode) {
+  // Skip real API call, simulate success
+  await new Promise(resolve => setTimeout(resolve, 1500));
+  router.push({ pathname: '/checkout/confirmation', params: { orderId: mockOrderId } });
+}
+```
 
 ---
 
@@ -213,14 +309,45 @@ SELECT * FROM wallet_transactions WHERE reference_id = '...';
 
 ---
 
+## Common Issues & Fixes
+
+### Port Already in Use
+
+```bash
+# Find and kill process on port
+lsof -ti :8082 | xargs kill -9
+```
+
+### Expo Metro Bundler Stuck
+
+```bash
+# Clear Metro cache and restart
+npx expo start --clear --port 8082
+```
+
+### Pre-commit Hook Failing (Secrets Detection)
+
+The hook flags `SUPABASE.*KEY.*=.*ey` pattern. If it's a false positive:
+
+```bash
+git reset HEAD apps/api/src/lib/supabase.ts
+git checkout apps/api/src/lib/supabase.ts
+git commit  # Without the flagged file
+```
+
+---
+
 ## Contacts
 
-| Role | Contact |
-|------|---------|
-| Tech Lead | Roderic |
-| Operations | Daniel |
-| Market Access | Stéphane |
-| Stripe Support | support@stripe.com |
+| Role | Contact | Entity |
+|------|---------|--------|
+| Tech Lead | Roderic Andrews | Rive Gosh LLC (50%) |
+| Operations | Daniel Amaury | Rive Gosh LLC (50%) |
+| Market Access | Stéphane | Profit Share (10%) |
+| Stripe Support | support@stripe.com | - |
+
+**Legal Entity:** Rive Gosh LLC (Wyoming) - Formation pending
+**Bank:** Revolut Business
 
 ---
 
