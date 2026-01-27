@@ -1,4 +1,4 @@
-# Product Requirements Document (PRD)
+# PRD
 
 **Project:** TurkEats
 **Version:** 0.1
