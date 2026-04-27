@@ -256,10 +256,10 @@ return { state, subtotal, total, meetsMinOrder, addItem, removeItem };
 
 ## Living Documents (CRITICAL)
 
-- **Feature specs live in `/features/F0XX-*.md`** - Source of truth
-- **Never create orphan plan files** - Add "Implementation Plan" to feature file
-- **Update `features/INDEX.md`** when starting/completing features
-- **Active tasks in `working/active-tasks.md`** - Links to living docs
+- **Feature specs live as GitHub issues** with `[FSD]` title prefix — per [PAI governance](https://github.com/growthpigs/lifemodo/issues/561)
+- **Never create orphan plan files** — file an issue or comment on an existing umbrella
+- **Legacy `/features/F0XX-*.md` files** — frozen historical content, NOT source of truth going forward
+- **Active tasks in `working/active-tasks.md`** — Links to GitHub issues
 
 ---
 
